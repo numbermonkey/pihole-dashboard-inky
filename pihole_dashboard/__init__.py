@@ -27,6 +27,7 @@ import sys
 import hashlib
 import netifaces as ni
 # REPLACE WITH SOMETHING INKY ?
+from inky import InkyPHAT
 # from waveshare_epd import epd2in13_V2
 from PIL import Image, ImageFont, ImageDraw
 
@@ -52,9 +53,11 @@ font12 = ImageFont.truetype(font_name, 12)
 
 def draw_dashboard(out_string=None):
 
-# 	BELOW LINE BUT FOR INKY
+# 	BELOW LINES BUT FOR INKY
 #    image = Image.new("1", (epd.height, epd.width), 255)
-    draw = ImageDraw.Draw(image)
+#    draw = ImageDraw.Draw(image)
+img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+draw = ImageDraw.Draw(img)
 
     # Get Time
     t = strftime("%H:%M:%S", localtime())
@@ -66,14 +69,18 @@ def draw_dashboard(out_string=None):
     output = process.stdout.read().decode().split('\n')
     version = output[0].split("(")[0].strip()
 
-   draw.rectangle([(0, 105), (250, 122)], fill=0)
+#DO YOU THINK THESE COORDS ARE RIGHT ?
+#   draw.rectangle([(0, 105), (250, 122)], fill=0)
+	draw.rectangle([(0, 87), (212, 104)], fill=0)
     if out_string is not None:
         draw.text((0, 0), out_string, font=font16, fill=0)
-    draw.text((5, 106), version, font=font12, fill=1)
-    draw.text((150, 106), time_string, font=font12, fill=1)
+#    draw.text((5, 106), version, font=font12, fill=1)
+	draw.text((5,88), version, font=font12, fill=1)
+#    draw.text((150, 106), time_string, font=font12, fill=1)
+	draw.txt((150,88), time_string, font=font12, fill=1)
 #	BELOW LINE BUT FOR INKY
 #    epd.display(epd.getbuffer(image))
-
+	inky_display.set_image(img)
 
 def update():
     url = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)

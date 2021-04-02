@@ -7,7 +7,7 @@ from setuptools import setup
 from setuptools.command.install import install
 
 PACKAGE_NAME = "pihole-dashboard-inky"
-VERSION = "1.0.0"
+VERSION = "0.0.1"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         package_data={'pihole_dashboard_inky': ['font/*.ttf']},
         scripts=[
             "scripts/pihole-dashboard-inky-clean-screen",
-            "scripts/pihole-dashboard-draw"
+            "scripts/pihole-dashboard-inky-draw"
         ],
         python_requires='>=3.3.5',
         install_requires=parse_requirements("requirements.txt"),

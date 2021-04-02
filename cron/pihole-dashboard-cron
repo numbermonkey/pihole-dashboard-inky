@@ -1,4 +1,4 @@
-# pihole-dashboard-cron
+# pihole-dashboard-inky-cron
 # Copyright (C) 2021  santoru
 #
 # This program is free software: you can redistribute it and/or modify
@@ -17,5 +17,5 @@
 # For more information see the manual pages of crontab(5) and cron(8)
 #
 # m h  dom mon dow   command
-* *  * * *   root PATH="$PATH:/usr/sbin:/usr/local/bin/" pihole-dashboard-draw
-@reboot root PATH="$PATH:/usr/sbin:/usr/local/bin/" pihole-dashboard-clean-screen
+* *  * * *   root PATH="$PATH:/usr/sbin:/usr/local/bin/" pihole-dashboard-inky-draw
+@reboot root PATH="$PATH:/usr/sbin:/usr/local/bin/" pihole-dashboard-inky-clean-screen
