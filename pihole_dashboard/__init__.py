@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-# pihole-dashboard
+# pihole-dashboard-inky
 # Copyright (C) 2021  santoru
+# modified for inky numbermonkey
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,17 +26,19 @@ import os
 import sys
 import hashlib
 import netifaces as ni
-from waveshare_epd import epd2in13_V2
+# REPLACE WITH SOMETHING INKY ?
+# from waveshare_epd import epd2in13_V2
 from PIL import Image, ImageFont, ImageDraw
 
 if os.geteuid() != 0:
     sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
 
-INTERFACE = "wlan0"
+#CHANGED BELOW LINE FROM WLAN0
+INTERFACE = "eth0"
 PIHOLE_PORT = 80
 
 OUTPUT_STRING = ""
-FILENAME = "/tmp/.pihole-dashboard-output"
+FILENAME = "/tmp/.pihole-dashboard-inky-output"
 
 hostname = socket.gethostname()
 font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
@@ -43,13 +46,14 @@ font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 
-epd = epd2in13_V2.EPD()
-epd.init(epd.FULL_UPDATE)
-
+# ADD INKY SETUP LINES
+# epd = epd2in13_V2.EPD()
+# epd.init(epd.FULL_UPDATE)
 
 def draw_dashboard(out_string=None):
 
-    image = Image.new("1", (epd.height, epd.width), 255)
+# 	BELOW LINE BUT FOR INKY
+#    image = Image.new("1", (epd.height, epd.width), 255)
     draw = ImageDraw.Draw(image)
 
     # Get Time
@@ -62,12 +66,13 @@ def draw_dashboard(out_string=None):
     output = process.stdout.read().decode().split('\n')
     version = output[0].split("(")[0].strip()
 
-    draw.rectangle([(0, 105), (250, 122)], fill=0)
+   draw.rectangle([(0, 105), (250, 122)], fill=0)
     if out_string is not None:
         draw.text((0, 0), out_string, font=font16, fill=0)
     draw.text((5, 106), version, font=font12, fill=1)
     draw.text((150, 106), time_string, font=font12, fill=1)
-    epd.display(epd.getbuffer(image))
+#	BELOW LINE BUT FOR INKY
+#    epd.display(epd.getbuffer(image))
 
 
 def update():
@@ -77,7 +82,7 @@ def update():
     try:
         ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
     except KeyError:
-        ip_str = "[×] Can't connect to Wi-Fi"
+        ip_str = "[×] Can't connect to eth0"
         ip = ""
 
     unique_clients = r['unique_clients']

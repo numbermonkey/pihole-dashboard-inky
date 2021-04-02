@@ -6,7 +6,7 @@ from shutil import copyfile
 from setuptools import setup
 from setuptools.command.install import install
 
-PACKAGE_NAME = "pihole-dashboard"
+PACKAGE_NAME = "pihole-dashboard-inky"
 VERSION = "1.0.0"
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -26,8 +26,8 @@ class PostInstallJob(install):
         print("Installing cronjob...")
         self_dir = os.path.dirname(os.path.realpath(__file__))
         cron_dir = os.path.join(self_dir, 'cron')
-        copyfile(os.path.join(cron_dir, "pihole-dashboard-cron"),
-                 "/etc/cron.d/pihole-dashboard-cron")
+        copyfile(os.path.join(cron_dir, "pihole-dashboard-inky-cron"),
+                 "/etc/cron.d/pihole-dashboard-inky-cron")
         print("Done.")
 
 
@@ -37,14 +37,14 @@ if __name__ == "__main__":
         version=VERSION,
         author="santoru",
         author_email="santoru@pm.me",
-        description="Minimal dashboard for Pi-Hole that works with WaveShare's 2.13 inch HAT display",
+        description="Minimal dashboard for Pi-Hole that works with inky PHAT display",
         long_description=long_description,
         long_description_content_type="text/markdown",
         url="https://github.com/santoru/pihole-dashboard",
-        packages=["pihole_dashboard"],
-        package_data={'pihole_dashboard': ['font/*.ttf']},
+        packages=["pihole_dashboard-inky"],
+        package_data={'pihole_dashboard_inky': ['font/*.ttf']},
         scripts=[
-            "scripts/pihole-dashboard-clean-screen",
+            "scripts/pihole-dashboard-inky-clean-screen",
             "scripts/pihole-dashboard-draw"
         ],
         python_requires='>=3.3.5',

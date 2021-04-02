@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-# pihole-dashboard-clean-screen
+# pihole-dashboard-inky-clean-screen
 # Copyright (C) 2021  santoru
+# modified for inky by numbermonkey
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,10 +20,11 @@
 import time
 import sys
 import os
-from waveshare_epd import epd2in13_V2
+# REPLACE WITH SOMETHING INKY ?
+#from waveshare_epd import epd2in13_V2
 from PIL import Image, ImageFont, ImageDraw
 
-FILENAME = "/tmp/.pihole-dashboard-output"
+FILENAME = "/tmp/.pihole-dashboard-inky-output"
 
 
 if __name__ == '__main__':
@@ -35,6 +37,7 @@ if __name__ == '__main__':
 
     os.mknod(FILENAME)
 
-    epd = epd2in13_V2.EPD()
-    epd.init(epd.FULL_UPDATE)
-    epd.Clear(0xFF)
+# 	REPLACE WITH SOMETHING INKY ?
+#    epd = epd2in13_V2.EPD()
+#    epd.init(epd.FULL_UPDATE)
+#    epd.Clear(0xFF)

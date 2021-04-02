@@ -1,4 +1,4 @@
-# Clean Dashboard for Pi-Hole
+# Clean Dashboard for Pi-Hole CHANGED TO INKY
 Minimal and clean dashboard to visualize some stats of Pi-Hole with an E-Ink display attached to your Raspberry Pi.
 
 This is very useful if you keep a Pi Zero with Pi-Hole connected to your router and you want a clean dashboard to monitor its status.
@@ -20,6 +20,7 @@ Additionally, I do not use static IP so if this ever change, I have an easy way 
 The tool should run out of the box with standard installation of Pi-Hole. If you have a different setup probably the scripts should be adapted too.
 If your instance of Pi-Hole is running on a different port than 80, you should change it inside `pihole_dashboard/__init__.py`.
 
+### UPDATE BELOW FOR INKY PHAT
 ### WaveShare e-Paper dependency
 Making the E-Ink display work is not fully covered here, as it depends mostly on the display you use. As said before, I have the WaveShare's 2.13 inch E-Ink display, that has a nice detailed Wiki here: https://www.waveshare.com/wiki/2.13inch_e-Paper_HAT.
 
@@ -58,22 +59,24 @@ sudo apt install libopenjp2-7
 ```bash
 sudo pip3 install pihole-dashboard
 ```
+# CHANGED ?
 ### From Source
 ```bash
-git clone https://github.com/santoru/pihole-dashboard
-cd pihole-dashboard
+git clone https://github.com/santoru/pihole-dashboard-inky
+cd pihole-dashboard-inky
 sudo pip3 install .
 ```
 Once installed, reboot the Raspberry Pi. The dashboard should appear few minutes after the reboot.
 
+# CHANGED ?
 ## Uninstall
 You can remove the tool anytime by running
 ```bash
-sudo pip uninstall pihole-dashboard
+sudo pip uninstall pihole-dashboard-inky
 ```
 You can also manually remove the cronjob by running
 ```bash
-sudo rm /etc/cron.d/pihole-dashboard-cron
+sudo rm /etc/cron.d/pihole-dashboard-inky-cron
 ```
 
 ## How it works
@@ -82,7 +85,7 @@ The tool will install a Cron Job on the Raspberry Pi that will check the status 
 ## Troubleshooting
 If the dashboard is not displaying, you can check if the script return an error by running
 ```bash
-sudo pihole-dashboard-draw
+sudo pihole-dashboard-inky-draw
 ```
 If everything is working as expected, nothing will be printed out.
 If you still have errors, please open an issue.
