@@ -81,7 +81,7 @@ def draw_dashboard(out_string=None):
 #   draw.rectangle([(0, 105), (250, 122)], fill=0)
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
 	if out_string is not None:
-        draw.text((0, 0), out_string, font=font12, fill=0)
+		draw.text((0, 0), out_string, font=font12, fill=0)
 #		font = font12
 #		drop = 1
 #		draw.text((1,drop),out_string1, inky_display.RED, font)
@@ -128,8 +128,8 @@ def update():
 	output = process.stdout.read().decode().split('\n')
 #EDIT FOR MULTILINE
 	OUTPUT_STRING = ip_str + "\n" + output[0].strip().replace('✗', '×') + "\n" + output[6].strip().replace('✗', '×')
-    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] There are {} clients connected".format(unique_clients)
-    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] Blocked {} ads".format(ads_blocked_today)
+	OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] There are {} clients connected".format(unique_clients)
+	OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] Blocked {} ads".format(ads_blocked_today)
 #	OUTPUT_LINE1 = ip_str
 #	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
 # STATIC FOR TESTING
@@ -139,19 +139,19 @@ def update():
 # OUTPUT_LINE3 = "[✓] Pi-hole blocking is enabled"
 #	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_LINE5 = "[✓] Blocked {} ads".format(ads_blocked_today)
-    hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
-    try:
-        hash_file = open(FILENAME, "r+")
+	hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
+	try:
+		hash_file = open(FILENAME, "r+")
 
-    except FileNotFoundError:
-        os.mknod(FILENAME)
-        hash_file = open(FILENAME, "r+")
+	except FileNotFoundError:
+		os.mknod(FILENAME)
+		hash_file = open(FILENAME, "r+")
 
-    file_string = hash_file.read()
-    if file_string != hash_string:
-        hash_file.seek(0)
-        hash_file.truncate()
-        hash_file.write(hash_string)
+	file_string = hash_file.read()
+	if file_string != hash_string:
+		hash_file.seek(0)
+		hash_file.truncate()
+		hash_file.write(hash_string)
 # DIFFERENT ATTEMPT
-   draw_dashboard(OUTPUT_STRING)
+	draw_dashboard(OUTPUT_STRING)
 #	draw_dashboard(OUTPUT_LINE1, OUTPUT_LINE2, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
