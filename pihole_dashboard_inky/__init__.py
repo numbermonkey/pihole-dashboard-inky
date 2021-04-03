@@ -2,7 +2,7 @@
 
 # pihole-dashboard-inky
 # Copyright (C) 2021  santoru
-# modified for inky numbermonkey
+# modified for inky by numbermonkey
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,12 +39,12 @@ INTERFACE = "eth0"
 PIHOLE_PORT = 80
 
 #CHANGE DUE TO LACK OF MULTILINE
-#OUTPUT_STRING = ""
-OUTPUT_LINE1 = ""
-OUTPUT_LINE2 = ""
-OUTPUT_LINE3 = ""
-OUTPUT_LINE4 = ""
-OUTPUT_LINE5 = ""
+OUTPUT_STRING = ""
+#OUTPUT_LINE1 = ""
+#OUTPUT_LINE2 = ""
+#OUTPUT_LINE3 = ""
+#OUTPUT_LINE4 = ""
+#OUTPUT_LINE5 = ""
 FILENAME = "/tmp/.pihole-dashboard-inky-output"
 
 hostname = socket.gethostname()
@@ -59,7 +59,8 @@ font12 = ImageFont.truetype(font_name, 12)
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
+def draw_dashboard(out_string=None):
+#def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
 
 # 	BELOW LINES BUT FOR INKY
 #    image = Image.new("1", (epd.height, epd.width), 255)
@@ -79,27 +80,23 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 #INKY PHAT CORRECTED COORDS & COLOURS
 #   draw.rectangle([(0, 105), (250, 122)], fill=0)
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
-	if out_string1 is not None:
-#  AH, I SEE. THAT HASHY THING CONVERTS THE OUTPUT STRING INTO A SINGLE LINE OF TEXT WITH UTF CRs. 
-#  I DONT THINK I CAN BE THAT SOPHISTICATED
-#  MULTI LINE IS NOT AVAILABLE AND I'LL TRY WITHOUT THE HASHY THING FIRST
-#  BELOW IS ORIGINAL CODE LINE
-#        draw.text((0, 0), out_string, font=font16, fill=0)
-		font = font12
-		drop = 1
-		draw.text((1,drop),out_string1, inky_display.RED, font)
-		w, h = font12.getsize(out_string1)
-		drop = drop + h +2
-		draw.text((1,drop),out_string2, inky_display.RED, font)
-		w, h = font12.getsize(out_string2)
-		drop = drop + h +2
-		draw.text((1,drop),out_string3, inky_display.RED, font)
-		w, h = font12.getsize(out_string3)
-		drop = drop + h +2
-		draw.text((1,drop),out_string4, inky_display.RED, font)
-		w, h = font12.getsize(out_string4)
-		drop = drop + h + 2
-		draw.text((1,drop),out_string5, inky_display.RED, font)
+	if out_string is not None:
+        draw.text((0, 0), out_string, font=font12, fill=0)
+#		font = font12
+#		drop = 1
+#		draw.text((1,drop),out_string1, inky_display.RED, font)
+#		w, h = font12.getsize(out_string1)
+#		drop = drop + h +2
+#		draw.text((1,drop),out_string2, inky_display.RED, font)
+#		w, h = font12.getsize(out_string2)
+#		drop = drop + h +2
+#		draw.text((1,drop),out_string3, inky_display.RED, font)
+#		w, h = font12.getsize(out_string3)
+#		drop = drop + h +2
+#		draw.text((1,drop),out_string4, inky_display.RED, font)
+#		w, h = font12.getsize(out_string4)
+#		drop = drop + h + 2
+#		draw.text((1,drop),out_string5, inky_display.RED, font)
 #    draw.text((5, 106), version, font=font12, fill=1)
 	draw.text((5,88), version, font=font12, fill=0)
 #    draw.text((150, 106), time_string, font=font12, fill=1)
@@ -129,33 +126,32 @@ def update():
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split('\n')
-#CANT DO MULTILINE
-#	OUTPUT_STRING = ip_str + "\n" + output[0].strip().replace('✗', '×') + "\n" + output[6].strip().replace('✗', '×')
-#    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] There are {} clients connected".format(unique_clients)
-#    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] Blocked {} ads".format(ads_blocked_today)
-	OUTPUT_LINE1 = ip_str
-	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
+#EDIT FOR MULTILINE
+	OUTPUT_STRING = ip_str + "\n" + output[0].strip().replace('✗', '×') + "\n" + output[6].strip().replace('✗', '×')
+    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] There are {} clients connected".format(unique_clients)
+    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] Blocked {} ads".format(ads_blocked_today)
+#	OUTPUT_LINE1 = ip_str
+#	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
 # STATIC FOR TESTING
 # OUTPUT_LINE2 = "[✓] DNS service is listening"
-	OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
+#	OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
 # STATIC FOR TESTING 
 # OUTPUT_LINE3 = "[✓] Pi-hole blocking is enabled"
-	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
-	OUTPUT_LINE5 = "[✓] Blocked {} ads".format(ads_blocked_today)
-#  I DONT KNOW WHAT THE FOLLOWING CODE DOES
-#    hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
-#    try:
-#        hash_file = open(FILENAME, "r+")
-#
-#    except FileNotFoundError:
-#        os.mknod(FILENAME)
-#        hash_file = open(FILENAME, "r+")
-#
-#    file_string = hash_file.read()
-#    if file_string != hash_string:
-#        hash_file.seek(0)
-#        hash_file.truncate()
-#        hash_file.write(hash_string)
-# NEEDS TO CHANGE CANT DO MULTILINE
-#   draw_dashboard(OUTPUT_STRING)
-	draw_dashboard(OUTPUT_LINE1, OUTPUT_LINE2, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
+#	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
+#	OUTPUT_LINE5 = "[✓] Blocked {} ads".format(ads_blocked_today)
+    hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
+    try:
+        hash_file = open(FILENAME, "r+")
+
+    except FileNotFoundError:
+        os.mknod(FILENAME)
+        hash_file = open(FILENAME, "r+")
+
+    file_string = hash_file.read()
+    if file_string != hash_string:
+        hash_file.seek(0)
+        hash_file.truncate()
+        hash_file.write(hash_string)
+# DIFFERENT ATTEMPT
+   draw_dashboard(OUTPUT_STRING)
+#	draw_dashboard(OUTPUT_LINE1, OUTPUT_LINE2, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)

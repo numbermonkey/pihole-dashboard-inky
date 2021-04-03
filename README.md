@@ -2,7 +2,6 @@
 Minimal and clean dashboard to visualize some stats of Pi-Hole with an E-Ink display attached to your Raspberry Pi.
 
 This is very useful if you keep a Pi Zero with Pi-Hole connected to your router and you want a clean dashboard to monitor its status.
-Additionally, I do not use static IP so if this ever change, I have an easy way to get the real time IP of the Raspberry.
 <p align="center">
     <a href="https://pypi.org/project/pihole-dashboard/"><img alt="PyPI" src="https://img.shields.io/pypi/v/pihole-dashboard"></a>
     <a href="#"><img alt="Updated" src="https://img.shields.io/github/last-commit/santoru/pihole-dashboard?label=updated"></a>
@@ -12,8 +11,8 @@ Additionally, I do not use static IP so if this ever change, I have an easy way 
 </p>
 
 ## My Setup
-- Raspberry Pi Zero WH (You can also solder the headers by yourself)
-- <a href="https://www.waveshare.com/2.13inch-e-paper-hat.htm">2.13 inch E-Ink display HAT for Raspberry Pi</a>
+- Raspberry Pi Zero v1.3 (You can also solder the headers by yourself)
+- <a href="https://shop.pimoroni.com/products/inky-phat?variant=12549254217811">2.13 inch E-Ink display HAT for Raspberry Pi</a>
 - <a href="https://pi-hole.net/">Pi-Hole</a> (I have v5.2.4 at the moment)
 
 ## Configuration
@@ -22,7 +21,7 @@ If your instance of Pi-Hole is running on a different port than 80, you should c
 
 ### UPDATE BELOW FOR INKY PHAT
 ### WaveShare e-Paper dependency
-Making the E-Ink display work is not fully covered here, as it depends mostly on the display you use. As said before, I have the WaveShare's 2.13 inch E-Ink display, that has a nice detailed Wiki here: https://www.waveshare.com/wiki/2.13inch_e-Paper_HAT.
+Making the E-Ink display work is not fully covered here, as it depends mostly on the display you use. As said before, I have the Inky Phat 2.13 inch E-Ink display, that has a nice Getting Started guide here: https://learn.pimoroni.com/tutorial/sandyj/getting-started-with-inky-phat.
 
 You can find there the list of required dependencies for Python and how to run and test the provided examples.
 Just for reference, this is the list of dependencies that should be installed on a Raspberry Pi Zero to configure the display I have:
@@ -31,21 +30,21 @@ sudo apt-get install python3-pip python3-pil python3-numpy
 sudo pip3 install RPi.GPIO
 sudo pip3 install spidev 
 ```
-In order to use the 2.13 inch E-Ink display with Python, you also need to get and build their `waveshare-epd` library:
-```bash
-git clone https://github.com/waveshare/e-Paper.git
-cd e-Paper/RaspberryPi_JetsonNano/python/
-sudo python3 setup.py install
-```
-You can check if the display is working by running the test example:
-```bash
-cd e-Paper/RaspberryPi_JetsonNano/python/
-sudo python3 examples/epd_2in13_V2_test.py
-```
-Remember that you need **root** access to control the display, so be sure to run the python example as root. 
+#In order to use the 2.13 inch E-Ink display with Python, you also need to get and build their `waveshare-epd` library:
+#```bash
+#git clone https://github.com/waveshare/e-Paper.git
+#cd e-Paper/RaspberryPi_JetsonNano/python/
+#sudo python3 setup.py install
+#```
+#You can check if the display is working by running the test example:
+#```bash
+#cd e-Paper/RaspberryPi_JetsonNano/python/
+#sudo python3 examples/epd_2in13_V2_test.py
+#```
+#Remember that you need **root** access to control the display, so be sure to run the python example as root. 
 
-The example will print several geometric objects on the screen if everything is working as expected, followed by a simple clock program that updates every second.
-If the example does not work, do not proceed further with the installation as this probably will not work either.
+#The example will print several geometric objects on the screen if everything is working as expected, followed by a simple clock program that updates every second.
+#If the example does not work, do not proceed further with the installation as this probably will not work either.
 
 ## Installation
 The installation requires to have already a Raspberry with Pi-Hole installed and correctly running, if you have problem installing Pi-Hole <a href="https://github.com/pi-hole/pi-hole">check their README</a>.

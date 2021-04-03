@@ -21,8 +21,8 @@ import time
 import sys
 import os
 # REPLACE WITH SOMETHING INKY ?
-from inky import InkyPHAT
 #from waveshare_epd import epd2in13_V2
+from inky import InkyPHAT
 from PIL import Image, ImageFont, ImageDraw
  
 FILENAME = "/tmp/.pihole-dashboard-inky-output"
