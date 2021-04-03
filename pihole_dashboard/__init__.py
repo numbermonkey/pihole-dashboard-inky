@@ -26,19 +26,25 @@ import os
 import sys
 import hashlib
 import netifaces as ni
-# REPLACE WITH SOMETHING INKY ?
-from inky import InkyPHAT
+# REPLACE WITH SOMETHING INKY 
 # from waveshare_epd import epd2in13_V2
+from inky import InkyPHAT
 from PIL import Image, ImageFont, ImageDraw
 
 if os.geteuid() != 0:
     sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
 
-#CHANGED BELOW LINE FROM WLAN0
+#CHANGED BELOW LINE FROM WLAN0 SINCE I AM WIRED :)
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
 
-OUTPUT_STRING = ""
+#CHANGE DUE TO LACK OF MULTILINE
+#OUTPUT_STRING = ""
+OUTPUT_LINE1 = ""
+OUTPUT_LINE2 = ""
+OUTPUT_LINE3 = ""
+OUTPUT_LINE4 = ""
+OUTPUT_LINE5 = ""
 FILENAME = "/tmp/.pihole-dashboard-inky-output"
 
 hostname = socket.gethostname()
@@ -50,8 +56,10 @@ font12 = ImageFont.truetype(font_name, 12)
 # ADD INKY SETUP LINES
 # epd = epd2in13_V2.EPD()
 # epd.init(epd.FULL_UPDATE)
+inky_display = InkyPHAT("red")
+inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string=None):
+def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
 
 # 	BELOW LINES BUT FOR INKY
 #    image = Image.new("1", (epd.height, epd.width), 255)
@@ -69,18 +77,39 @@ draw = ImageDraw.Draw(img)
     output = process.stdout.read().decode().split('\n')
     version = output[0].split("(")[0].strip()
 
-#DO YOU THINK THESE COORDS ARE RIGHT ?
+#INKY PHAT CORRECTED COORDS & COLOURS
 #   draw.rectangle([(0, 105), (250, 122)], fill=0)
-	draw.rectangle([(0, 87), (212, 104)], fill=0)
+	draw.rectangle([(0, 87), (212, 104)], fill=1)
     if out_string is not None:
-        draw.text((0, 0), out_string, font=font16, fill=0)
+#  AH, I SEE. THAT HASHY THING CONVERTS THE OUTPUT STRING INTO A SINGLE LINE OF TEXT WITH UTF CRs. 
+#  I DONT THINK I CAN BE THAT SOPHISTICATED
+#  MULTI LINE IS NOT AVAILABLE AND I'LL TRY WITH THE HASHY THING FIRST
+#  BELOW IS ORIGINAL CODE LINE
+#        draw.text((0, 0), out_string, font=font16, fill=0)
+		font = font12
+		drop = 1
+		draw.text((1,drop),OUTPUT_LINE1, inky_display.RED, font)
+		w, h = font12.getsize(OUTPUT_LINE1)
+		drop = drop + h +2
+		draw.text((1,drop),OUTPUT_LINE2, inky_display.RED, font)
+		w, h = font12.getsize(OUTPUT_LINE2)
+		drop = drop + h +2
+		draw.text((1,drop),OUTPUT_LINE3, inky_display.RED, font)
+		w, h = font12.getsize(OUTPUT_LINE3)
+		drop = drop + h +2
+		draw.text((1,drop),OUTPUT_LINE4, inky_display.RED, font)
+		w, h = font12.getsize(OUTPUT_LINE4)
+		drop = drop + h + 2
+		draw.text((1,drop),OUTPUT_LINE5, inky_display.RED, font)
 #    draw.text((5, 106), version, font=font12, fill=1)
 	draw.text((5,88), version, font=font12, fill=1)
 #    draw.text((150, 106), time_string, font=font12, fill=1)
-	draw.txt((150,88), time_string, font=font12, fill=1)
+	draw.text((150,88), time_string, font=font12, fill=1)
 #	BELOW LINE BUT FOR INKY
 #    epd.display(epd.getbuffer(image))
 	inky_display.set_image(img)
+	inky_display.show()
+
 
 def update():
     url = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
@@ -101,22 +130,33 @@ def update():
     cmd = "/usr/local/bin/pihole status"
     process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
     output = process.stdout.read().decode().split('\n')
-
-    OUTPUT_STRING = ip_str + "\n" + output[0].strip().replace('✗', '×') + "\n" + output[6].strip().replace('✗', '×')
-    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] There are {} clients connected".format(unique_clients)
-    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] Blocked {} ads".format(ads_blocked_today)
-
-    hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
-    try:
-        hash_file = open(FILENAME, "r+")
-
-    except FileNotFoundError:
-        os.mknod(FILENAME)
-        hash_file = open(FILENAME, "r+")
-
-    file_string = hash_file.read()
-    if file_string != hash_string:
-        hash_file.seek(0)
-        hash_file.truncate()
-        hash_file.write(hash_string)
-    draw_dashboard(OUTPUT_STRING)
+#CANT DO MULTILINE
+#	OUTPUT_STRING = ip_str + "\n" + output[0].strip().replace('✗', '×') + "\n" + output[6].strip().replace('✗', '×')
+#    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] There are {} clients connected".format(unique_clients)
+#    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] Blocked {} ads".format(ads_blocked_today)
+OUTPUT_LINE1 = ip_str
+OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
+# STATIC FOR TESTING
+# OUTPUT_LINE2 = "[✓] DNS service is listening"
+OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
+# STATIC FOR TESTING 
+# OUTPUT_LINE3 = "[✓] Pi-hole blocking is enabled"
+OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
+OUTPUT_LINE5 = "[✓] Blocked {} ads".format(ads_blocked_today)
+#  I DONT KNOW WHAT THE FOLLOWING CODE DOES
+#    hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
+#    try:
+#        hash_file = open(FILENAME, "r+")
+#
+#    except FileNotFoundError:
+#        os.mknod(FILENAME)
+#        hash_file = open(FILENAME, "r+")
+#
+#    file_string = hash_file.read()
+#    if file_string != hash_string:
+#        hash_file.seek(0)
+#        hash_file.truncate()
+#        hash_file.write(hash_string)
+# NEEDS TO CHANGE CANT DO MULTILINE
+#   draw_dashboard(OUTPUT_STRING)
+	draw_dashboard(OUTPUT_LINE1, OUTPUT_LINE2, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)

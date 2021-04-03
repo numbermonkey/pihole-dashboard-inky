@@ -21,7 +21,7 @@ import time
 import sys
 import os
 # REPLACE WITH SOMETHING INKY ?
-from inky import InkyPhat
+from inky import InkyPHAT
 #from waveshare_epd import epd2in13_V2
 from PIL import Image, ImageFont, ImageDraw
  
@@ -44,4 +44,5 @@ if __name__ == '__main__':
 #    epd.Clear(0xFF)
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
-inkyphat.clear()
+inky_display.set_image(img)
+inky_display.show()

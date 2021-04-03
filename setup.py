@@ -7,7 +7,7 @@ from setuptools import setup
 from setuptools.command.install import install
 
 PACKAGE_NAME = "pihole-dashboard-inky"
-VERSION = "0.0.1"
+VERSION = "0.0.3"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -35,13 +35,13 @@ if __name__ == "__main__":
     setup(
         name=PACKAGE_NAME,
         version=VERSION,
-        author="santoru",
+        author="santoru fork numbermonkey",
         author_email="santoru@pm.me",
         description="Minimal dashboard for Pi-Hole that works with inky PHAT display",
         long_description=long_description,
         long_description_content_type="text/markdown",
         url="https://github.com/numbermonkey/pihole-dashboard-inky",
-        packages=["pihole_dashboard-inky"],
+        packages=["pihole_dashboard_inky"],
         package_data={'pihole_dashboard_inky': ['font/*.ttf']},
         scripts=[
             "scripts/pihole-dashboard-inky-clean-screen",
