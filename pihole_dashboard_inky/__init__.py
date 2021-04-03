@@ -111,24 +111,24 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 
 
 def update():
-    url = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
-    r = json.load(urllib.request.urlopen(url))
+	url = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+	r = json.load(urllib.request.urlopen(url))
 
-    try:
-        ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
-    except KeyError:
-        ip_str = "[×] Can't connect to eth0"
-        ip = ""
+	try:
+		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
+	except KeyError:
+		ip_str = "[×] Can't connect to eth0"
+		ip = ""
 
-    unique_clients = r['unique_clients']
-    ads_blocked_today = r['ads_blocked_today']
+	unique_clients = r['unique_clients']
+	ads_blocked_today = r['ads_blocked_today']
 
-    if "192.168" in ip:
-        ip_str = "[✓] IP of {}: {}".format(hostname, ip)
+	if "192.168" in ip:
+		ip_str = "[✓] IP of {}: {}".format(hostname, ip)
 
-    cmd = "/usr/local/bin/pihole status"
-    process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-    output = process.stdout.read().decode().split('\n')
+	cmd = "/usr/local/bin/pihole status"
+	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+	output = process.stdout.read().decode().split('\n')
 #CANT DO MULTILINE
 #	OUTPUT_STRING = ip_str + "\n" + output[0].strip().replace('✗', '×') + "\n" + output[6].strip().replace('✗', '×')
 #    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] There are {} clients connected".format(unique_clients)
