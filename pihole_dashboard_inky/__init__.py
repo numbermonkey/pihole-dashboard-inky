@@ -64,8 +64,8 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 # 	BELOW LINES BUT FOR INKY
 #    image = Image.new("1", (epd.height, epd.width), 255)
 #    draw = ImageDraw.Draw(image)
-img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
-draw = ImageDraw.Draw(img)
+	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+	draw = ImageDraw.Draw(img)
 
     # Get Time
     t = strftime("%H:%M:%S", localtime())
@@ -86,21 +86,21 @@ draw = ImageDraw.Draw(img)
 #  MULTI LINE IS NOT AVAILABLE AND I'LL TRY WITH THE HASHY THING FIRST
 #  BELOW IS ORIGINAL CODE LINE
 #        draw.text((0, 0), out_string, font=font16, fill=0)
-		font = font12
-		drop = 1
-		draw.text((1,drop),OUTPUT_LINE1, inky_display.RED, font)
-		w, h = font12.getsize(OUTPUT_LINE1)
-		drop = drop + h +2
-		draw.text((1,drop),OUTPUT_LINE2, inky_display.RED, font)
-		w, h = font12.getsize(OUTPUT_LINE2)
-		drop = drop + h +2
-		draw.text((1,drop),OUTPUT_LINE3, inky_display.RED, font)
-		w, h = font12.getsize(OUTPUT_LINE3)
-		drop = drop + h +2
-		draw.text((1,drop),OUTPUT_LINE4, inky_display.RED, font)
-		w, h = font12.getsize(OUTPUT_LINE4)
-		drop = drop + h + 2
-		draw.text((1,drop),OUTPUT_LINE5, inky_display.RED, font)
+	font = font12
+	drop = 1
+	draw.text((1,drop),OUTPUT_LINE1, inky_display.RED, font)
+	w, h = font12.getsize(OUTPUT_LINE1)
+	drop = drop + h +2
+	draw.text((1,drop),OUTPUT_LINE2, inky_display.RED, font)
+	w, h = font12.getsize(OUTPUT_LINE2)
+	drop = drop + h +2
+	draw.text((1,drop),OUTPUT_LINE3, inky_display.RED, font)
+	w, h = font12.getsize(OUTPUT_LINE3)
+	drop = drop + h +2
+	draw.text((1,drop),OUTPUT_LINE4, inky_display.RED, font)
+	w, h = font12.getsize(OUTPUT_LINE4)
+	drop = drop + h + 2
+	draw.text((1,drop),OUTPUT_LINE5, inky_display.RED, font)
 #    draw.text((5, 106), version, font=font12, fill=1)
 	draw.text((5,88), version, font=font12, fill=1)
 #    draw.text((150, 106), time_string, font=font12, fill=1)
@@ -134,15 +134,15 @@ def update():
 #	OUTPUT_STRING = ip_str + "\n" + output[0].strip().replace('✗', '×') + "\n" + output[6].strip().replace('✗', '×')
 #    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] There are {} clients connected".format(unique_clients)
 #    OUTPUT_STRING = OUTPUT_STRING + "\n" + "[✓] Blocked {} ads".format(ads_blocked_today)
-OUTPUT_LINE1 = ip_str
-OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
+	OUTPUT_LINE1 = ip_str
+	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
 # STATIC FOR TESTING
 # OUTPUT_LINE2 = "[✓] DNS service is listening"
-OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
+	OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
 # STATIC FOR TESTING 
 # OUTPUT_LINE3 = "[✓] Pi-hole blocking is enabled"
-OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
-OUTPUT_LINE5 = "[✓] Blocked {} ads".format(ads_blocked_today)
+	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
+	OUTPUT_LINE5 = "[✓] Blocked {} ads".format(ads_blocked_today)
 #  I DONT KNOW WHAT THE FOLLOWING CODE DOES
 #    hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
 #    try:
