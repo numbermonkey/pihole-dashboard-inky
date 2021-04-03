@@ -82,24 +82,24 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	if out_string1 is not None:
 #  AH, I SEE. THAT HASHY THING CONVERTS THE OUTPUT STRING INTO A SINGLE LINE OF TEXT WITH UTF CRs. 
 #  I DONT THINK I CAN BE THAT SOPHISTICATED
-#  MULTI LINE IS NOT AVAILABLE AND I'LL TRY WITH THE HASHY THING FIRST
+#  MULTI LINE IS NOT AVAILABLE AND I'LL TRY WITHOUT THE HASHY THING FIRST
 #  BELOW IS ORIGINAL CODE LINE
 #        draw.text((0, 0), out_string, font=font16, fill=0)
 		font = font12
 		drop = 1
-		draw.text((1,drop),OUTPUT_LINE1, inky_display.RED, font)
-		w, h = font12.getsize(OUTPUT_LINE1)
+		draw.text((1,drop),out_string1, inky_display.RED, font)
+		w, h = font12.getsize(out_string1)
 		drop = drop + h +2
-		draw.text((1,drop),OUTPUT_LINE2, inky_display.RED, font)
-		w, h = font12.getsize(OUTPUT_LINE2)
+		draw.text((1,drop),out_string2, inky_display.RED, font)
+		w, h = font12.getsize(out_string2)
 		drop = drop + h +2
-		draw.text((1,drop),OUTPUT_LINE3, inky_display.RED, font)
-		w, h = font12.getsize(OUTPUT_LINE3)
+		draw.text((1,drop),out_string3, inky_display.RED, font)
+		w, h = font12.getsize(out_string3)
 		drop = drop + h +2
-		draw.text((1,drop),OUTPUT_LINE4, inky_display.RED, font)
-		w, h = font12.getsize(OUTPUT_LINE4)
+		draw.text((1,drop),out_string4, inky_display.RED, font)
+		w, h = font12.getsize(out_string4)
 		drop = drop + h + 2
-		draw.text((1,drop),OUTPUT_LINE5, inky_display.RED, font)
+		draw.text((1,drop),out_string5, inky_display.RED, font)
 #    draw.text((5, 106), version, font=font12, fill=1)
 	draw.text((5,88), version, font=font12, fill=1)
 #    draw.text((150, 106), time_string, font=font12, fill=1)
