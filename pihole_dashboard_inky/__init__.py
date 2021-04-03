@@ -69,7 +69,7 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
-	time_string = "Updated: {}".format(t)
+	time_string = "T: {}".format(t)
 # Get Version
 	cmd = "/usr/local/bin/pihole -v"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
