@@ -79,7 +79,7 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 #INKY PHAT CORRECTED COORDS & COLOURS
 #   draw.rectangle([(0, 105), (250, 122)], fill=0)
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
-	if out_string is not None:
+	if out_string1 is not None:
 #  AH, I SEE. THAT HASHY THING CONVERTS THE OUTPUT STRING INTO A SINGLE LINE OF TEXT WITH UTF CRs. 
 #  I DONT THINK I CAN BE THAT SOPHISTICATED
 #  MULTI LINE IS NOT AVAILABLE AND I'LL TRY WITH THE HASHY THING FIRST
