@@ -40,7 +40,7 @@ if __name__ == "__main__":
         description="Minimal dashboard for Pi-Hole that works with inky PHAT display",
         long_description=long_description,
         long_description_content_type="text/markdown",
-        url="https://github.com/santoru/pihole-dashboard",
+        url="https://github.com/numbermonkey/pihole-dashboard-inky",
         packages=["pihole_dashboard-inky"],
         package_data={'pihole_dashboard_inky': ['font/*.ttf']},
         scripts=[
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         ],
         python_requires='>=3.3.5',
         install_requires=parse_requirements("requirements.txt"),
-        cmdclass={
-            'install': PostInstallJob,
-        },
+ #       cmdclass={
+ #           'install': PostInstallJob,
+ #       },
     )
