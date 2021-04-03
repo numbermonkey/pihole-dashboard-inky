@@ -101,9 +101,9 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 		drop = drop + h + 2
 		draw.text((1,drop),out_string5, inky_display.RED, font)
 #    draw.text((5, 106), version, font=font12, fill=1)
-	draw.text((5,88), version, font=font12, fill=1)
+	draw.text((5,88), version, font=font12, fill=0)
 #    draw.text((150, 106), time_string, font=font12, fill=1)
-	draw.text((150,88), time_string, font=font12, fill=1)
+	draw.text((150,88), time_string, font=font12, fill=0)
 #	BELOW LINE BUT FOR INKY
 #    epd.display(epd.getbuffer(image))
 	inky_display.set_image(img)
