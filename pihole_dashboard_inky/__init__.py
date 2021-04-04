@@ -104,9 +104,9 @@ def update():
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
 	if cpu_temp <= cpucooltemp:
-		cputempstr = "[✓] Cool {}".format(cpu_temp)
+		cputempstr = "[✓] Cool {}C".format(cpu_temp)
 	if cpu_temp > cpucooltemp <= cpuoktemp:
-		cputempstr = "[✓] Heating up {}".format(cpu_temp)
+		cputempstr = "[✓] Warm {}".format(cpu_temp)
 	if cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
 	if cpu_temp > cpubadtemp:
@@ -116,6 +116,15 @@ def update():
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split(",")
 	load5min = output[-2]
+	#Just trying something#
+	last_idle = last_total = 0
+	with open('/proc/stat') as f:
+	fields = [float(column) for column in f.readline().strip().split()[1:]]
+	idle, total = fields[3], sum(fields)
+	idle_delta, total_delta = idle - last_idle, total - last_total
+	last_idle, last_total = idle, total
+	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
+
 # Get Pihole Status
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -140,7 +149,7 @@ def update():
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
 #	OUTPUT_LINE1 = ip_str
 	OUTPUT_LINE1 = cputempstr
-	OUTPUT_LINE2 = "5 min load is{}".format(load5min)
+	OUTPUT_LINE2 = "5 min load is{} at {}".format(load5min,utilisation)
 #	OUTPUT_LINE2 = PHstatus[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
