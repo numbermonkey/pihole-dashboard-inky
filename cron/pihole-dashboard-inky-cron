@@ -17,5 +17,5 @@
 # For more information see the manual pages of crontab(5) and cron(8)
 #
 # m h  dom mon dow   command
-* *  * * *   root PATH="$PATH:/usr/sbin:/usr/local/bin/" pihole-dashboard-inky-draw
+*/5 *  * * *   root PATH="$PATH:/usr/sbin:/usr/local/bin/" pihole-dashboard-inky-draw
 @reboot root PATH="$PATH:/usr/sbin:/usr/local/bin/" pihole-dashboard-inky-clean-screen
