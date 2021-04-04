@@ -55,10 +55,6 @@ inky_display.set_border(inky_display.WHITE)
 
 #def draw_dashboard(out_string=None):
 def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
-
-	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
-	draw = ImageDraw.Draw(img)
-
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
@@ -67,24 +63,9 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
-# Get Temp
-	cmd = "/opt/vc/bin/vcgencmd"
-	cmdopt = "measure_temp"
-	process = subprocess.Popen([cmd, cmdopt], stdout=subprocess.PIPE)
-	tempC = process.stdout.read()
-# Get Load
-#	cmd = "/usr/bin/uptime"
-#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-#	output = process.stdout.read().decode().split('\n')
-#	version = output[0].split("(")[0].strip()
-# Get Pihole Status
-	cmd = "/usr/local/bin/pihole status"
-	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-	PHstatus = process.stdout.read().decode().split('\n')
-# Get Pihole Stats
-	PHstats = json.load(urllib.request.urlopen(PHadminURL))
-	unique_clients = PHstats['unique_clients']
-	ads_blocked_today = PHstats['ads_blocked_today']
+	
+	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+	draw = ImageDraw.Draw(img)
 
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
 	if out_string1 is not None:
@@ -111,6 +92,26 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 
 
 def update():
+
+
+# Get Temp
+	cmd = "/opt/vc/bin/vcgencmd"
+	cmdopt = "measure_temp"
+	process = subprocess.Popen([cmd, cmdopt], stdout=subprocess.PIPE)
+	tempC = process.stdout.read()
+# Get Load
+#	cmd = "/usr/bin/uptime"
+#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+#	output = process.stdout.read().decode().split('\n')
+#	version = output[0].split("(")[0].strip()
+# Get Pihole Status
+	cmd = "/usr/local/bin/pihole status"
+	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+	PHstatus = process.stdout.read().decode().split('\n')
+# Get Pihole Stats
+	PHstats = json.load(urllib.request.urlopen(PHadminURL))
+	unique_clients = PHstats['unique_clients']
+	ads_blocked_today = PHstats['ads_blocked_today']
 
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
