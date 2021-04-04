@@ -138,11 +138,11 @@ def update():
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	PHstatus = process.stdout.read().decode().split('\n')
 # Get Pihole Stats
-	PHstats = json.loads(urllib.request.urlopen(PHadminURL))
+	PHstats = json.load(urllib.request.urlopen(PHadminURL))
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
 # Get Gravity Age
-	GravDBDays = PHstats[['gravity_last_updated']['relative']['days']]
+	GravDBDays = PHstats[['gravity_last_updated'][2]['relative'][0]['days']]
 
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
