@@ -138,7 +138,7 @@ def update():
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	PHstatus = process.stdout.read().decode().split('\n')
 # Get Pihole Stats
-	PHstats = json.load(urllib.request.urlopen(PHadminURL))
+	PHstats = json.loads(urllib.request.urlopen(PHadminURL))
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
 # Get Gravity Age
