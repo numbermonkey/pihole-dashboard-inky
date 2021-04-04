@@ -32,7 +32,6 @@ from PIL import Image, ImageFont, ImageDraw
 if os.geteuid() != 0:
     sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
 
-# STATIC VARIABLES
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
 OUTPUT_LINE1 = ""
@@ -47,18 +46,12 @@ font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 
-# ADD INKY SETUP LINES
-# epd = epd2in13_V2.EPD()
-# epd.init(epd.FULL_UPDATE)
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
 #def draw_dashboard(out_string=None):
 def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
 
-# 	BELOW LINES BUT FOR INKY
-#    image = Image.new("1", (epd.height, epd.width), 255)
-#    draw = ImageDraw.Draw(image)
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
 
@@ -71,9 +64,9 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
 # Get Temp
-	cmd = "/opt/vc/bin/vcgencmd measure_temp"
-	process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-	howhotC = process.communicate()[0]
+#	cmd = "/opt/vc/bin/vcgencmd measure_temp"
+#	process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+#	howhotC = process.communicate()[0]
 # Get Load
 #	cmd = "/usr/bin/uptime"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -81,8 +74,6 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 #	version = output[0].split("(")[0].strip()
 
 
-#INKY PHAT CORRECTED COORDS & COLOURS
-#   draw.rectangle([(0, 105), (250, 122)], fill=0)
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
 #	CANT GET SINGLE STRING HASH WORKING
 #	if out_string is not None:
@@ -91,11 +82,11 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 		fontS = font12
 		fontL = font16
 		drop = 1
-		draw.text((1,drop),out_string1, inky_display.RED, fontS)
-		w, h = fontS.getsize(out_string1)
+		draw.text((1,drop),out_string1, inky_display.RED, fontL)
+		w, h = fontL.getsize(out_string1)
 		drop = drop + h + 2
-		draw.text((1,drop),out_string2, inky_display.RED, fontS)
-		w, h = fontS.getsize(out_string2)
+		draw.text((1,drop),out_string2, inky_display.RED, fontL)
+		w, h = fontL.getsize(out_string2)
 		drop = drop + h + 2
 		draw.text((1,drop),out_string3, inky_display.RED, fontS)
 		w, h = fontS.getsize(out_string3)
@@ -104,13 +95,8 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 		w, h = fontS.getsize(out_string4)
 		drop = drop + h + 2
 		draw.text((1,drop),out_string5, inky_display.RED, fontS)
-#	COLOUR AND COORD CHANGE FOR INKY
-#    draw.text((5, 106), version, font=font12, fill=1)
-	draw.text((5,88), version, font=font12, fill=0)
-#    draw.text((150, 106), time_string, font=font12, fill=1)
-	draw.text((150,88), time_string, font=font12, fill=0)
-#	BELOW LINE BUT FOR INKY
-#    epd.display(epd.getbuffer(image))
+	draw.text((5,88), version, fill=0, font=fontS)
+	draw.text((150,88), time_string, fill=0, font=fontS)
 	inky_display.set_image(img)
 	inky_display.show()
 
@@ -138,8 +124,8 @@ def update():
 #	OUTPUT_STRING = ip_str + "/n" + output[0].strip().replace('✗', '×') + "/n" + output[6].strip().replace('✗', '×')
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
-#	OUTPUT_LINE1 = ip_str
-	OUTPUT_LINE1 = howhotC
+	OUTPUT_LINE1 = ip_str
+#	OUTPUT_LINE1 = howhotC
 	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
