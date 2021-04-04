@@ -28,6 +28,7 @@ import hashlib
 import netifaces as ni
 from inky import InkyPHAT
 from PIL import Image, ImageFont, ImageDraw
+import gpiozero as gz
 
 if os.geteuid() != 0:
     sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
@@ -95,10 +96,20 @@ def update():
 
 
 # Get Temp
-	cmd = "/opt/vc/bin/vcgencmd measure_temp"
-	cmdopt = "measure_temp"
-	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-	tempC = process.stdout.read().decode().split('\n')
+	cpu_temp = gz.CPUTemperature().temperature
+	cpu_temp = round(cpu_temp, 1)
+	if cpu_temp <= 40
+		cputempstr = "Cool enough {}".format(cpu_temp)
+#		cpufontclr = 1
+	if cpu_temp > 40 <= 65
+		cputempstr = "Heating up {}".format(cpu_temp)"
+#		cpufontclr = 1
+	if cpu_temp >65 <= 80
+		cputempstr = "WARNING {}".format(cpu_temp)"
+#		cpufontclr = 2
+	if cpu_temp > 80
+		cputempstr = "DANGER {}".format(cpu_temp)
+#		cpufontclr = 2
 # Get Load
 #	cmd = "/usr/bin/uptime"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -127,7 +138,7 @@ def update():
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
 #	OUTPUT_LINE1 = ip_str
-	OUTPUT_LINE1 = tempC[0]
+	OUTPUT_LINE1 = cputempstr
 	OUTPUT_LINE2 = PHstatus[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
