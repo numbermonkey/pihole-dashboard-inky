@@ -95,10 +95,10 @@ def update():
 
 
 # Get Temp
-	cmd = "/opt/vc/bin/vcgencmd"
+	cmd = "/opt/vc/bin/vcgencmd measure_temp"
 	cmdopt = "measure_temp"
-	process = subprocess.Popen([cmd, cmdopt], stdout=subprocess.PIPE)
-	tempC = process.stdout.read()
+	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+	tempC = process.stdout.read().decode().split('\n')
 # Get Load
 #	cmd = "/usr/bin/uptime"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -127,7 +127,7 @@ def update():
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
 #	OUTPUT_LINE1 = ip_str
-	OUTPUT_LINE1 = tempC
+	OUTPUT_LINE1 = tempC[0]
 	OUTPUT_LINE2 = PHstatus[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)

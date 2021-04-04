@@ -7,7 +7,7 @@ from setuptools import setup
 from setuptools.command.install import install
 
 PACKAGE_NAME = "pihole-dashboard-inky"
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
