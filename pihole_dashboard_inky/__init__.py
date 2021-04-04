@@ -19,16 +19,16 @@
 
 import subprocess
 import socket
-from time import localtime, strftime
 import urllib.request
 import json
 import os
 import sys
 import hashlib
 import netifaces as ni
+import gpiozero as gz
+from time import localtime, strftime
 from inky import InkyPHAT
 from PIL import Image, ImageFont, ImageDraw
-import gpiozero as gz
 
 if os.geteuid() != 0:
     sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
@@ -36,6 +36,7 @@ if os.geteuid() != 0:
 # STATIC VARIABLES
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
+PH2IP = 192.168.1.85
 OUTPUT_LINE1 = ""
 OUTPUT_LINE2 = ""
 OUTPUT_LINE3 = ""
@@ -66,17 +67,18 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
-	
+# Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
-
+# Black rectangle at bottom
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
+# 
 	if out_string1 is not None:
 		fontS = font12
 		fontL = font16
 		drop = 1
-		draw.text((1,drop),out_string1, inky_display.RED, fontS)
-		w, h = fontS.getsize(out_string1)
+		draw.text((1,drop),out_string1, inky_display.RED, fontL)
+		w, h = fontL.getsize(out_string1)
 		drop = drop + h + 2
 		draw.text((1,drop),out_string2, inky_display.RED, fontS)
 		w, h = fontS.getsize(out_string2)
@@ -96,27 +98,24 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 
 def update():
 
+# This def updates the text lines
 
 # Get Temp
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}".format(cpu_temp)
-#		cpufontclr = 1
 	if cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Heating up {}".format(cpu_temp)
-#		cpufontclr = 1
 	if cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
-#		cpufontclr = 2
 	if cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
-#		cpufontclr = 2
 # Get Load
-#	cmd = "/usr/bin/uptime"
-#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-#	output = process.stdout.read().decode().split('\n')
-#	version = output[0].split("(")[0].strip()
+	cmd = "/usr/bin/uptime"
+	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
+	output = process.stdout.read().decode().split(",")
+	load5min = output[-2]
 # Get Pihole Status
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -141,7 +140,8 @@ def update():
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
 #	OUTPUT_LINE1 = ip_str
 	OUTPUT_LINE1 = cputempstr
-	OUTPUT_LINE2 = PHstatus[0].strip().replace('✗', '×')
+	OUTPUT_LINE2 = "5 min load is{}".format(load5min)
+#	OUTPUT_LINE2 = PHstatus[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
 	OUTPUT_LINE5 = "[✓] Blocked {} objects".format(ads_blocked_today)
