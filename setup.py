@@ -49,7 +49,7 @@ if __name__ == "__main__":
         ],
         python_requires='>=3.3.5',
         install_requires=parse_requirements("requirements.txt"),
-        cmdclass={
-            'install': PostInstallJob,
-        },
+#        cmdclass={
+#            'install': PostInstallJob,
+#        },
     )
