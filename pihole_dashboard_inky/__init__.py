@@ -126,11 +126,11 @@ def update():
 	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
 	utilisation = round(utilisation, 1)
 	last_idle, last_total = idle, total
-	if load5min >= loadhigh and utilisation >= utilhigh
+	if load5min >= loadhigh and utilisation >= utilhigh:
 		loadstr = "[✗] DANGER Load:{} CPU% {}%".format(load5min,utilisation)
-	if load5min >= loadhigh and utilisation < utilhigh
+	if load5min >= loadhigh and utilisation < utilhigh:
 		loadstr = "[✗] WARNING Load:{} CPU% {}%".format(load5min,utilisation)
-	if load5min < loadhigh
+	if load5min < loadhigh:
 		loadstr = "[✓] 5 min load:{} at CPU% {}%".format(load5min,utilisation)
 # Get Pihole Status
 	cmd = "/usr/local/bin/pihole status"
