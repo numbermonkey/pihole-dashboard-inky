@@ -79,7 +79,7 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 # Get Temp
 	cmd = "/opt/vc/bin/vcgencmd measure_temp"
 	process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-	tempC = process.stdout.read()
+	tempC = process.communicate()[0]
 # Get Load
 #	cmd = "/usr/bin/uptime"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
