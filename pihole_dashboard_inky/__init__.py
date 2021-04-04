@@ -100,16 +100,16 @@ def update():
 # Get Temp
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
-	if cpu_temp <= cpucooltemp
+	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}".format(cpu_temp)
 #		cpufontclr = 1
-	if cpu_temp > cpucooltemp <= cpuoktemp
+	if cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Heating up {}".format(cpu_temp)"
 #		cpufontclr = 1
-	if cpu_temp > cpuoktemp <= cpubadtemp
+	if cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)"
 #		cpufontclr = 2
-	if cpu_temp > cpubadtemp
+	if cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
 #		cpufontclr = 2
 # Get Load
