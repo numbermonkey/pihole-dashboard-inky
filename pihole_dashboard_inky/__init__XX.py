@@ -26,27 +26,21 @@ import os
 import sys
 import hashlib
 import netifaces as ni
-# REPLACE WITH SOMETHING INKY 
-# from waveshare_epd import epd2in13_V2
 from inky import InkyPHAT
 from PIL import Image, ImageFont, ImageDraw
 
 if os.geteuid() != 0:
     sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
 
-#CHANGED BELOW LINE FROM WLAN0 SINCE I AM WIRED :)
+# STATIC VARIABLES
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
-
-#CHANGE DUE TO LACK OF MULTILINE
-#OUTPUT_STRING = ""
 OUTPUT_LINE1 = ""
 OUTPUT_LINE2 = ""
 OUTPUT_LINE3 = ""
 OUTPUT_LINE4 = ""
 OUTPUT_LINE5 = ""
 FILENAME = "/tmp/.pihole-dashboard-inky-output"
-
 hostname = socket.gethostname()
 font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
@@ -77,9 +71,9 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
 # Get Temp
-#	cmd = "/opt/vc/bin/vcgencmd measure_temp"
-#	process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-#	howhotC = process.communicate()[0]
+	cmd = "/opt/vc/bin/vcgencmd measure_temp"
+	process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+	howhotC = process.communicate()[0]
 # Get Load
 #	cmd = "/usr/bin/uptime"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -112,9 +106,9 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 		draw.text((1,drop),out_string5, inky_display.RED, fontS)
 #	COLOUR AND COORD CHANGE FOR INKY
 #    draw.text((5, 106), version, font=font12, fill=1)
-	draw.text((5,88), version, fontS, fill=0)
+	draw.text((5,88), version, font=font12, fill=0)
 #    draw.text((150, 106), time_string, font=font12, fill=1)
-	draw.text((150,88), time_string, fontS, fill=0)
+	draw.text((150,88), time_string, font=font12, fill=0)
 #	BELOW LINE BUT FOR INKY
 #    epd.display(epd.getbuffer(image))
 	inky_display.set_image(img)
@@ -144,8 +138,8 @@ def update():
 #	OUTPUT_STRING = ip_str + "/n" + output[0].strip().replace('✗', '×') + "/n" + output[6].strip().replace('✗', '×')
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
-	OUTPUT_LINE1 = ip_str
-#	OUTPUT_LINE1 = howhotC
+#	OUTPUT_LINE1 = ip_str
+	OUTPUT_LINE1 = howhotC
 	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)

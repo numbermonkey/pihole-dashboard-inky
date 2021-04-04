@@ -18,6 +18,5 @@
 
 import pihole_dashboard_inky
 
-
 if __name__ == '__main__':
     pihole_dashboard_inky.update()

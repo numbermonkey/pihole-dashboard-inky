@@ -17,17 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import time
+# Gets the things it needs
 import sys
 import os
-# REPLACE WITH SOMETHING INKY ?
-#from waveshare_epd import epd2in13_V2
 from inky import InkyPHAT
-from PIL import Image, ImageFont, ImageDraw
- 
+from PIL import Image
+
+# The sole variable 
 FILENAME = "/tmp/.pihole-dashboard-inky-output"
 
-
+# This checks if the script is running as root. You need this to write to the screen
 if __name__ == '__main__':
     if os.geteuid() != 0:
         sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
@@ -38,11 +37,11 @@ if __name__ == '__main__':
 
     os.mknod(FILENAME)
 
-# 	REPLACE WITH SOMETHING INKY ?
-#    epd = epd2in13_V2.EPD()
-#    epd.init(epd.FULL_UPDATE)
-#    epd.Clear(0xFF)
+# Initialise the screen
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
+# Set a default image
+img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 inky_display.set_image(img)
+# Write it to the screen
 inky_display.show()
