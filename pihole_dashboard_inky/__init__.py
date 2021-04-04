@@ -49,7 +49,7 @@ FILENAME = "/tmp/.pihole-dashboard-inky-output"
 
 hostname = socket.gethostname()
 font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
-font_name = os.path.join(font_dir, "font.ttf")
+font_name = os.path.join(font_dir, "slkscr.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 
