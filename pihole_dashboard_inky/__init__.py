@@ -49,15 +49,17 @@ font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 PHadminURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+# Parameters for conditional text
 cpucooltemp = 40.0
 cpuoktemp = 65.0
 cpubadtemp = 80.0
+loadhigh = 0.7
+utilhigh = 90.0
 
 # INKY SETUP
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-#def draw_dashboard(out_string=None):
 def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
@@ -72,7 +74,7 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	draw = ImageDraw.Draw(img)
 # Black rectangle at bottom
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
-# 
+# Draws the text lines 
 	if out_string1 is not None:
 		fontS = font12
 		fontL = font16
@@ -80,8 +82,8 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 		draw.text((1,drop),out_string1, inky_display.RED, fontL)
 		w, h = fontL.getsize(out_string1)
 		drop = drop + h + 2
-		draw.text((1,drop),out_string2, inky_display.RED, fontS)
-		w, h = fontS.getsize(out_string2)
+		draw.text((1,drop),out_string2, inky_display.RED, fontL)
+		w, h = fontL.getsize(out_string2)
 		drop = drop + h + 2
 		draw.text((1,drop),out_string3, inky_display.RED, fontS)
 		w, h = fontS.getsize(out_string3)
@@ -116,15 +118,20 @@ def update():
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split(",")
 	load5min = output[-2]
-	#Just trying something#
 	last_idle = last_total = 0
 	with open('/proc/stat') as f:
 		fields = [float(column) for column in f.readline().strip().split()[1:]]
 		idle, total = fields[3], sum(fields)
 	idle_delta, total_delta = idle - last_idle, total - last_total
-	last_idle, last_total = idle, total
 	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
-
+	utilisation = round(utilisation, 1)
+	last_idle, last_total = idle, total
+	if load5min >= loadhigh and utilisation >= utilhigh
+		loadstr = "[✗] DANGER Load:{} CPU% {}%".format(load5min,utilisation)
+	if load5min >= loadhigh and utilisation < utilhigh
+		loadstr = "[✗] WARNING Load:{} CPU% {}%".format(load5min,utilisation)
+	if load5min < loadhigh
+		loadstr = "[✓] 5 min load:{} at CPU% {}%".format(load5min,utilisation)
 # Get Pihole Status
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -149,7 +156,7 @@ def update():
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
 #	OUTPUT_LINE1 = ip_str
 	OUTPUT_LINE1 = cputempstr
-	OUTPUT_LINE2 = "5 min load is{} at {}".format(load5min,utilisation)
+	OUTPUT_LINE2 = loadstr
 #	OUTPUT_LINE2 = PHstatus[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
