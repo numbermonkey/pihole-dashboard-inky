@@ -76,6 +76,16 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
+# Get Temp
+	cmd = "/opt/vc/bin/vcgencmd measure_temp"
+	process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+	tempC = process.stdout.read()
+# Get Load
+#	cmd = "/usr/bin/uptime"
+#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+#	output = process.stdout.read().decode().split('\n')
+#	version = output[0].split("(")[0].strip()
+
 
 #INKY PHAT CORRECTED COORDS & COLOURS
 #   draw.rectangle([(0, 105), (250, 122)], fill=0)
@@ -84,21 +94,22 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 #	if out_string is not None:
 	if out_string1 is not None:
 #		draw.text((0, 0), out_string, font=font12, fill=0)
-		font = font12
+		fontS = font12
+		fontL = font16
 		drop = 1
-		draw.text((1,drop),out_string1, inky_display.RED, font)
-		w, h = font12.getsize(out_string1)
-		drop = drop + h +2
-		draw.text((1,drop),out_string2, inky_display.RED, font)
-		w, h = font12.getsize(out_string2)
-		drop = drop + h +2
-		draw.text((1,drop),out_string3, inky_display.RED, font)
-		w, h = font12.getsize(out_string3)
-		drop = drop + h +2
-		draw.text((1,drop),out_string4, inky_display.RED, font)
-		w, h = font12.getsize(out_string4)
+		draw.text((1,drop),out_string1, inky_display.RED, fontS)
+		w, h = fontS.getsize(out_string1)
 		drop = drop + h + 2
-		draw.text((1,drop),out_string5, inky_display.RED, font)
+		draw.text((1,drop),out_string2, inky_display.RED, fontS)
+		w, h = fontS.getsize(out_string2)
+		drop = drop + h + 2
+		draw.text((1,drop),out_string3, inky_display.RED, fontS)
+		w, h = fontS.getsize(out_string3)
+		drop = drop + h + 2
+		draw.text((1,drop),out_string4, inky_display.RED, fontS)
+		w, h = fontS.getsize(out_string4)
+		drop = drop + h + 2
+		draw.text((1,drop),out_string5, inky_display.RED, fontS)
 #	COLOUR AND COORD CHANGE FOR INKY
 #    draw.text((5, 106), version, font=font12, fill=1)
 	draw.text((5,88), version, font=font12, fill=0)
@@ -133,11 +144,12 @@ def update():
 #	OUTPUT_STRING = ip_str + "/n" + output[0].strip().replace('✗', '×') + "/n" + output[6].strip().replace('✗', '×')
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
-	OUTPUT_LINE1 = ip_str
+#	OUTPUT_LINE1 = ip_str
+	OUTPUT_LINE1 = tempC
 	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
-	OUTPUT_LINE5 = "[✓] Blocked {} ads".format(ads_blocked_today)
+	OUTPUT_LINE5 = "[✓] Blocked {} objects".format(ads_blocked_today)
 #	hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
 #	try:
 #		hash_file = open(FILENAME, "r+")
