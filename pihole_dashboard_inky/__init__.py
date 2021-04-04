@@ -117,7 +117,7 @@ def update():
 	cmd = "/usr/bin/uptime"
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split(",")
-	load5min = output[-2]
+	load5min = int(output[-2])
 	last_idle = last_total = 0
 	with open('/proc/stat') as f:
 		fields = [float(column) for column in f.readline().strip().split()[1:]]
@@ -127,11 +127,11 @@ def update():
 	utilisation = round(utilisation, 1)
 	last_idle, last_total = idle, total
 	if load5min >= loadhigh and utilisation >= utilhigh:
-		loadstr = "[✗] DANGER Load:{} CPU% {}%".format(load5min,utilisation)
+		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
 	if load5min >= loadhigh and utilisation < utilhigh:
-		loadstr = "[✗] WARNING Load:{} CPU% {}%".format(load5min,utilisation)
+		loadstr = "[✗] WARNING Load:{} CPU:{}%".format(load5min,utilisation)
 	if load5min < loadhigh:
-		loadstr = "[✓] 5 min load:{} at CPU% {}%".format(load5min,utilisation)
+		loadstr = "[✓] 5 min load:{} at CPU:{}%".format(load5min,utilisation)
 # Get Pihole Status
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
