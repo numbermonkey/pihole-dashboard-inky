@@ -46,6 +46,8 @@ font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
+PHadminURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+
 
 # INKY SETUP
 inky_display = InkyPHAT("red")
@@ -69,21 +71,23 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	cmd = "/opt/vc/bin/vcgencmd"
 	cmdopt = "measure_temp"
 	process = subprocess.Popen([cmd, cmdopt], stdout=subprocess.PIPE)
-	tempC = process.communicate()[0]
+	tempC = process.stdout.read()
 # Get Load
 #	cmd = "/usr/bin/uptime"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 #	output = process.stdout.read().decode().split('\n')
 #	version = output[0].split("(")[0].strip()
+# Get Pihole Status
+	cmd = "/usr/local/bin/pihole status"
+	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+	PHstatus = process.stdout.read().decode().split('\n')
+# Get Pihole Stats
+	PHstats = json.load(urllib.request.urlopen(PHadminURL))
+	unique_clients = PHstats['unique_clients']
+	ads_blocked_today = PHstats['ads_blocked_today']
 
-
-#INKY PHAT CORRECTED COORDS & COLOURS
-#   draw.rectangle([(0, 105), (250, 122)], fill=0)
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
-#	CANT GET SINGLE STRING HASH WORKING
-#	if out_string is not None:
 	if out_string1 is not None:
-#		draw.text((0, 0), out_string, font=font12, fill=0)
 		fontS = font12
 		fontL = font16
 		drop = 1
@@ -100,20 +104,13 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 		w, h = fontS.getsize(out_string4)
 		drop = drop + h + 2
 		draw.text((1,drop),out_string5, inky_display.RED, fontS)
-#	COLOUR AND COORD CHANGE FOR INKY
-#    draw.text((5, 106), version, font=font12, fill=1)
 	draw.text((5,88), version, font=font12, fill=0)
-#    draw.text((150, 106), time_string, font=font12, fill=1)
 	draw.text((150,88), time_string, font=font12, fill=0)
-#	BELOW LINE BUT FOR INKY
-#    epd.display(epd.getbuffer(image))
 	inky_display.set_image(img)
 	inky_display.show()
 
 
 def update():
-	url = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
-	r = json.load(urllib.request.urlopen(url))
 
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
@@ -121,23 +118,17 @@ def update():
 		ip_str = "[×] Can't connect to eth0"
 		ip = ""
 
-	unique_clients = r['unique_clients']
-	ads_blocked_today = r['ads_blocked_today']
-
 	if "192.168" in ip:
 		ip_str = "[✓] IP of {}: {}".format(hostname, ip)
 
-	cmd = "/usr/local/bin/pihole status"
-	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-	output = process.stdout.read().decode().split('\n')
 #CANT GET SINGLE STRING HASH FILE WORKING
 #	OUTPUT_STRING = ip_str + "/n" + output[0].strip().replace('✗', '×') + "/n" + output[6].strip().replace('✗', '×')
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
 #	OUTPUT_LINE1 = ip_str
 	OUTPUT_LINE1 = tempC
-	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
-	OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
+	OUTPUT_LINE2 = PHstatus[0].strip().replace('✗', '×')
+	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
 	OUTPUT_LINE5 = "[✓] Blocked {} objects".format(ads_blocked_today)
 #	hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
