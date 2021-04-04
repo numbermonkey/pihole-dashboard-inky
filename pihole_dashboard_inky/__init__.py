@@ -79,7 +79,7 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 # Get Temp
 	cmd = "/opt/vc/bin/vcgencmd measure_temp"
 	process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-	tempC = process.communicate()[0]
+	howhotC = process.communicate()[0]
 # Get Load
 #	cmd = "/usr/bin/uptime"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -145,7 +145,7 @@ def update():
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
 #	OUTPUT_LINE1 = ip_str
-	OUTPUT_LINE1 = tempC
+	OUTPUT_LINE1 = howhotC
 	OUTPUT_LINE2 = output[0].strip().replace('✗', '×')
 	OUTPUT_LINE3 = output[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
