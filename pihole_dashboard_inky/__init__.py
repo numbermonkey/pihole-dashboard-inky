@@ -48,7 +48,9 @@ font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 PHadminURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
-
+cpucooltemp = 40.0
+cpuoktemp = 65.0
+cpubadtemp = 80.0
 
 # INKY SETUP
 inky_display = InkyPHAT("red")
@@ -98,16 +100,16 @@ def update():
 # Get Temp
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
-	if cpu_temp <= 40
-		cputempstr = "[✓] Cool enough {}".format(cpu_temp)
+	if cpu_temp <= cpucooltemp
+		cputempstr = "[✓] Cool {}".format(cpu_temp)
 #		cpufontclr = 1
-	if cpu_temp > 40 <= 65
+	if cpu_temp > cpucooltemp <= cpuoktemp
 		cputempstr = "[✓] Heating up {}".format(cpu_temp)"
 #		cpufontclr = 1
-	if cpu_temp >65 <= 80
+	if cpu_temp > cpuoktemp <= cpubadtemp
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)"
 #		cpufontclr = 2
-	if cpu_temp > 80
+	if cpu_temp > cpubadtemp
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
 #		cpufontclr = 2
 # Get Load
