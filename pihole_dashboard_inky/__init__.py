@@ -99,16 +99,16 @@ def update():
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
 	if cpu_temp <= 40
-		cputempstr = "Cool enough {}".format(cpu_temp)
+		cputempstr = "[✓] Cool enough {}".format(cpu_temp)
 #		cpufontclr = 1
 	if cpu_temp > 40 <= 65
-		cputempstr = "Heating up {}".format(cpu_temp)"
+		cputempstr = "[✓] Heating up {}".format(cpu_temp)"
 #		cpufontclr = 1
 	if cpu_temp >65 <= 80
-		cputempstr = "WARNING {}".format(cpu_temp)"
+		cputempstr = "[✗] WARNING {}".format(cpu_temp)"
 #		cpufontclr = 2
 	if cpu_temp > 80
-		cputempstr = "DANGER {}".format(cpu_temp)
+		cputempstr = "[✗] DANGER {}".format(cpu_temp)
 #		cpufontclr = 2
 # Get Load
 #	cmd = "/usr/bin/uptime"
