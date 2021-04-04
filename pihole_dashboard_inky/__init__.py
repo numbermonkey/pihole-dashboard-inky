@@ -142,7 +142,7 @@ def update():
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
 # Get Gravity Age
-	GravDBDays = PHstats[['gravity_last_updated']['relative']['days']]]
+	GravDBDays = PHstats[['gravity_last_updated']['relative']['days']]
 
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
