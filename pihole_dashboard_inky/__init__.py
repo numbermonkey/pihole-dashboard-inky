@@ -82,16 +82,16 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 		drop = 1
 		draw.text((1,drop),out_string1, inky_display.RED, fontL)
 		w, h = fontL.getsize(out_string1)
-		drop = drop + h + 2
+		drop = drop + h + 1
 		draw.text((1,drop),out_string2, inky_display.RED, fontL)
 		w, h = fontL.getsize(out_string2)
-		drop = drop + h + 2
+		drop = drop + h + 1
 		draw.text((1,drop),out_string3, inky_display.RED, fontS)
 		w, h = fontS.getsize(out_string3)
-		drop = drop + h + 2
+		drop = drop + h + 1
 		draw.text((1,drop),out_string4, inky_display.RED, fontS)
 		w, h = fontS.getsize(out_string4)
-		drop = drop + h + 2
+		drop = drop + h + 1
 		draw.text((1,drop),out_string5, inky_display.RED, fontS)
 	draw.text((5,88), version, font=font12, fill=0)
 	draw.text((150,88), time_string, font=font12, fill=0)
@@ -132,7 +132,7 @@ def update():
 	if load5min >= loadhigh and utilisation < utilhigh:
 		loadstr = "[✗] WARNING Load:{} CPU:{}%".format(load5min,utilisation)
 	if load5min < loadhigh:
-		loadstr = "[✓] 5 min load:{} at CPU:{}%".format(load5min,utilisation)
+		loadstr = "[✓] Load:{} at CPU:{}%".format(load5min,utilisation)
 # Get Pihole Status
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -141,6 +141,8 @@ def update():
 	PHstats = json.load(urllib.request.urlopen(PHadminURL))
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
+# Get Gravity Age
+	GravDBDays = PHstats['gravity_last_updated/relative/days']
 
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
@@ -158,8 +160,8 @@ def update():
 #	OUTPUT_LINE1 = ip_str
 	OUTPUT_LINE1 = cputempstr
 	OUTPUT_LINE2 = loadstr
-#	OUTPUT_LINE2 = PHstatus[0].strip().replace('✗', '×')
-	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
+	OUTPUT_LINE3 = "Grav Update:{}".format(GravDBDays)
+#	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
 	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
 	OUTPUT_LINE5 = "[✓] Blocked {} objects".format(ads_blocked_today)
 #	hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
