@@ -24,6 +24,7 @@ import json
 import os
 import sys
 import hashlib
+import re
 import netifaces as ni
 import gpiozero as gz
 from time import localtime, strftime
@@ -117,7 +118,7 @@ def update():
 	cmd = "/usr/bin/uptime"
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split(",")
-	load5min = int(output[-2])
+	load5min = float(output[-2])
 	last_idle = last_total = 0
 	with open('/proc/stat') as f:
 		fields = [float(column) for column in f.readline().strip().split()[1:]]
