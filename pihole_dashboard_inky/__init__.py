@@ -48,8 +48,8 @@ font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
-PHAPIURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
-PH2APIURK = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
+PHapiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
 # Parameters for conditional text
 cpucooltemp = 40.0
 cpuoktemp = 65.0
