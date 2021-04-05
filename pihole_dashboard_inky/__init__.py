@@ -163,26 +163,33 @@ def update():
 # Then for 2nd PH
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 	unique_clients2 = PH2stats['unique_clients']
-	ads_blocked_today2 = PH2stats['ads_blocked_today']
-	blockp2 = round(PH2stats['ads_percentage_today'],1)
+	ads_blocked_todayPH2 = PH2stats['ads_blocked_today']
+	blockpPH2 = round(PH2stats['ads_percentage_today'],1)
 	if blockp == 0.0:
 		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
 		blockpstrclr = 2
-	if blockp2 == 0.0:
-		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockp2)
+	if blockpPH2 == 0.0:
+		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockpPH2)
 		blockpstrclr = 2
-	if blockp > 0.0 and blockp2 > 0.0:
-		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockp2,blockp)
+	if blockp > 0.0 and blockpPH2 > 0.0:
+		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
 		blockpstrclr = 1
 	print(blockpstr)
-# Get Gravity Age
+# GET GRAVITY AGE
+# First for local PH
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
 	GravDBHours = PHstats['gravity_last_updated']['relative']['hours']
+# Then for 2nd PH
+	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
+	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
 	if GravDBDays > 7:
-		GDBagestr = "[✗] WARNING GDB Age:{} days".format(GravDBDays)
+		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(GravDBDays)
 		GDBagestrclr = 2
-	if GravDBDays <= 7:
-		GDBagestr = "[✓] GDB Age:{}dys {}hrs".format(GravDBDays,GravDBHours)
+	if GravDBPH2Days >7:
+		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(GravDBDays)
+		GDBagestrclr = 2
+	if GravDBDays and GravDBPH2Days <= 7:
+		GDBagestr = "[✓] GDB: PH1{}d{}h PH2{}d{h}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
 		GDBagestrclr = 1
 	print(GDBagestr)
 
