@@ -50,7 +50,6 @@ font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 PHadminURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
-#str1clr = 1
 # Parameters for conditional text
 cpucooltemp = 40.0
 cpuoktemp = 65.0
@@ -62,7 +61,7 @@ utilhigh = 90.0
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, out_string4=None, out_string5=None):
+def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, out_string5=None):
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
@@ -90,7 +89,7 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 		draw.text((1,drop),out_string2, str2clr, fontL)
 		w, h = fontL.getsize(out_string2)
 		drop = drop + h + 1
-		draw.text((1,drop),out_string3, inky_display.RED, fontS)
+		draw.text((1,drop),out_string3, str3clr, fontS)
 		w, h = fontS.getsize(out_string3)
 		drop = drop + h + 1
 		draw.text((1,drop),out_string4, inky_display.RED, fontS)
@@ -164,8 +163,10 @@ def update():
 	GravDBHours = PHstats['gravity_last_updated']['relative']['hours']
 	if GravDBDays > 7:
 		GDBagestr = "[✗] WARNING GDB Age:{} days".format(GravDBDays)
+		GDBagestrclr = 2
 	if GravDBDays <= 7:
 		GDBagestr = "[✓] GDB Age:{}dys {}hrs".format(GravDBDays,GravDBHours)
+		GDBagestrclr = 1
 # Get IP Address
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
@@ -181,10 +182,11 @@ def update():
 	OUTPUT_LINE2 = loadstr
 	LINE2CLR = loadstrclr
 	OUTPUT_LINE3 = GDBagestr
+	LINE3CLR = GDBagestrclr
 	OUTPUT_LINE4 = blockpstr
 	OUTPUT_LINE5 = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = ip_str
 #	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
-	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, LINE2CLR, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
+	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, LINE2CLR, OUTPUT_LINE3, LINE3CLR, OUTPUT_LINE4, OUTPUT_LINE5)
