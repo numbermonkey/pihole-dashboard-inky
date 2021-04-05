@@ -37,19 +37,19 @@ if os.geteuid() != 0:
 # STATIC VARIABLES
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
-PH2IP = "192.168.1.85"
 OUTPUT_LINE1 = ""
 OUTPUT_LINE2 = ""
 OUTPUT_LINE3 = ""
 OUTPUT_LINE4 = ""
 OUTPUT_LINE5 = ""
-FILENAME = "/tmp/.pihole-dashboard-inky-output"
+#FILENAME = "/tmp/.pihole-dashboard-inky-output"
 hostname = socket.gethostname()
 font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
-PHadminURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+PHAPIURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+PH2APIURK = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
 # Parameters for conditional text
 cpucooltemp = 40.0
 cpuoktemp = 65.0
@@ -61,7 +61,7 @@ utilhigh = 90.0
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, out_string5=None):
+def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, sr4clr = 1, out_string5=None):
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
@@ -92,7 +92,7 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 		draw.text((1,drop),out_string3, str3clr, fontS)
 		w, h = fontS.getsize(out_string3)
 		drop = drop + h + 1
-		draw.text((1,drop),out_string4, inky_display.RED, fontS)
+		draw.text((1,drop),out_string4, str4clr, fontS)
 		w, h = fontS.getsize(out_string4)
 		drop = drop + h + 1
 		draw.text((1,drop),out_string5, inky_display.RED, fontS)
@@ -149,15 +149,26 @@ def update():
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	PHstatus = process.stdout.read().decode().split('\n')
-# Get Pihole Stats
-	PHstats = json.load(urllib.request.urlopen(PHadminURL))
+# GET PIHOLE STATS
+# First for local PH
+	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
 	blockp = round(PHstats['ads_percentage_today'],1)
-	if blockp == 0.0:
-		blockpstr = "[✗] DANGER Block %:{}".format(blockp)
-	if blockp > 0.0:
-		blockpstr = "[✓] Blocked {} objects = {}%".format(ads_blocked_today,blockp)
+# Then for 2nd PH
+	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
+	unique_clients2 = PH2stats['unique_clients']
+	ads_blocked_today2 = PH2stats['ads_blocked_today']
+	blockp2 = round(PH2stats['ads_percentage_today'],1)
+	if blockp == 0.0
+		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
+		blockpstrclr = 2
+	if blockp2 == 0.0 
+		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockp)
+		blockpstrclr = 2
+	if blockp > 0.0 and blockp2 > 0.0:
+		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockp2,blockp)
+		blockpstrclr = 1
 # Get Gravity Age
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
 	GravDBHours = PHstats['gravity_last_updated']['relative']['hours']
@@ -167,6 +178,9 @@ def update():
 	if GravDBDays <= 7:
 		GDBagestr = "[✓] GDB Age:{}dys {}hrs".format(GravDBDays,GravDBHours)
 		GDBagestrclr = 1
+
+
+
 # Get IP Address
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
@@ -184,9 +198,10 @@ def update():
 	OUTPUT_LINE3 = GDBagestr
 	LINE3CLR = GDBagestrclr
 	OUTPUT_LINE4 = blockpstr
+	LINE4CLR = blockpstrclr
 	OUTPUT_LINE5 = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = ip_str
 #	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
-	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, LINE2CLR, OUTPUT_LINE3, LINE3CLR, OUTPUT_LINE4, OUTPUT_LINE5)
+	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, LINE2CLR, OUTPUT_LINE3, LINE3CLR, OUTPUT_LINE4, LINE4CLR, OUTPUT_LINE5)
