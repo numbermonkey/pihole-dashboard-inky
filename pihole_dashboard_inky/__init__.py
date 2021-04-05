@@ -153,7 +153,7 @@ def update():
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	PHstatus = process.stdout.read().decode().split('\n')
 	PHstatusstr = PHstatus[6].strip().replace('✗', '×')
-	
+# Moved print(PHstatusstr) down to better emulate display
 # GET PIHOLE STATS
 # First for local PH
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
@@ -175,6 +175,7 @@ def update():
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
 		blockpstrclr = 1
 	print(blockpstr)
+	print(PHstatusstr)
 # GET GRAVITY AGE
 # First for local PH
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
