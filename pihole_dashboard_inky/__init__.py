@@ -156,8 +156,8 @@ def update():
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 #	PHstatus = process.stdout.read().decode().split('\n')
 #	PHstatusstr = PHstatus[6].strip().replace('✗', '×')
-	PHstatus = PHstats('status')
-	PH2status = PH2stats('status')
+	PHstatus = PHstats['status']
+	PH2status = PH2stats['status']
 	if PHstatus == PH2status == "enabled":
 		PHstatusstr = "Status PH1:[✓] PH2:[✓]"
 		PHstatusstrclr = 1
