@@ -65,11 +65,13 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
+	print(time_string)
 # Get Version
 	cmd = "/usr/local/bin/pihole -v"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
+	print(version)
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
@@ -123,6 +125,7 @@ def update():
 	if cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
 		cputempstrclr = 2
+	print(cputempstr)
 # Get Load
 	cmd = "/usr/bin/uptime"
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
@@ -145,10 +148,12 @@ def update():
 	if load5min < loadhigh:
 		loadstr = "[✓] Load:{} at CPU:{}%".format(load5min,utilisation)
 		loadstrclr = 1
+	print(loadstr)
 # Get Pihole Status
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	PHstatus = process.stdout.read().decode().split('\n')
+	
 # GET PIHOLE STATS
 # First for local PH
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
@@ -164,11 +169,12 @@ def update():
 		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
 		blockpstrclr = 2
 	if blockp2 == 0.0:
-		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockp)
+		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockp2)
 		blockpstrclr = 2
 	if blockp > 0.0 and blockp2 > 0.0:
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockp2,blockp)
 		blockpstrclr = 1
+	print(blockpstr)
 # Get Gravity Age
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
 	GravDBHours = PHstats['gravity_last_updated']['relative']['hours']
@@ -178,8 +184,7 @@ def update():
 	if GravDBDays <= 7:
 		GDBagestr = "[✓] GDB Age:{}dys {}hrs".format(GravDBDays,GravDBHours)
 		GDBagestrclr = 1
-
-
+	print(GDBagestr)
 
 # Get IP Address
 	try:
