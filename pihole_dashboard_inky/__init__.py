@@ -189,7 +189,7 @@ def update():
 		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(GravDBDays)
 		GDBagestrclr = 2
 	if GravDBDays and GravDBPH2Days <= 7:
-		GDBagestr = "[✓] GDB: PH1{}d{}h PH2{}d{h}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
+		GDBagestr = "[✓] GDB: PH1{}d{}h PH2{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
 		GDBagestrclr = 1
 	print(GDBagestr)
 
