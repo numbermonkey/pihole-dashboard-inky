@@ -61,7 +61,7 @@ utilhigh = 90.0
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, sr4clr = 1, out_string5=None):
+def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, str4clr = 1, out_string5=None):
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
