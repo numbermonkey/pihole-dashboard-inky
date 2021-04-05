@@ -64,6 +64,8 @@ inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
 def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, str4clr = 1, out_string5=None, str5clr = 1):
+
+# THIS DEF DRAWS THE FINAL SCREEN
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
@@ -106,15 +108,16 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 	inky_display.set_image(img)
 	inky_display.show()
 
-
 def update():
 
-# This def updates the text lines
+# THIS DEF UPDATES THE TEXT LINES
+# Read the PH api values
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 # Get Temp
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
+	# Conditions for text output
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
 		cputempstrclr = 1
@@ -129,10 +132,12 @@ def update():
 		cputempstrclr = 2
 	print(cputempstr)
 # Get Load
+	# Get Load 5 min from uptime
 	cmd = "/usr/bin/uptime"
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split(",")
 	load5min = float(output[-2])
+	# Get CPU %age from stat
 	last_idle = last_total = 0
 	with open('/proc/stat') as f:
 		fields = [float(column) for column in f.readline().strip().split()[1:]]
@@ -141,6 +146,7 @@ def update():
 	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
 	utilisation = round(utilisation, 1)
 	last_idle, last_total = idle, total
+	# Conditions for text output
 	if load5min < loadhigh:
 		loadstr = "[✓] Load:{} at CPU:{}%".format(load5min,utilisation)
 		loadstrclr = 1
@@ -152,12 +158,9 @@ def update():
 		loadstrclr = 2
 	print(loadstr)
 # Get Pihole Status
-#	cmd = "/usr/local/bin/pihole status"
-#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-#	PHstatus = process.stdout.read().decode().split('\n')
-#	PHstatusstr = PHstatus[6].strip().replace('✗', '×')
 	PHstatus = PHstats['status']
 	PH2status = PH2stats['status']
+	# Conditions for text output
 	if PHstatus == PH2status == "enabled":
 		PHstatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
 		PHstatusstrclr = 1
@@ -174,24 +177,23 @@ def update():
 # Moved print(PHstatusstr) down to better emulate display
 # GET PIHOLE STATS
 # First for local PH
-	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
 	blockp = round(PHstats['ads_percentage_today'],1)
 # Then for 2nd PH
-	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 	unique_clients2 = PH2stats['unique_clients']
 	ads_blocked_todayPH2 = PH2stats['ads_blocked_today']
 	blockpPH2 = round(PH2stats['ads_percentage_today'],1)
-	if blockp <= blockpbad:
-		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
-		blockpstrclr = 2
-	if blockpPH2 <= blockpbad:
-		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockpPH2)
-		blockpstrclr = 2
+# Conditions for text output
 	if blockp > blockpbad and blockpPH2 > blockpbad:
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
 		blockpstrclr = 1
+	elif blockp <= blockpbad:
+		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
+		blockpstrclr = 2
+	elif blockpPH2 <= blockpbad:
+		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockpPH2)
+		blockpstrclr = 2
 	print(blockpstr)
 	print(PHstatusstr)
 # GET GRAVITY AGE
@@ -201,6 +203,7 @@ def update():
 # Then for 2nd PH
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
+# Conditions for text output
 	if GravDBDays > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(GravDBDays)
 		GDBagestrclr = 2
