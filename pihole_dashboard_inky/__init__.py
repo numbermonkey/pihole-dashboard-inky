@@ -49,8 +49,6 @@ font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 PHapiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
 PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
-PHstats = json.load(urllib.request.urlopen(PHapiURL))
-PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 
 # Parameters for conditional text
 cpucooltemp = 40.0
@@ -112,7 +110,8 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 def update():
 
 # This def updates the text lines
-
+PHstats = json.load(urllib.request.urlopen(PHapiURL))
+PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 # Get Temp
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
