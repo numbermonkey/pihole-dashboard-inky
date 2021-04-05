@@ -159,16 +159,16 @@ def update():
 	PHstatus = PHstats['status']
 	PH2status = PH2stats['status']
 	if PHstatus == PH2status == "enabled":
-		PHstatusstr = "Status PH1:[✓] PH2:[✓]"
+		PHstatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
 		PHstatusstrclr = 1
 	elif PHstatus != "enabled" and PH2status == "enabled":
-		PHstatusstr = "Status PH1:[✗] PH2:[✓]"
+		PHstatusstr = "[✗] Status PH1:[✗] PH2:[✓]"
 		PHstatusstrclr = 2
 	elif PHstatus == "enabled" and PH2status != "enabled":
-		PHstatusstr = "Status PH1:[✓] PH2:[✗]"
+		PHstatusstr = "[✗] Status PH1:[✓] PH2:[✗]"
 		PHstatusstrclr = 2
 	else:
-		PHstatusstr = "Status PH1:[✗] PH2:[✗]"
+		PHstatusstr = "[✗][✗] PH1:[✗] PH2:[✗]"
 		PHstatusstrclr = 2
 		
 # Moved print(PHstatusstr) down to better emulate display
