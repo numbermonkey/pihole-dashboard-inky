@@ -63,7 +63,7 @@ GravDBDaysbad = 7
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=1, str2fnt=None, str3txt=None, str3clr = 1, str3fnt=None, str4txt=None, str4clr = 1, str4fnt=None, str5txt=None, str5clr = 1str5fnt=None):
+def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=1, str2fnt=None, str3txt=None, str3clr = 1, str3fnt=None, str4txt=None, str4clr = 1, str4fnt=None, str5txt=None, str5clr = 1, str5fnt=None):
 
 # THIS DEF DRAWS THE FINAL SCREEN
 # Get Time
