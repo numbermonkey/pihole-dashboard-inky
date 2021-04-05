@@ -77,9 +77,12 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
 # Draws the text lines 
 	if out_string1 is not None:
+# 2 font sizes		
 		fontS = font12
 		fontL = font16
+# gap from top
 		drop = 1
+# writes the out_strings and allows 1 line between them. Uses height of font to determine gap		
 		draw.text((1,drop),out_string1, inky_display.RED, fontL)
 		w, h = fontL.getsize(out_string1)
 		drop = drop + h + 1
@@ -93,8 +96,10 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 		w, h = fontS.getsize(out_string4)
 		drop = drop + h + 1
 		draw.text((1,drop),out_string5, inky_display.RED, fontS)
+# Adds version and time to bottom box. Note the white font.		
 	draw.text((5,88), version, font=font12, fill=0)
 	draw.text((150,88), time_string, font=font12, fill=0)
+# Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
 
@@ -139,45 +144,37 @@ def update():
 	PHstatus = process.stdout.read().decode().split('\n')
 # Get Pihole Stats
 	PHstats = json.load(urllib.request.urlopen(PHadminURL))
-
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
+	blockp = round(PHstats['ads_percentage_today'],1)
+	if blockp = 0.0
+		blockpstr = "[✗] DANGER Block %:{}".format(blockp)
+	if blockp > 0.0
+		blockpstr = "[✓] Blocked {} objects = {}%".format(ads_blocked_today,blockp)
 # Get Gravity Age
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
-
+	GravDBHours = PHstats['gravity_last_updated']['relative']['hours']
+	if GravDBDays > 7:
+		GDBagestr = "[✗] WARNING GDB Age:{} days".format(GravDBDays)
+	if GravDBDays <= 7:
+		GDBagestr = "[✓] GDB Age:{}dys {}hrs".format(GravDBDays,GravDBHours)
+# Get IP Address
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
 	except KeyError:
 		ip_str = "[×] Can't connect to eth0"
 		ip = ""
-
 	if "192.168" in ip:
 		ip_str = "[✓] IP of {}: {}".format(hostname, ip)
 
-#CANT GET SINGLE STRING HASH FILE WORKING
-#	OUTPUT_STRING = ip_str + "/n" + output[0].strip().replace('✗', '×') + "/n" + output[6].strip().replace('✗', '×')
-#	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] There are {} clients connected".format(unique_clients)
-#	OUTPUT_STRING = OUTPUT_STRING + "/n" + "[✓] Blocked {} ads".format(ads_blocked_today)
-#	OUTPUT_LINE1 = ip_str
+# Creates the different output lines based on above
 	OUTPUT_LINE1 = cputempstr
 	OUTPUT_LINE2 = loadstr
-	OUTPUT_LINE3 = "Grav Update:{}".format(GravDBDays)
-#	OUTPUT_LINE3 = PHstatus[6].strip().replace('✗', '×')
-	OUTPUT_LINE4 = "[✓] There are {} clients connected".format(unique_clients)
-	OUTPUT_LINE5 = "[✓] Blocked {} objects".format(ads_blocked_today)
-#	hash_string = hashlib.sha1(OUTPUT_STRING.encode('utf-8')).hexdigest()
-#	try:
-#		hash_file = open(FILENAME, "r+")
-
-#	except FileNotFoundError:
-#		os.mknod(FILENAME)
-#		hash_file = open(FILENAME, "r+")
-
-#	file_string = hash_file.read()
-#	if file_string != hash_string:
-#		hash_file.seek(0)
-#		hash_file.truncate()
-#		hash_file.write(hash_string)
-# DIFFERENT ATTEMPT
-#	draw_dashboard(OUTPUT_STRING)
+	OUTPUT_LINE3 = GDBagestr
+	OUTPUT_LINE4 = blockpstr
+	OUTPUT_LINE5 = PHstatus[6].strip().replace('✗', '×')
+#	OUTPUT_EXAMPLE = ip_str
+#	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
+#	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
+#	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
 	draw_dashboard(OUTPUT_LINE1, OUTPUT_LINE2, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
