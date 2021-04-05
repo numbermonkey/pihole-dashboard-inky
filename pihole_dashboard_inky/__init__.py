@@ -160,10 +160,10 @@ def update():
 	unique_clients2 = PH2stats['unique_clients']
 	ads_blocked_today2 = PH2stats['ads_blocked_today']
 	blockp2 = round(PH2stats['ads_percentage_today'],1)
-	if blockp == 0.0
+	if blockp == 0.0:
 		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
 		blockpstrclr = 2
-	if blockp2 == 0.0 
+	if blockp2 == 0.0:
 		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockp)
 		blockpstrclr = 2
 	if blockp > 0.0 and blockp2 > 0.0:
