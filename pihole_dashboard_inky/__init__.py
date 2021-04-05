@@ -110,8 +110,8 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 def update():
 
 # This def updates the text lines
-PHstats = json.load(urllib.request.urlopen(PHapiURL))
-PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
+	PHstats = json.load(urllib.request.urlopen(PHapiURL))
+	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 # Get Temp
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
