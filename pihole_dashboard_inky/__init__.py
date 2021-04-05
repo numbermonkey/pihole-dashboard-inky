@@ -37,16 +37,16 @@ if os.geteuid() != 0:
 # STATIC VARIABLES
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
-OUTPUT_LINE1 = ""
-OUTPUT_LINE2 = ""
-OUTPUT_LINE3 = ""
-OUTPUT_LINE4 = ""
-OUTPUT_LINE5 = ""
+str1txt = ""
+str2txt = ""
+str3txt = ""
+str4txt = ""
+str5txt = ""
 hostname = socket.gethostname()
 font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
-font16 = ImageFont.truetype(font_name, 16)
-font12 = ImageFont.truetype(font_name, 12)
+fontL = ImageFont.truetype(font_name, 16)
+fontS = ImageFont.truetype(font_name, 12)
 PHapiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
 PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
 
@@ -63,7 +63,7 @@ GravDBDaysbad = 7
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, str4clr = 1, out_string5=None, str5clr = 1):
+def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=1, str2fnt=None, str3txt=None, str3clr = 1, str3fnt=None, str4txt=None, str4clr = 1, str4fnt=None, str5txt=None, str5clr = 1str5fnt=None):
 
 # THIS DEF DRAWS THE FINAL SCREEN
 # Get Time
@@ -81,29 +81,26 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 # Black rectangle at bottom
 	draw.rectangle([(0, 87), (212, 104)], fill=1)
 # Draws the text lines 
-	if out_string1 is not None:
-# 2 font sizes		
-		fontS = font12
-		fontL = font16
+	if str1txt is not None:
 # gap from top
 		drop = 1
 # writes the out_strings and allows 1 line between them. Uses height of font to determine gap		
-		draw.text((1,drop),out_string1, str1clr, fontL)
-		w, h = fontL.getsize(out_string1)
+		draw.text((1,drop),str1txt, str1clr, str1fnt)
+		w, h = str1fnt.getsize(str1txt)
 		drop = drop + h + 1
-		draw.text((1,drop),out_string2, str2clr, fontL)
-		w, h = fontL.getsize(out_string2)
+		draw.text((1,drop),str2txt, str2clr, str2fnt)
+		w, h = str2fnt.getsize(str2txt)
 		drop = drop + h + 1
-		draw.text((1,drop),out_string3, str3clr, fontS)
-		w, h = fontS.getsize(out_string3)
+		draw.text((1,drop),str3txt, str3clr, str3fnt)
+		w, h = str3fnt.getsize(str3txt)
 		drop = drop + h + 1
-		draw.text((1,drop),out_string4, str4clr, fontS)
-		w, h = fontS.getsize(out_string4)
+		draw.text((1,drop),str4txt, str4clr, str4fnt)
+		w, h = str4fnt.getsize(str4txt)
 		drop = drop + h + 1
-		draw.text((1,drop),out_string5, str5clr, fontS)
+		draw.text((1,drop),str5txt, str5clr, str5fnt)
 # Adds version and time to bottom box. Note the white font.		
-	draw.text((5,88), version, font=font12, fill=0)
-	draw.text((150,88), time_string, font=font12, fill=0)
+	draw.text((5,88), version, font=fontS, fill=0)
+	draw.text((150,88), time_string, font=fontS, fill=0)
 # Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
@@ -121,15 +118,19 @@ def update():
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
 		cputempstrclr = 1
+		cputempstrfnt = fontS
 	elif cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
 		cputempstrclr = 1
+		cputempstrfnt = fontS
 	elif cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
-		cputempstrclr = 2		
+		cputempstrclr = 2
+		cputempstrfnt = fontL
 	elif cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
 		cputempstrclr = 2
+		cputempstrfnt = fontL
 	print(cputempstr)
 # Get Load
 	# Get Load 5 min from uptime
@@ -150,12 +151,15 @@ def update():
 	if load5min < loadhigh:
 		loadstr = "[✓] Load:{} at CPU:{}%".format(load5min,utilisation)
 		loadstrclr = 1
+		loadstrfnt = fontS
 	elif load5min >= loadhigh and utilisation < utilhigh:
 		loadstr = "[✗] WARNING Load:{} CPU:{}%".format(load5min,utilisation)
 		loadstrclr = 2
+		loadstrfnt = fontL
 	elif load5min >= loadhigh and utilisation >= utilhigh:
 		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
 		loadstrclr = 2
+		loadstrfnt = fontL
 	print(loadstr)
 # Get Pihole Status
 	PHstatus = PHstats['status']
@@ -164,15 +168,19 @@ def update():
 	if PHstatus == PH2status == "enabled":
 		PHstatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
 		PHstatusstrclr = 1
+		PHstatusstrfnt = fontS
 	elif PHstatus != "enabled" and PH2status == "enabled":
 		PHstatusstr = "[✗] Status PH1:[✗] PH2:[✓]"
 		PHstatusstrclr = 2
+		PHstatusstrfnt = fontL
 	elif PHstatus == "enabled" and PH2status != "enabled":
 		PHstatusstr = "[✗] Status PH1:[✓] PH2:[✗]"
 		PHstatusstrclr = 2
+		PHstatusstrfnt = fontL
 	else:
 		PHstatusstr = "[✗][✗] PH1:[✗] PH2:[✗]"
-		PHstatusstrclr = 2
+		PHstatusstrclr = 
+		PHstatusstrfnt = fontL
 		
 # Moved print(PHstatusstr) down to better emulate display
 # GET PIHOLE STATS
@@ -188,12 +196,15 @@ def update():
 	if blockp > blockpbad and blockpPH2 > blockpbad:
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
 		blockpstrclr = 1
+		blockpstrfnt = fontS
 	elif blockp <= blockpbad:
 		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
 		blockpstrclr = 2
+		blockpstrfnt = fontL
 	elif blockpPH2 <= blockpbad:
 		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockpPH2)
 		blockpstrclr = 2
+		blockpstrfnt = fontL
 	print(blockpstr)
 	print(PHstatusstr)
 # GET GRAVITY AGE
@@ -204,15 +215,18 @@ def update():
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
 # Conditions for text output
-	if GravDBDays > GravDBDaysbad:
+	if GravDBDays and GravDBPH2Days <= GravDBDaysbad:
+		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
+		GDBagestrclr = 1
+		GDBagestrfnt = fontS
+	elif GravDBDays > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(GravDBDays)
 		GDBagestrclr = 2
-	if GravDBPH2Days > GravDBDaysbad:
+		GDBagestrfnt = fontL
+	elif GravDBPH2Days > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(GravDBDays)
 		GDBagestrclr = 2
-	if GravDBDays and GravDBPH2Days <= GravDBDaysbad:
-		GDBagestr = "[✓] GDBǁ PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
-		GDBagestrclr = 1
+		GDBagestrfnt = fontL
 	print(GDBagestr)
 
 # Get IP Address
@@ -225,18 +239,23 @@ def update():
 		ip_str = "[✓] IP of {}: {}".format(hostname, ip)
 
 # Creates the different output lines based on above
-	OUTPUT_LINE1 = cputempstr
+	LINE1TXT = cputempstr
 	LINE1CLR = cputempstrclr
-	OUTPUT_LINE2 = loadstr
+	LINE1FNT = cputempstrfnt
+	LINE2TXT = loadstr
 	LINE2CLR = loadstrclr
-	OUTPUT_LINE3 = GDBagestr
+	LINE2FNT = loadstrfnt
+	LINE3TXT = GDBagestr
 	LINE3CLR = GDBagestrclr
-	OUTPUT_LINE4 = blockpstr
+	LINE3FNT = GDBagestrfnt
+	LINE4TXT = blockpstr
 	LINE4CLR = blockpstrclr
-	OUTPUT_LINE5 = PHstatusstr
+	LINE4FNT = blockpstrfnt
+	LINE5TXT = PHstatusstr
 	LINE5CLR = PHstatusstrclr
+	LINE5FNT = PHstatusstrfnt
 #	OUTPUT_EXAMPLE = ip_str
 #	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
-	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, LINE2CLR, OUTPUT_LINE3, LINE3CLR, OUTPUT_LINE4, LINE4CLR, OUTPUT_LINE5, LINE5CLR)
+	draw_dashboard(LINE1TXT, LINE1CLR, LINE1FNT, LINE2TXT, LINE2CLR, LINE2FNT, LINE3TXT, LINE3CLR, LINE3FNT, LINE4TXT, LINE4CLR, LINE4FNT, LINE5TXT, LINE5CLR, LINE5FNT)
