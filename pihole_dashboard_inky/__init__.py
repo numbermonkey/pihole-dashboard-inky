@@ -179,7 +179,7 @@ def update():
 		PHstatusstrfnt = fontL
 	else:
 		PHstatusstr = "[✗][✗] PH1:[✗] PH2:[✗]"
-		PHstatusstrclr = 
+		PHstatusstrclr = 2
 		PHstatusstrfnt = fontL
 		
 # Moved print(PHstatusstr) down to better emulate display
