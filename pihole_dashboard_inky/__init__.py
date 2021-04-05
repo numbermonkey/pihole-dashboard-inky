@@ -65,13 +65,12 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
-	print(time_string)
 # Get Version
 	cmd = "/usr/local/bin/pihole -v"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
-	print(version)
+	print(version,"  ",time_string)
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
@@ -153,6 +152,7 @@ def update():
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	PHstatus = process.stdout.read().decode().split('\n')
+	PHstatusstr = PHstatus[6].strip().replace('✗', '×')
 	
 # GET PIHOLE STATS
 # First for local PH
@@ -211,7 +211,7 @@ def update():
 	LINE3CLR = GDBagestrclr
 	OUTPUT_LINE4 = blockpstr
 	LINE4CLR = blockpstrclr
-	OUTPUT_LINE5 = PHstatus[6].strip().replace('✗', '×')
+	OUTPUT_LINE5 = PHstatusstr
 #	OUTPUT_EXAMPLE = ip_str
 #	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
