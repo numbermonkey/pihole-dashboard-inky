@@ -61,7 +61,7 @@ utilhigh = 90.0
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
+def draw_dashboard(out_string1=None, str1clr=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
@@ -83,7 +83,7 @@ def draw_dashboard(out_string1=None, out_string2=None, out_string3=None, out_str
 # gap from top
 		drop = 1
 # writes the out_strings and allows 1 line between them. Uses height of font to determine gap		
-		draw.text((1,drop),out_string1, inky_display.RED, fontL)
+		draw.text((1,drop),out_string1, str1clr, fontL)
 		w, h = fontL.getsize(out_string1)
 		drop = drop + h + 1
 		draw.text((1,drop),out_string2, inky_display.RED, fontL)
@@ -113,12 +113,16 @@ def update():
 	cpu_temp = round(cpu_temp, 1)
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
+		cputempstrclr = inky_display.BLACK
 	if cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
+		cputempstrclr = inky_display.BLACK
 	if cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
+		cputempstrclr = inky_display.RED		
 	if cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
+		cputempstrclr = inky_display.RED
 # Get Load
 	cmd = "/usr/bin/uptime"
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
@@ -169,6 +173,7 @@ def update():
 
 # Creates the different output lines based on above
 	OUTPUT_LINE1 = cputempstr
+	LINE1CLR = cputempstrclr
 	OUTPUT_LINE2 = loadstr
 	OUTPUT_LINE3 = GDBagestr
 	OUTPUT_LINE4 = blockpstr
@@ -177,4 +182,4 @@ def update():
 #	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
-	draw_dashboard(OUTPUT_LINE1, OUTPUT_LINE2, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
+	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
