@@ -165,7 +165,7 @@ def update():
 	elif PHstatus != "enabled" and PH2status == "enabled":
 		PHstatusstr = "Status PH1:[✗] PH2:[✓]"
 		PHstatusstrclr = 2
-	elif PHstatus == "enabled" and PH2status <> "enabled":
+	elif PHstatus == "enabled" and PH2status != "enabled":
 		PHstatusstr = "Status PH1:[✓] PH2:[✗]"
 		PHstatusstrclr = 2
 	else:
