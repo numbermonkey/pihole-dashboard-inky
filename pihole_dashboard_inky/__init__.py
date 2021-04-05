@@ -50,6 +50,7 @@ font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 PHadminURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+str1clr = 2
 # Parameters for conditional text
 cpucooltemp = 40.0
 cpuoktemp = 65.0
@@ -61,7 +62,7 @@ utilhigh = 90.0
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, str1clr=None, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
+def draw_dashboard(out_string1=None, str1clr, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
@@ -113,16 +114,16 @@ def update():
 	cpu_temp = round(cpu_temp, 1)
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
-		cputempstrclr = inky_display.BLACK
+		cputempstrclr = 1
 	if cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
-		cputempstrclr = inky_display.BLACK
+		cputempstrclr = 1
 	if cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
-		cputempstrclr = inky_display.RED		
+		cputempstrclr = 2		
 	if cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
-		cputempstrclr = inky_display.RED
+		cputempstrclr = 2
 # Get Load
 	cmd = "/usr/bin/uptime"
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
