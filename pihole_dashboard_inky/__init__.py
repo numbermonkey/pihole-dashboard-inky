@@ -42,7 +42,6 @@ OUTPUT_LINE2 = ""
 OUTPUT_LINE3 = ""
 OUTPUT_LINE4 = ""
 OUTPUT_LINE5 = ""
-#FILENAME = "/tmp/.pihole-dashboard-inky-output"
 hostname = socket.gethostname()
 font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
@@ -50,18 +49,23 @@ font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 PHapiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
 PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
+PHstats = json.load(urllib.request.urlopen(PHapiURL))
+PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
+
 # Parameters for conditional text
 cpucooltemp = 40.0
 cpuoktemp = 65.0
 cpubadtemp = 80.0
 loadhigh = 0.7
 utilhigh = 90.0
+blockpbad = 0.0
+GravDBDaysbad = 7
 
 # INKY SETUP
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, str4clr = 1, out_string5=None):
+def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, str3clr = 1, out_string4=None, str4clr = 1, out_string5=None, str5clr = 1):
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
@@ -96,7 +100,7 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out
 		draw.text((1,drop),out_string4, str4clr, fontS)
 		w, h = fontS.getsize(out_string4)
 		drop = drop + h + 1
-		draw.text((1,drop),out_string5, inky_display.RED, fontS)
+		draw.text((1,drop),out_string5, str5clr, fontS)
 # Adds version and time to bottom box. Note the white font.		
 	draw.text((5,88), version, font=font12, fill=0)
 	draw.text((150,88), time_string, font=font12, fill=0)
@@ -115,13 +119,13 @@ def update():
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
 		cputempstrclr = 1
-	if cpu_temp > cpucooltemp <= cpuoktemp:
+	elif cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
 		cputempstrclr = 1
-	if cpu_temp > cpuoktemp <= cpubadtemp:
+	elif cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
 		cputempstrclr = 2		
-	if cpu_temp > cpubadtemp:
+	elif cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
 		cputempstrclr = 2
 	print(cputempstr)
@@ -138,21 +142,36 @@ def update():
 	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
 	utilisation = round(utilisation, 1)
 	last_idle, last_total = idle, total
-	if load5min >= loadhigh and utilisation >= utilhigh:
-		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
-		loadstrclr = 2
-	if load5min >= loadhigh and utilisation < utilhigh:
-		loadstr = "[✗] WARNING Load:{} CPU:{}%".format(load5min,utilisation)
-		loadstrclr = 2
 	if load5min < loadhigh:
 		loadstr = "[✓] Load:{} at CPU:{}%".format(load5min,utilisation)
 		loadstrclr = 1
+	elif load5min >= loadhigh and utilisation < utilhigh:
+		loadstr = "[✗] WARNING Load:{} CPU:{}%".format(load5min,utilisation)
+		loadstrclr = 2
+	elif load5min >= loadhigh and utilisation >= utilhigh:
+		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
+		loadstrclr = 2
 	print(loadstr)
 # Get Pihole Status
-	cmd = "/usr/local/bin/pihole status"
-	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-	PHstatus = process.stdout.read().decode().split('\n')
-	PHstatusstr = PHstatus[6].strip().replace('✗', '×')
+#	cmd = "/usr/local/bin/pihole status"
+#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+#	PHstatus = process.stdout.read().decode().split('\n')
+#	PHstatusstr = PHstatus[6].strip().replace('✗', '×')
+	PHstatus = PHstats('status')
+	PH2status = PH2stats('status')
+	if PHstatus == PH2status == "enabled":
+		PHstatusstr = "Status PH1:[✓] PH2:[✓]"
+		PHstatusstrclr = 1
+	elif PHstatus <> "enabled" and PH2status == "enabled":
+		PHstatusstr = "Status PH1:[✗] PH2:[✓]"
+		PHstatusstrclr = 2
+	elif PHstatus == "enabled" and PH2status <> "enabled":
+		PHstatusstr = "Status PH1:[✓] PH2:[✗]"
+		PHstatusstrclr = 2
+	else:
+		PHstatusstr = "Status PH1:[✗] PH2:[✗]"
+		PHstatusstrclr = 2
+		
 # Moved print(PHstatusstr) down to better emulate display
 # GET PIHOLE STATS
 # First for local PH
@@ -165,13 +184,13 @@ def update():
 	unique_clients2 = PH2stats['unique_clients']
 	ads_blocked_todayPH2 = PH2stats['ads_blocked_today']
 	blockpPH2 = round(PH2stats['ads_percentage_today'],1)
-	if blockp == 0.0:
+	if blockp <= blockpbad:
 		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
 		blockpstrclr = 2
-	if blockpPH2 == 0.0:
+	if blockpPH2 <= blockpbad:
 		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockpPH2)
 		blockpstrclr = 2
-	if blockp > 0.0 and blockpPH2 > 0.0:
+	if blockp > blockpbad and blockpPH2 > blockpbad:
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
 		blockpstrclr = 1
 	print(blockpstr)
@@ -183,13 +202,13 @@ def update():
 # Then for 2nd PH
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
-	if GravDBDays > 7:
+	if GravDBDays > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(GravDBDays)
 		GDBagestrclr = 2
-	if GravDBPH2Days >7:
+	if GravDBPH2Days > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(GravDBDays)
 		GDBagestrclr = 2
-	if GravDBDays and GravDBPH2Days <= 7:
+	if GravDBDays and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDBǁ PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
 		GDBagestrclr = 1
 	print(GDBagestr)
@@ -213,8 +232,9 @@ def update():
 	OUTPUT_LINE4 = blockpstr
 	LINE4CLR = blockpstrclr
 	OUTPUT_LINE5 = PHstatusstr
+	LINE5CLR = PHstatusstrclr
 #	OUTPUT_EXAMPLE = ip_str
 #	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
-	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, LINE2CLR, OUTPUT_LINE3, LINE3CLR, OUTPUT_LINE4, LINE4CLR, OUTPUT_LINE5)
+	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, LINE2CLR, OUTPUT_LINE3, LINE3CLR, OUTPUT_LINE4, LINE4CLR, OUTPUT_LINE5, LINE5CLR)
