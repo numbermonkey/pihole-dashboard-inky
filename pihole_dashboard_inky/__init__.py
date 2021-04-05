@@ -183,4 +183,4 @@ def update():
 #	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
-	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
+	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
