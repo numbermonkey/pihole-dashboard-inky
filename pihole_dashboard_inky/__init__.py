@@ -50,7 +50,7 @@ font_name = os.path.join(font_dir, "font.ttf")
 font16 = ImageFont.truetype(font_name, 16)
 font12 = ImageFont.truetype(font_name, 12)
 PHadminURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
-str1clr = 2
+#str1clr = 1
 # Parameters for conditional text
 cpucooltemp = 40.0
 cpuoktemp = 65.0
@@ -62,7 +62,7 @@ utilhigh = 90.0
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, out_string3=None, out_string4=None, out_string5=None):
+def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, str2clr=1, out_string3=None, out_string4=None, out_string5=None):
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
 	time_string = "T: {}".format(t)
@@ -87,7 +87,7 @@ def draw_dashboard(out_string1=None, str1clr=1, out_string2=None, out_string3=No
 		draw.text((1,drop),out_string1, str1clr, fontL)
 		w, h = fontL.getsize(out_string1)
 		drop = drop + h + 1
-		draw.text((1,drop),out_string2, inky_display.RED, fontL)
+		draw.text((1,drop),out_string2, str2clr, fontL)
 		w, h = fontL.getsize(out_string2)
 		drop = drop + h + 1
 		draw.text((1,drop),out_string3, inky_display.RED, fontS)
@@ -139,10 +139,13 @@ def update():
 	last_idle, last_total = idle, total
 	if load5min >= loadhigh and utilisation >= utilhigh:
 		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
+		loadstrclr = 2
 	if load5min >= loadhigh and utilisation < utilhigh:
 		loadstr = "[✗] WARNING Load:{} CPU:{}%".format(load5min,utilisation)
+		loadstrclr = 2
 	if load5min < loadhigh:
 		loadstr = "[✓] Load:{} at CPU:{}%".format(load5min,utilisation)
+		loadstrclr = 1
 # Get Pihole Status
 	cmd = "/usr/local/bin/pihole status"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -176,6 +179,7 @@ def update():
 	OUTPUT_LINE1 = cputempstr
 	LINE1CLR = cputempstrclr
 	OUTPUT_LINE2 = loadstr
+	LINE2CLR = loadstrclr
 	OUTPUT_LINE3 = GDBagestr
 	OUTPUT_LINE4 = blockpstr
 	OUTPUT_LINE5 = PHstatus[6].strip().replace('✗', '×')
@@ -183,4 +187,4 @@ def update():
 #	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
-	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
+	draw_dashboard(OUTPUT_LINE1, LINE1CLR, OUTPUT_LINE2, LINE2CLR, OUTPUT_LINE3, OUTPUT_LINE4, OUTPUT_LINE5)
