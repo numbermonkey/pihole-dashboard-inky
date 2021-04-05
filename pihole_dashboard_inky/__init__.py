@@ -147,9 +147,9 @@ def update():
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
 	blockp = round(PHstats['ads_percentage_today'],1)
-	if blockp == 0.0
+	if blockp == 0.0:
 		blockpstr = "[✗] DANGER Block %:{}".format(blockp)
-	if blockp > 0.0
+	if blockp > 0.0:
 		blockpstr = "[✓] Blocked {} objects = {}%".format(ads_blocked_today,blockp)
 # Get Gravity Age
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
