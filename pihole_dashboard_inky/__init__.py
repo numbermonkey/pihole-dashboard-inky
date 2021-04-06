@@ -37,11 +37,6 @@ if os.geteuid() != 0:
 # STATIC VARIABLES
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
-str1txt = ""
-str2txt = ""
-str3txt = ""
-str4txt = ""
-str5txt = ""
 hostname = socket.gethostname()
 font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
@@ -59,32 +54,46 @@ utilhigh = 90.0
 blockpbad = 0.0
 GravDBDaysbad = 7
 
+str1txt = ""
+str2txt = ""
+str3txt = ""
+str4txt = ""
+str5txt = ""
+
 # INKY SETUP
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
+# Def has 5 lines of text. Each needs 3 arguments: txt (content), clr (colour 0=White, 1=Black, 2=Red) ,fnt (font)
 def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=1, str2fnt=None, str3txt=None, str3clr = 1, str3fnt=None, str4txt=None, str4clr = 1, str4fnt=None, str5txt=None, str5clr = 1, str5fnt=None):
 
 # THIS DEF DRAWS THE FINAL SCREEN
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
-	time_string = "T: {}".format(t)
+	time_string = "@ {}".format(t)
 # Get Version
 	cmd = "/usr/local/bin/pihole -v"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
+	
 	print(version,"  ",time_string)
+#	print(time_string)
+	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole|tail -1|cut --delimiter='v' -f2"
+	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+	repoVer = process.stdout.read()
+	cmd = "/usr/local/bin/pihole -v|cut -c 23-27|head -n 1"
+	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+	localVer = process.stdout.read()	
+	print("Repo ver:",repoVer," Local ver:",localVer)
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
-# Black rectangle at bottom
-	draw.rectangle([(0, 87), (212, 104)], fill=1)
 # Draws the text lines 
 	if str1txt is not None:
 # gap from top
 		drop = 1
-# writes the out_strings and allows 1 line between them. Uses height of font to determine gap		
+# draws the str txts and allows 1 line between them. Uses height of font to determine gap		
 		draw.text((1,drop),str1txt, str1clr, str1fnt)
 		w, h = str1fnt.getsize(str1txt)
 		drop = drop + h + 1
@@ -98,6 +107,8 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 		w, h = str4fnt.getsize(str4txt)
 		drop = drop + h + 1
 		draw.text((1,drop),str5txt, str5clr, str5fnt)
+# Black rectangle at bottom
+	draw.rectangle([(0, 87), (212, 104)], fill=1)
 # Adds version and time to bottom box. Note the white font.		
 	draw.text((5,88), version, font=fontS, fill=0)
 	draw.text((150,88), time_string, font=fontS, fill=0)
@@ -112,6 +123,7 @@ def update():
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 # Get Temp
+	# Query for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
 	# Conditions for text output
@@ -149,7 +161,7 @@ def update():
 	last_idle, last_total = idle, total
 	# Conditions for text output
 	if load5min < loadhigh:
-		loadstr = "[✓] Load:{} at CPU:{}%".format(load5min,utilisation)
+		loadstr = "[✓] Load: {} at CPU: {}%".format(load5min,utilisation)
 		loadstrclr = 1
 		loadstrfnt = fontS
 	elif load5min >= loadhigh and utilisation < utilhigh:
@@ -162,6 +174,7 @@ def update():
 		loadstrfnt = fontL
 	print(loadstr)
 # Get Pihole Status
+	# Use api JSON
 	PHstatus = PHstats['status']
 	PH2status = PH2stats['status']
 	# Conditions for text output
@@ -184,15 +197,15 @@ def update():
 		
 # Moved print(PHstatusstr) down to better emulate display
 # GET PIHOLE STATS
-# First for local PH
+	# First for local PH. Uses api JSON
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
 	blockp = round(PHstats['ads_percentage_today'],1)
-# Then for 2nd PH
+	# Then for 2nd PH. Uses api JSON
 	unique_clients2 = PH2stats['unique_clients']
 	ads_blocked_todayPH2 = PH2stats['ads_blocked_today']
 	blockpPH2 = round(PH2stats['ads_percentage_today'],1)
-# Conditions for text output
+	# Conditions for text output
 	if blockp > blockpbad and blockpPH2 > blockpbad:
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
 		blockpstrclr = 1
@@ -208,13 +221,13 @@ def update():
 	print(blockpstr)
 	print(PHstatusstr)
 # GET GRAVITY AGE
-# First for local PH
+	# First for local PH. Uses api JSON
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
 	GravDBHours = PHstats['gravity_last_updated']['relative']['hours']
-# Then for 2nd PH
+	# Then for 2nd PH. Uses api JSON
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
-# Conditions for text output
+	# Conditions for text output
 	if GravDBDays and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
 		GDBagestrclr = 1
@@ -229,7 +242,7 @@ def update():
 		GDBagestrfnt = fontL
 	print(GDBagestr)
 
-# Get IP Address
+# GET IP ADDRESS
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
 	except KeyError:
