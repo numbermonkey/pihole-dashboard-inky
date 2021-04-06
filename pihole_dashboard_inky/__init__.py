@@ -54,12 +54,28 @@ utilhigh = 90.0
 blockpbad = 0.0
 GravDBDaysbad = 7
 
+# Initialise vars
 str1txt = None
 str2txt = ""
 str3txt = ""
 str4txt = ""
 str5txt = ""
-
+cputempstr = "untested"
+cputempstrclr = 1
+cputempstrfnt = fontS
+loadstr = "untested"
+loadstrclr = 1
+loadstrfnt = fontS
+GDBagestr = "untested"
+GDBagestrclr = 1
+GDBagestrfnt = fontS
+blockpstr = "untested"
+blockpstrclr = 1
+blockpstrfnt = fontS
+PHstatusstr = "untested"
+PHstatusstrclr = 1
+PHstatusstrfnt = fontS
+	
 # INKY SETUP
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
