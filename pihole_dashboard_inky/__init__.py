@@ -93,17 +93,17 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
 	print(version,"  ",time_string)
-#	just trying something
-	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole | tail -1|cut --delimiter='v' -f2"
+#	** just trying something **
+#	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole | tail -1|cut --delimiter='v' -f2"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 #	repoVer = process.stdout.read()
-	process = subprocess.run(cmd, capture_output=True)
-	repoVer = subprocess.CompletedProcess.stdout
-	cmd = "/usr/local/bin/pihole -v | cut -c 23-27 | head -n 1"
+#	process = subprocess.run(cmd, capture_output=True)
+#	repoVer = subprocess.CompletedProcess.stdout
+#	cmd = "/usr/local/bin/pihole -v | cut -c 23-27 | head -n 1"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 #	localVer = process.stdout.read()	
-	process = subprocess.run(cmd, capture_output=True)
-	repoVer = subprocess.CompletedProcess.stdout
+#	process = subprocess.run(cmd, capture_output=True)
+#	repoVer = subprocess.CompletedProcess.stdout
 
 	print("Repo ver:",repoVer," Local ver:",localVer)
 # Init screen	
@@ -248,11 +248,11 @@ def update():
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
 	# Conditions for text output
-	if GravDBDays == GravDBPH2Days == 0:
-		GDBagestr = "[✓] GDB Recent"
-		GDBagestrclr = 1
-		GDBagestrfnt = fontS
-	elif GravDBDays and GravDBPH2Days <= GravDBDaysbad:
+#	if GravDBDays == GravDBPH2Days == 0:
+#		GDBagestr = "[✓] GDB Recent"
+#		GDBagestrclr = 1
+#		GDBagestrfnt = fontS
+	if GravDBDays <= GravDBDaysbad and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
 		GDBagestrclr = 1
 		GDBagestrfnt = fontS
