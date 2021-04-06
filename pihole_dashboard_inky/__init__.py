@@ -95,11 +95,16 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	print(version,"  ",time_string)
 #	just trying something
 	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole | tail -1|cut --delimiter='v' -f2"
-	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-	repoVer = process.stdout.read()
+#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+#	repoVer = process.stdout.read()
+	process = subprocess.run(cmd, capture_output=True)
+	repoVer = subprocess.CompletedProcess.stdout
 	cmd = "/usr/local/bin/pihole -v | cut -c 23-27 | head -n 1"
-	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-	localVer = process.stdout.read()	
+#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+#	localVer = process.stdout.read()	
+	process = subprocess.run(cmd, capture_output=True)
+	repoVer = subprocess.CompletedProcess.stdout
+
 	print("Repo ver:",repoVer," Local ver:",localVer)
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
