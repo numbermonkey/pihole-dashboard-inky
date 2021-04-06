@@ -54,7 +54,7 @@ utilhigh = 90.0
 blockpbad = 0.0
 GravDBDaysbad = 7
 
-str1txt = ""
+str1txt = None
 str2txt = ""
 str3txt = ""
 str4txt = ""
@@ -133,7 +133,7 @@ def update():
 	elif cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
 		cputempstrclr = 1
-		cputempstrfnt = fontS
+		cputempstrfnt = fontL
 	elif cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
 		cputempstrclr = 2
