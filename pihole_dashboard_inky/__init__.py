@@ -243,8 +243,8 @@ def update():
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
 	# Conditions for text output
-	if GravDBDays == GravDBPH2Days == 0:
-		GDBagestr = "Recent"
+	if GravDBDays == GravDBPH2Days == GravDBHours == GravDBPH2Hours == 0:
+		GDBagestr = "[✓] GDB Recent"
 		GDBagestrclr = 1
 		GDBagestrfnt = fontS
 	elif GravDBDays and GravDBPH2Days <= GravDBDaysbad:
