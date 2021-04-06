@@ -245,7 +245,7 @@ def update():
 	# Conditions for text output
 	if GravDBDays == GravDBPH2Days == 0:
 		GDBagestr = "Recent"
-		GBDagestrclr = 1
+		GDBagestrclr = 1
 		GDBagestrfnt = fontS
 	elif GravDBDays and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
