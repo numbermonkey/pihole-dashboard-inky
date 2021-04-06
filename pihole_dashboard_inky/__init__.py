@@ -76,13 +76,12 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split('\n')
 	version = output[0].split("(")[0].strip()
-	
 	print(version,"  ",time_string)
-#	print(time_string)
-	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole|tail -1|cut --delimiter='v' -f2"
+#	just trying something
+	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole | tail -1|cut --delimiter='v' -f2"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	repoVer = process.stdout.read()
-	cmd = "/usr/local/bin/pihole -v|cut -c 23-27|head -n 1"
+	cmd = "/usr/local/bin/pihole -v | cut -c 23-27 | head -n 1"
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	localVer = process.stdout.read()	
 	print("Repo ver:",repoVer," Local ver:",localVer)
