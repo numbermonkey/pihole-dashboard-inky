@@ -104,8 +104,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 #	localVer = process.stdout.read()	
 #	process = subprocess.run(cmd, capture_output=True)
 #	repoVer = subprocess.CompletedProcess.stdout
-
-	print("Repo ver:",repoVer," Local ver:",localVer)
+#	print("Repo ver:",repoVer," Local ver:",localVer)
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
