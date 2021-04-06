@@ -164,7 +164,7 @@ def update():
 		loadstrclr = 1
 		loadstrfnt = fontS
 	elif load5min >= loadhigh and utilisation < utilhigh:
-		loadstr = "[✗] WARNING Load:{} CPU:{}%".format(load5min,utilisation)
+		loadstr = "[✗] Load:{} CPU:{}%".format(load5min,utilisation)
 		loadstrclr = 2
 		loadstrfnt = fontL
 	elif load5min >= loadhigh and utilisation >= utilhigh:
@@ -227,7 +227,9 @@ def update():
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
 	# Conditions for text output
-	if GravDBDays and GravDBPH2Days <= GravDBDaysbad:
+	if GravDBDays == GravDBPH2Days == 0:
+		GDBagestr = "Recent"
+	elif GravDBDays and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
 		GDBagestrclr = 1
 		GDBagestrfnt = fontS
