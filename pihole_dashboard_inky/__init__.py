@@ -123,7 +123,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	print(toprightcorner)
 # Adds version and time to bottom box. 		
 	draw.text((5,toprightcorner+1), verstrtxt, verstrclr, verstrfnt)
-	draw.text((150,toprigtcorner+1), timestrtxt, timestrclr, timestrfnt)
+	draw.text((150,toprightcorner+1), timestrtxt, timestrclr, timestrfnt)
 # Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
