@@ -64,14 +64,34 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 # THIS DEF DRAWS THE FINAL SCREEN
 # Get Time
 	t = strftime("%H:%M:%S", localtime())
-	time_string = "@ {}".format(t)
+	timestrtxt = "@ {}".format(t)
 # Get Version
-	cmd = "/usr/local/bin/pihole -v"
+	cmd = "/usr/local/bin/pihole"
+#	cmd = "/usr/local/bin/pihole -v"
 # dont like popen for this purpose
-	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-	output = process.stdout.read().decode().split('\n')
-	version = output[0].split("(")[0].strip()
-	print(version,"  ",time_string)
+#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+#	output = process.stdout.read().decode().split('\n')
+#	version = output[0].split("(")[0].strip()
+	cmd = "/usr/local/bin/pihole"
+	process = subprocess.run([cmd, "-v"], capture_output=True)
+	output = process.stdout.decode()
+	char = output.index('v',11)
+	lclver = output[char+1:char+6]
+	process = subprocess.run(["git", "ls-remote", "--tags", "https://github.com/pi-hole/pi-hole"], capture_output=True)
+	repover = process.stdout.decode()[-6:].rstrip()
+	if lclver == repover:
+			boxclr = 1
+			verstrtxt = "Pi-hole version is v{}".format(lclver)
+			verstrfnt = timestrfnt = fontS
+			verstrclr = timestrclr = 0
+			
+	elif repover > lclver:
+			boxclr = 2
+			verstrtxt = "UPDATE AVAILABLE"
+			verstrfnt = timestrfnt = fontL
+			verstrclr = timestrclr = 1
+			
+	print(lclver,"  ",repover,"  ",time_string)
 #	** just trying something **
 #	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole | tail -1|cut --delimiter='v' -f2"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -106,10 +126,10 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 		drop = drop + h + 1
 		draw.text((1,drop),str5txt, str5clr, str5fnt)
 # Black rectangle at bottom
-	draw.rectangle([(0, 87), (212, 104)], fill=1)
+	draw.rectangle([(0, 87), (212, 104)], fill=boxclr)
 # Adds version and time to bottom box. Note the white font.		
-	draw.text((5,88), version, font=fontS, fill=0)
-	draw.text((150,88), time_string, font=fontS, fill=0)
+	draw.text((5,88), verstrtxt, verstrfnt, verstrclr)
+	draw.text((150,88), timestrtxt, timestrfnt, timstrclr)
 # Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
