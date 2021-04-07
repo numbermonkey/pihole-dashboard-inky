@@ -66,44 +66,28 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	t = strftime("%H:%M:%S", localtime())
 	timestrtxt = "@ {}".format(t)
 # Get Version
-	cmd = "/usr/local/bin/pihole"
-#	cmd = "/usr/local/bin/pihole -v"
-# dont like popen for this purpose
-#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-#	output = process.stdout.read().decode().split('\n')
-#	version = output[0].split("(")[0].strip()
+	#Get local version as reported by Pi-Hole
+	#Need to do some squirrely text manipulation
 	cmd = "/usr/local/bin/pihole"
 	process = subprocess.run([cmd, "-v"], capture_output=True)
 	output = process.stdout.decode()
 	char = output.index('v',11)
 	lclver = output[char+1:char+6]
+	#Get latest report version by looking at last 6 chars (trailing space) of repo tags
 	process = subprocess.run(["git", "ls-remote", "--tags", "https://github.com/pi-hole/pi-hole"], capture_output=True)
 	repover = process.stdout.decode()[-6:].rstrip()
+	#Build the string
 	if lclver == repover:
 			boxclr = 1
 			verstrtxt = "Pi-hole version is v{}".format(lclver)
 			verstrfnt = timestrfnt = fontS
 			verstrclr = timestrclr = 0
-			
 	elif repover > lclver:
 			boxclr = 2
 			verstrtxt = "UPDATE AVAILABLE"
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = 1
-			
-	print(lclver,"  ",repover,"  ",timestrtxt)
-#	** just trying something **
-#	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole | tail -1|cut --delimiter='v' -f2"
-#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-#	repoVer = process.stdout.read()
-#	process = subprocess.run(cmd, capture_output=True)
-#	repoVer = subprocess.CompletedProcess.stdout
-#	cmd = "/usr/local/bin/pihole -v | cut -c 23-27 | head -n 1"
-#	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-#	localVer = process.stdout.read()	
-#	process = subprocess.run(cmd, capture_output=True)
-#	repoVer = subprocess.CompletedProcess.stdout
-#	print("Repo ver:",repoVer," Local ver:",localVer)
+	print(verstrtxt,"  ",timestrtxt)
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
@@ -125,8 +109,9 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 		w, h = str4fnt.getsize(str4txt)
 		drop = drop + h + 1
 		draw.text((1,drop),str5txt, str5clr, str5fnt)
-# Black rectangle at bottom
-	draw.rectangle([(0, 87), (212, 104)], fill=boxclr)
+# Rectangle at bottom
+	toprightcorner = inky_display.HEIGHT - h - 2
+	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT)], fill=boxclr)
 # Adds version and time to bottom box. Note the white font.		
 	draw.text((5,88), verstrtxt, verstrclr, verstrfnt)
 	draw.text((150,88), timestrtxt, timestrclr, timestrfnt)
