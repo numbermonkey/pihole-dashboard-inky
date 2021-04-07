@@ -16,6 +16,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Inky Colours
+# 0 = WHITE
+# 1 = BLACK
+# 2 = RED
 
 import subprocess
 import socket
@@ -52,18 +57,18 @@ cpubadtemp = 80.0
 loadhigh = 0.7
 utilhigh = 90.0
 blockpbad = 0.0
-GravDBDaysbad = 7
+GravDBDaysbad = 5
 	
 # INKY SETUP
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-# Def has 5 lines of text. Each needs 3 arguments: txt (content), clr (colour 0=White, 1=Black, 2=Red) ,fnt (font - defined in static section)
+# Def draws 6 lines of text. Each needs 3 arguments: txt (content), clr (colour 0=White, 1=Black, 2=Red) ,fnt (font - defined in static section)
 def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=1, str2fnt=None, str3txt=None, str3clr = 1, str3fnt=None, str4txt=None, str4clr = 1, str4fnt=None, str5txt=None, str5clr = 1, str5fnt=None):
 
 # THIS DEF DRAWS THE FINAL SCREEN
 # Get Time
-	t = strftime("%H:%M:%S", localtime())
+	t = strftime("%H:%M", localtime())
 	timestrtxt = "@ {}".format(t)
 # Get Version
 	#Get local version as reported by Pi-Hole
@@ -71,9 +76,9 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	cmd = "/usr/local/bin/pihole"
 	process = subprocess.run([cmd, "-v"], capture_output=True)
 	output = process.stdout.decode()
-	char = output.index('v',11)
-	lclver = output[char+1:char+6]
-	#Get latest report version by looking at last 6 chars (trailing space) of repo tags
+	char = output.index('v',11) # 11 to miss the first v in version
+	lclver = output[char+1:char+6] 
+	#Get latest repository version by looking at last 6 chars (trailing space) of repo tags
 	process = subprocess.run(["git", "ls-remote", "--tags", "https://github.com/pi-hole/pi-hole"], capture_output=True)
 	repover = process.stdout.decode()[-6:].rstrip()
 	#Build the string
@@ -110,11 +115,15 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 		drop = drop + h + 1
 		draw.text((1,drop),str5txt, str5clr, str5fnt)
 # Rectangle at bottom
-	toprightcorner = inky_display.HEIGHT - h - 2
+	# Measures height of font used for version text
+	verstrfntw, verstrfnth = verstrfnt.getsize(verstrtxt)
+	# Calculates box dimension based on font height
+	toprightcorner = inky_display.HEIGHT - verstrfnth - 2
 	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT)], fill=boxclr)
-# Adds version and time to bottom box. Note the white font.		
-	draw.text((5,88), verstrtxt, verstrclr, verstrfnt)
-	draw.text((150,88), timestrtxt, timestrclr, timestrfnt)
+	print(toprightcorner)
+# Adds version and time to bottom box. 		
+	draw.text((5,toprightcorner+1), verstrtxt, verstrclr, verstrfnt)
+	draw.text((150,toprigtcorner+1), timestrtxt, timestrclr, timestrfnt)
 # Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
@@ -126,7 +135,7 @@ def update():
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 # Get Temp
-	# Query for the temperature
+	# Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
 	# Conditions for text output
@@ -161,7 +170,7 @@ def update():
 	idle_delta, total_delta = idle - last_idle, total - last_total
 	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
 	utilisation = round(utilisation, 1)
-	last_idle, last_total = idle, total
+#	last_idle, last_total = idle, total
 	# Conditions for text output
 	if load5min < loadhigh:
 		loadstr = "[✓] Load: {} at CPU: {}%".format(load5min,utilisation)
@@ -231,17 +240,13 @@ def update():
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
 	# Conditions for text output
-#	if GravDBDays == GravDBPH2Days == 0:
-#		GDBagestr = "[✓] GDB Recent"
-#		GDBagestrclr = 1
-#		GDBagestrfnt = fontS
 	if GravDBDays <= GravDBDaysbad and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
 		GDBagestrclr = 1
 		GDBagestrfnt = fontS
 	elif GravDBDays > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(GravDBDays)
-		GDBagestrclr = 2
+		GDBagestrclr = 1
 		GDBagestrfnt = fontL
 	elif GravDBPH2Days > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(GravDBDays)
