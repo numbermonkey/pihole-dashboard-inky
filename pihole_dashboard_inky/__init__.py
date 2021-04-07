@@ -127,13 +127,11 @@ def update():
 	# Conditions for text output
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
-# CHANGED
-		cputempstrclr = 2
+		cputempstrclr = 1
 		cputempstrfnt = fontS
 	elif cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
-# CHANGED
-		cputempstrclr = 2
+		cputempstrclr = 1
 		cputempstrfnt = fontL
 	elif cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
@@ -162,8 +160,7 @@ def update():
 	# Conditions for text output
 	if load5min < loadhigh:
 		loadstr = "[✓] Load: {} at CPU: {}%".format(load5min,utilisation)
-# CHANGED
-		loadstrclr = 2
+		loadstrclr = 1
 		loadstrfnt = fontS
 	elif load5min >= loadhigh and utilisation < utilhigh:
 		loadstr = "[✗] Load:{} CPU:{}%".format(load5min,utilisation)
@@ -181,8 +178,7 @@ def update():
 	# Conditions for text output
 	if PHstatus == PH2status == "enabled":
 		PHstatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
-# CHANGED
-		PHstatusstrclr = 2
+		PHstatusstrclr = 1
 		PHstatusstrfnt = fontS
 	elif PHstatus != "enabled" and PH2status == "enabled":
 		PHstatusstr = "[✗] Status PH1:[✗] PH2:[✓]"
@@ -210,8 +206,7 @@ def update():
 	# Conditions for text output
 	if blockp > blockpbad and blockpPH2 > blockpbad:
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
-# CHANGED
-		blockpstrclr = 2
+		blockpstrclr = 1
 		blockpstrfnt = fontS
 	elif blockp <= blockpbad:
 		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
@@ -237,8 +232,7 @@ def update():
 #		GDBagestrfnt = fontS
 	if GravDBDays <= GravDBDaysbad and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
-# CHANGED
-		GDBagestrclr = 2
+		GDBagestrclr = 1
 		GDBagestrfnt = fontS
 	elif GravDBDays > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(GravDBDays)
