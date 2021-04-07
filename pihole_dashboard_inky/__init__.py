@@ -129,7 +129,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	draw.rectangle([(0, 87), (212, 104)], fill=boxclr)
 # Adds version and time to bottom box. Note the white font.		
 	draw.text((5,88), verstrtxt, verstrclr, verstrfnt)
-	draw.text((150,88), timestrtxt, timestrclr, timstrfnt)
+	draw.text((150,88), timestrtxt, timestrclr, timestrfnt)
 # Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
