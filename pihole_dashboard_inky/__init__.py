@@ -91,7 +91,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = 1
 			
-	print(lclver,"  ",repover,"  ",time_string)
+	print(lclver,"  ",repover,"  ",timestrtxt)
 #	** just trying something **
 #	cmd = "sudo git ls-remote --tags https://github.com/pi-hole/pi-hole | tail -1|cut --delimiter='v' -f2"
 #	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
