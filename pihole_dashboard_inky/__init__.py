@@ -98,26 +98,27 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	draw = ImageDraw.Draw(img)
 # Draws the text lines 
 	if str1txt is not None:
-# gap from top
+# gap from top and indent
 		drop = 1
+		indent = 1
 # draws the str txts and allows 1 line between them. Uses height of font to determine gap		
-		draw.text((1,drop),str1txt, str1clr, str1fnt)
+		draw.text((indent,drop),str1txt, str1clr, str1fnt)
 		w, h = str1fnt.getsize(str1txt)
 		drop = drop + h + 1
-		draw.text((1,drop),str2txt, str2clr, str2fnt)
+		draw.text((indent,drop),str2txt, str2clr, str2fnt)
 		w, h = str2fnt.getsize(str2txt)
 		drop = drop + h + 1
-		draw.text((1,drop),str3txt, str3clr, str3fnt)
+		draw.text((indent,drop),str3txt, str3clr, str3fnt)
 		w, h = str3fnt.getsize(str3txt)
 		drop = drop + h + 1
-		draw.text((1,drop),str4txt, str4clr, str4fnt)
+		draw.text((indent,drop),str4txt, str4clr, str4fnt)
 		w, h = str4fnt.getsize(str4txt)
 		drop = drop + h + 1
-		draw.text((1,drop),str5txt, str5clr, str5fnt)
+		draw.text((indent,drop),str5txt, str5clr, str5fnt)
 # Rectangle at bottom
-	# Measures height of font used for version text
+# Measures height of font used for version text
 	verstrfntw, verstrfnth = verstrfnt.getsize(verstrtxt)
-	# Calculates box dimension based on font height
+# Calculates box dimension based on font height
 	toprightcorner = inky_display.HEIGHT - verstrfnth - 2
 	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT)], fill=boxclr)
 	print(toprightcorner)
@@ -135,10 +136,10 @@ def update():
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 # Get Temp
-	# Query GPIO for the temperature
+# Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
-	# Conditions for text output
+# Conditions for text output
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
 		cputempstrclr = 1
@@ -157,12 +158,12 @@ def update():
 		cputempstrfnt = fontL
 	print(cputempstr)
 # Get Load
-	# Get Load 5 min from uptime
+# Get Load 5 min from uptime
 	cmd = "/usr/bin/uptime"
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
 	output = process.stdout.read().decode().split(",")
 	load5min = float(output[-2])
-	# Get CPU %age from stat
+# Get CPU %age from stat
 	last_idle = last_total = 0
 	with open('/proc/stat') as f:
 		fields = [float(column) for column in f.readline().strip().split()[1:]]
@@ -171,7 +172,7 @@ def update():
 	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
 	utilisation = round(utilisation, 1)
 #	last_idle, last_total = idle, total
-	# Conditions for text output
+# Conditions for text output
 	if load5min < loadhigh:
 		loadstr = "[✓] Load: {} at CPU: {}%".format(load5min,utilisation)
 		loadstrclr = 1
@@ -186,10 +187,10 @@ def update():
 		loadstrfnt = fontL
 	print(loadstr)
 # Get Pihole Status
-	# Use api JSON
+# Use api JSON
 	PHstatus = PHstats['status']
 	PH2status = PH2stats['status']
-	# Conditions for text output
+# Conditions for text output
 	if PHstatus == PH2status == "enabled":
 		PHstatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
 		PHstatusstrclr = 1
@@ -209,15 +210,15 @@ def update():
 		
 # Moved print(PHstatusstr) down to better emulate display
 # GET PIHOLE STATS
-	# First for local PH. Uses api JSON
+# First for local PH. Uses api JSON
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
 	blockp = round(PHstats['ads_percentage_today'],1)
-	# Then for 2nd PH. Uses api JSON
+# Then for 2nd PH. Uses api JSON
 	unique_clients2 = PH2stats['unique_clients']
 	ads_blocked_todayPH2 = PH2stats['ads_blocked_today']
 	blockpPH2 = round(PH2stats['ads_percentage_today'],1)
-	# Conditions for text output
+# Conditions for text output
 	if blockp > blockpbad and blockpPH2 > blockpbad:
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
 		blockpstrclr = 1
@@ -233,13 +234,13 @@ def update():
 	print(blockpstr)
 	print(PHstatusstr)
 # GET GRAVITY AGE
-	# First for local PH. Uses api JSON
+# First for local PH. Uses api JSON
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
 	GravDBHours = PHstats['gravity_last_updated']['relative']['hours']
-	# Then for 2nd PH. Uses api JSON
+# Then for 2nd PH. Uses api JSON
 	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
 	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
-	# Conditions for text output
+# Conditions for text output
 	if GravDBDays <= GravDBDaysbad and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
 		GDBagestrclr = 1
