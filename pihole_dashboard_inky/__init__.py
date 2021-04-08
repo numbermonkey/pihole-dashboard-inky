@@ -49,6 +49,9 @@ fontL = ImageFont.truetype(font_name, 16)
 fontS = ImageFont.truetype(font_name, 12)
 PHapiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
 PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
+inkyWHITE = 0
+inkyBLACK = 1
+inkyRED = 2
 
 # Parameters for conditional text
 cpucooltemp = 40.0
@@ -83,15 +86,15 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	repover = process.stdout.decode()[-6:].rstrip()
 	#Build the string
 	if lclver == repover:
-			boxclr = 1
+			boxclr = inkyBLACK
 			verstrtxt = "Pi-hole version is v{}".format(lclver)
 			verstrfnt = timestrfnt = fontS
-			verstrclr = timestrclr = 0
+			verstrclr = timestrclr = inkyWHITE
 	elif repover > lclver:
 			boxclr = 2
-			verstrtxt = "UPDATE AVAILABLE"
+			verstrtxt = "UPDATE AVAILABLE {}".format(repover)
 			verstrfnt = timestrfnt = fontL
-			verstrclr = timestrclr = 1
+			verstrclr = timestrclr = inkyWHITE
 	print(verstrtxt,"  ",timestrtxt)
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
@@ -119,12 +122,12 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 # Measures height of font used for version text
 	verstrfntw, verstrfnth = verstrfnt.getsize(verstrtxt)
 # Calculates box dimension based on font height
-	toprightcorner = inky_display.HEIGHT - verstrfnth - 2
-	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT)], fill=boxclr)
+	toprightcorner = inky_display.HEIGHT - verstrfnth - 1
+	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT+1)], fill=boxclr)
 	print(toprightcorner)
 # Adds version and time to bottom box. 		
-	draw.text((5,toprightcorner), verstrtxt, verstrclr, verstrfnt)
-	draw.text((150,toprightcorner), timestrtxt, timestrclr, timestrfnt)
+	draw.text((5,toprightcorner+1), verstrtxt, verstrclr, verstrfnt)
+	draw.text((150,toprightcorner+1), timestrtxt, timestrclr, timestrfnt)
 # Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
@@ -142,19 +145,19 @@ def update():
 # Conditions for text output
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
-		cputempstrclr = 1
+		cputempstrclr = inkyBLACK
 		cputempstrfnt = fontS
 	elif cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
-		cputempstrclr = 1
+		cputempstrclr = inkyBLACK
 		cputempstrfnt = fontL
 	elif cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
-		cputempstrclr = 2
+		cputempstrclr = inkyRED
 		cputempstrfnt = fontL
 	elif cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
-		cputempstrclr = 2
+		cputempstrclr = inkyRED
 		cputempstrfnt = fontL
 	print(cputempstr)
 # Get Load
@@ -175,15 +178,15 @@ def update():
 # Conditions for text output
 	if load5min < loadhigh:
 		loadstr = "[✓] Load: {} at CPU: {}%".format(load5min,utilisation)
-		loadstrclr = 1
+		loadstrclr = inkyBLACK
 		loadstrfnt = fontS
 	elif load5min >= loadhigh and utilisation < utilhigh:
 		loadstr = "[✗] Load:{} CPU:{}%".format(load5min,utilisation)
-		loadstrclr = 2
+		loadstrclr = inkyRED
 		loadstrfnt = fontL
 	elif load5min >= loadhigh and utilisation >= utilhigh:
 		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
-		loadstrclr = 2
+		loadstrclr = inkyRED
 		loadstrfnt = fontL
 	print(loadstr)
 # Get Pihole Status
@@ -193,19 +196,19 @@ def update():
 # Conditions for text output
 	if PHstatus == PH2status == "enabled":
 		PHstatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
-		PHstatusstrclr = 1
+		PHstatusstrclr = inkyBLACK
 		PHstatusstrfnt = fontS
 	elif PHstatus != "enabled" and PH2status == "enabled":
 		PHstatusstr = "[✗] Status PH1:[✗] PH2:[✓]"
-		PHstatusstrclr = 2
+		PHstatusstrclr = inkyRED
 		PHstatusstrfnt = fontL
 	elif PHstatus == "enabled" and PH2status != "enabled":
 		PHstatusstr = "[✗] Status PH1:[✓] PH2:[✗]"
-		PHstatusstrclr = 2
+		PHstatusstrclr = inkyRED
 		PHstatusstrfnt = fontL
 	else:
 		PHstatusstr = "[✗][✗] PH1:[✗] PH2:[✗]"
-		PHstatusstrclr = 2
+		PHstatusstrclr = inkyRED
 		PHstatusstrfnt = fontL
 		
 # Moved print(PHstatusstr) down to better emulate display
@@ -221,15 +224,15 @@ def update():
 # Conditions for text output
 	if blockp > blockpbad and blockpPH2 > blockpbad:
 		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
-		blockpstrclr = 1
+		blockpstrclr = inkyBLACK
 		blockpstrfnt = fontS
 	elif blockp <= blockpbad:
 		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
-		blockpstrclr = 2
+		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	elif blockpPH2 <= blockpbad:
 		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockpPH2)
-		blockpstrclr = 2
+		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	print(blockpstr)
 	print(PHstatusstr)
@@ -243,15 +246,15 @@ def update():
 # Conditions for text output
 	if GravDBDays <= GravDBDaysbad and GravDBPH2Days <= GravDBDaysbad:
 		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
-		GDBagestrclr = 1
+		GDBagestrclr = inkyBLACK
 		GDBagestrfnt = fontS
 	elif GravDBDays > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(GravDBDays)
-		GDBagestrclr = 1
+		GDBagestrclr = inkyBLACK
 		GDBagestrfnt = fontL
 	elif GravDBPH2Days > GravDBDaysbad:
 		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(GravDBDays)
-		GDBagestrclr = 2
+		GDBagestrclr = inkyRED
 		GDBagestrfnt = fontL
 	print(GDBagestr)
 
