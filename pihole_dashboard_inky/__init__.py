@@ -196,7 +196,7 @@ def update():
 	PHReportedStatus = PHstats['status']
 	PH2ReportedStatus = PH2stats['status']
 # Get DNS status through dig probe
-	if "NOERROR" in subprocess.check_output(["dig", "www.digg.com", "@" + PHIPAddress]).decode():
+	if "NOERROR" in subprocess.check_output(["dig", "www.owfbhcnj.com", "@" + PHIPAddress]).decode():
 		PHDNSStatus = "enabled"
 	else:
 		PHDNSStatus = "dnsdown"
