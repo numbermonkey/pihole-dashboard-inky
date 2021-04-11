@@ -54,6 +54,8 @@ PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
 inkyWHITE = 0
 inkyBLACK = 1
 inkyRED = 2
+DNSGoodCheck = "www.pi-hole.net"
+PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 
 # Parameters for conditional text
 cpucooltemp = 40.0
@@ -80,11 +82,12 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	#Need to do some squirrely text manipulation
 	cmd = "/usr/local/bin/pihole"
 	process = subprocess.run([cmd, "-v"], capture_output=True)
-	output = process.stdout.decode()
-	char = output.index('v',11) # 11 to miss the first v in version
+#	output = process.stdout.decode()
+#	char = output.index('v',11) # 11 to miss the first v in version
+	char = process.stdout.decode().index('v',11) # 11 to miss the first v in version
 	lclver = output[char+1:char+6] 
 	#Get latest repository version by looking at last 6 chars (trailing space) of repo tags
-	process = subprocess.run(["git", "ls-remote", "--tags", "https://github.com/pi-hole/pi-hole"], capture_output=True)
+	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
 	repover = process.stdout.decode()[-6:].rstrip()
 	#Build the string
 	if lclver == repover:
@@ -140,7 +143,8 @@ def update():
 # Read the PH api values
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
-# Get Temp
+
+# GET TEMP
 # Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
@@ -162,7 +166,8 @@ def update():
 		cputempstrclr = inkyRED
 		cputempstrfnt = fontL
 	print(cputempstr)
-# Get Load
+
+# GET LOAD
 # Get Load 5 min from uptime
 	cmd = "/usr/bin/uptime"
 	process = subprocess.Popen(cmd.split(','), stdout=subprocess.PIPE)
@@ -191,16 +196,17 @@ def update():
 		loadstrclr = inkyRED
 		loadstrfnt = fontL
 	print(loadstr)
-# Get Pihole Status
+
+# GET PIHOLE STATUS
 # Use api JSON get PI-Hole reported status
 	PHReportedStatus = PHstats['status']
 	PH2ReportedStatus = PH2stats['status']
 # Get actual DNS status through dig probe
-	if "NOERROR" in subprocess.check_output(["dig", "www.nfnwwn.net", "@" + PHIPAddress]).decode():
+	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PHIPAddress]).decode():
 		PHDNSStatus = "enabled"
 	else:
 		PHDNSStatus = "dnsdown"
-	if "NOERROR" in subprocess.check_output(["dig", "www.pi-hole.net", "@" + PH2IPAddress]).decode():
+	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH2IPAddress]).decode():
 		PH2DNSStatus = "enabled"
 	else:
 		PH2DNSStatus = "dnsdown"	
@@ -224,33 +230,17 @@ def update():
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontL
 		else:
-			PHStatusstrtxt = "[✗]PH1 PH:[✓] DNS:[✗]"
+			PHStatusstrtxt = "[✗]PH2 PH:[✓] DNS:[✗]"
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontL
 	else:
 		PHStatusstrtxt = " [✗] [✗] AWOOGA !! [✗] [✗]"
 		PHStatusstrtxtclr = inkyRED
 		PHStatusstrtxtfnt = fontL
-# Conditions for text output
-#	if PHReportedStatus == PH2ReportedStatus == "enabled":
-#		PHStatusstrtxt = "[✓] Status PH1:[✓] PH2:[✓]"
-#		PHStatusstrtxtclr = inkyBLACK
-#		PHStatusstrtxtfnt = fontS
-#	elif PHReportedStatus != "enabled" and PH2ReportedStatus == "enabled":
-#		PHStatusstrtxt = "[✗] Status PH1:[✗] PH2:[✓]"
-#		PHStatusstrtxtclr = inkyRED
-#		PHStatusstrtxtfnt = fontL
-#	elif PHReportedStatus == "enabled" and PH2ReportedStatus != "enabled":
-#		PHStatusstrtxt = "[✗] Status PH1:[✓] PH2:[✗]"
-#		PHStatusstrtxtclr = inkyRED
-#		PHStatusstrtxtfnt = fontL
-#	else:
-#		PHStatusstrtxt = "[✗][✗] PH1:[✗] PH2:[✗]"
-#		PHStatusstrtxtclr = inkyRED
-#		PHStatusstrtxtfnt = fontL
 		
 # Moved print(PHStatusstrtxt) down to better emulate display
-# GET PIHOLE STATS
+
+# GET PIHOLE STATISTICS
 # First for local PH. Uses api JSON
 	unique_clients = PHstats['unique_clients']
 	ads_blocked_today = PHstats['ads_blocked_today']
@@ -274,6 +264,7 @@ def update():
 		blockpstrfnt = fontL
 	print(blockpstr)
 	print(PHStatusstrtxt)
+
 # GET GRAVITY AGE
 # First for local PH. Uses api JSON
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
