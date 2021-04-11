@@ -205,7 +205,7 @@ def update():
 	else:
 		PH2DNSStatus = "dnsdown"	
 # Conditions for text output
-	if PHReportedStatus == PH2ReportedStatus == PHDNSStatus == PH2DNSStatus = "enabled":
+	if PHReportedStatus == PH2ReportedStatus == PHDNSStatus == PH2DNSStatus == "enabled":
 		PHStatusstrtxt = "[✓] Status PH1:[✓] PH2:[✓]"
 		PHStatusstrtxtclr = inkyBLACK
 		PHStatusstrtxtfnt = fontS
