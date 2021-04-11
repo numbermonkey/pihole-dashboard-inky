@@ -6,10 +6,10 @@ from email.mime.text import MIMEText
 from base64 import urlsafe_b64encode
 
 
-SENDER = <sender>
-RECIPIENT = <recipient>
-SUBJECT = <subject>
-CONTENT = <content>
+SENDER = pi@alert.me
+RECIPIENT = numbermonkey+phalert@gmail.com
+SUBJECT = "PHalert"
+CONTENT = "There's an alert going on"
 SCOPE = 'https://www.googleapis.com/auth/gmail.compose' # Allows sending only, not reading
 
 # Initialize the object for the Gmail API
@@ -33,10 +33,10 @@ def create_message(sender, to, subject, message_text):
   Returns:
     An object containing a base64url encoded email object.
   """
-  message = MIMEText("This is the text")
-  message['to'] = numbermonkey+PiAlerts@gmail.com
-  message['from'] = pi@alert.me
-  message['subject'] = "* * Pi Alert * *"
+  message = MIMEText(message_text)
+  message['to'] = to
+  message['from'] = sender
+  message['subject'] = subject
   encoded_message = urlsafe_b64encode(message.as_bytes())
   return {'raw': encoded_message.decode()}
 
