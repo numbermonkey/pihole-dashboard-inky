@@ -82,9 +82,8 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	#Need to do some squirrely text manipulation
 	cmd = "/usr/local/bin/pihole"
 	process = subprocess.run([cmd, "-v"], capture_output=True)
-#	output = process.stdout.decode()
-#	char = output.index('v',11) # 11 to miss the first v in version
-	char = process.stdout.decode().index('v',11) # 11 to miss the first v in version
+	output = process.stdout.decode()
+	char = output.index('v',11) # 11 to miss the first v in version
 	lclver = output[char+1:char+6] 
 	#Get latest repository version by looking at last 6 chars (trailing space) of repo tags
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
