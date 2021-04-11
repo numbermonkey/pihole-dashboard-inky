@@ -47,7 +47,9 @@ font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
 fontL = ImageFont.truetype(font_name, 16)
 fontS = ImageFont.truetype(font_name, 12)
+PHIPAddress = "192.168.1.86"
 PHapiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+PH2IPAddress = "192.168.1.85"
 PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
 inkyWHITE = 0
 inkyBLACK = 1
@@ -190,28 +192,33 @@ def update():
 		loadstrfnt = fontL
 	print(loadstr)
 # Get Pihole Status
-# Use api JSON
-	PHstatus = PHstats['status']
-	PH2status = PH2stats['status']
+# Use api JSON get PI-Hole reported status
+	PHReportedStatus = PHstats['status']
+	PH2ReportedStatus = PH2stats['status']
+# Get DNS status through dig probe
+	if "NOERROR" in subprocess.check_output(["dig", "www.digg.com", "@", PHIPAddress]).decode():
+		PHDNSStatus = "enabled"
+	elif PHDNSStatus = "dnsdown":
+	print (PHDNSStatus)
 # Conditions for text output
-	if PHstatus == PH2status == "enabled":
-		PHstatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
-		PHstatusstrclr = inkyBLACK
-		PHstatusstrfnt = fontS
-	elif PHstatus != "enabled" and PH2status == "enabled":
-		PHstatusstr = "[✗] Status PH1:[✗] PH2:[✓]"
-		PHstatusstrclr = inkyRED
-		PHstatusstrfnt = fontL
-	elif PHstatus == "enabled" and PH2status != "enabled":
-		PHstatusstr = "[✗] Status PH1:[✓] PH2:[✗]"
-		PHstatusstrclr = inkyRED
-		PHstatusstrfnt = fontL
+	if PHReportedStatus == PH2ReportedStatus == "enabled":
+		PHReportedStatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
+		PHReportedStatusstrclr = inkyBLACK
+		PHReportedStatusstrfnt = fontS
+	elif PHReportedStatus != "enabled" and PH2ReportedStatus == "enabled":
+		PHReportedStatusstr = "[✗] Status PH1:[✗] PH2:[✓]"
+		PHReportedStatusstrclr = inkyRED
+		PHReportedStatusstrfnt = fontL
+	elif PHReportedStatus == "enabled" and PH2ReportedStatus != "enabled":
+		PHReportedStatusstr = "[✗] Status PH1:[✓] PH2:[✗]"
+		PHReportedStatusstrclr = inkyRED
+		PHReportedStatusstrfnt = fontL
 	else:
-		PHstatusstr = "[✗][✗] PH1:[✗] PH2:[✗]"
-		PHstatusstrclr = inkyRED
-		PHstatusstrfnt = fontL
+		PHReportedStatusstr = "[✗][✗] PH1:[✗] PH2:[✗]"
+		PHReportedStatusstrclr = inkyRED
+		PHReportedStatusstrfnt = fontL
 		
-# Moved print(PHstatusstr) down to better emulate display
+# Moved print(PHReportedStatusstr) down to better emulate display
 # GET PIHOLE STATS
 # First for local PH. Uses api JSON
 	unique_clients = PHstats['unique_clients']
@@ -235,7 +242,7 @@ def update():
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	print(blockpstr)
-	print(PHstatusstr)
+	print(PHReportedStatusstr)
 # GET GRAVITY AGE
 # First for local PH. Uses api JSON
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
@@ -280,11 +287,11 @@ def update():
 	LINE4TXT = blockpstr
 	LINE4CLR = blockpstrclr
 	LINE4FNT = blockpstrfnt
-	LINE5TXT = PHstatusstr
-	LINE5CLR = PHstatusstrclr
-	LINE5FNT = PHstatusstrfnt
+	LINE5TXT = PHReportedStatusstr
+	LINE5CLR = PHReportedStatusstrclr
+	LINE5FNT = PHReportedStatusstrfnt
 #	OUTPUT_EXAMPLE = ip_str
-#	OUTPUT_EXAMPLE = PHstatus[6].strip().replace('✗', '×')
+#	OUTPUT_EXAMPLE = PHReportedStatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
 	draw_dashboard(LINE1TXT, LINE1CLR, LINE1FNT, LINE2TXT, LINE2CLR, LINE2FNT, LINE3TXT, LINE3CLR, LINE3FNT, LINE4TXT, LINE4CLR, LINE4FNT, LINE5TXT, LINE5CLR, LINE5FNT)
