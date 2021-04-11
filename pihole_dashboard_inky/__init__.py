@@ -195,31 +195,61 @@ def update():
 # Use api JSON get PI-Hole reported status
 	PHReportedStatus = PHstats['status']
 	PH2ReportedStatus = PH2stats['status']
-# Get DNS status through dig probe
-	if "NOERROR" in subprocess.check_output(["dig", "www.owfbhcnj.com", "@" + PHIPAddress]).decode():
+# Get actual DNS status through dig probe
+	if "NOERROR" in subprocess.check_output(["dig", "www.pi-hole.net", "@" + PHIPAddress]).decode():
 		PHDNSStatus = "enabled"
 	else:
 		PHDNSStatus = "dnsdown"
-	print (PHDNSStatus)
-# Conditions for text output
-	if PHReportedStatus == PH2ReportedStatus == "enabled":
-		PHReportedStatusstr = "[✓] Status PH1:[✓] PH2:[✓]"
-		PHReportedStatusstrclr = inkyBLACK
-		PHReportedStatusstrfnt = fontS
-	elif PHReportedStatus != "enabled" and PH2ReportedStatus == "enabled":
-		PHReportedStatusstr = "[✗] Status PH1:[✗] PH2:[✓]"
-		PHReportedStatusstrclr = inkyRED
-		PHReportedStatusstrfnt = fontL
-	elif PHReportedStatus == "enabled" and PH2ReportedStatus != "enabled":
-		PHReportedStatusstr = "[✗] Status PH1:[✓] PH2:[✗]"
-		PHReportedStatusstrclr = inkyRED
-		PHReportedStatusstrfnt = fontL
+	if "NOERROR" in subprocess.check_output(["dig", "www.pi-hole.net", "@" + PH2IPAddress]).decode():
+		PH2DNSStatus = "enabled"
 	else:
-		PHReportedStatusstr = "[✗][✗] PH1:[✗] PH2:[✗]"
-		PHReportedStatusstrclr = inkyRED
-		PHReportedStatusstrfnt = fontL
+		PH2DNSStatus = "dnsdown"	
+# Conditions for text output
+	if PHReportedStatus == PH2ReportedStatus == PHDNSStatus == PH2DNSStatus = "enabled":
+		PHStatusstrtxt = "[✓] Status PH1:[✓] PH2:[✓]"
+		PHStatusstrtxtclr = inkyBLACK
+		PHStatusstrtxtfnt = fontS
+	elif PH2ReportedStatus != PH2DNSStatus:
+		if PH2ReportedStatus != "enabled":
+			PHStatusstrtxt = "[✗]PH1 PH:[✗] DNS:[✓]"
+			PHStatusstrtxtclr = inkyRED
+			PHStatusstrtxtfnt = fontL
+		else:
+			PHStatusstrtxt = "[✗]PH1 PH:[✓] DNS:[✗]"
+			PHStatusstrtxtclr = inkyRED
+			PHStatusstrtxtfnt = fontL
+	elif PHReportedStatus != PHDNSStatus:
+		if PHReportedStatus != "enabled":
+			PHStatusstrtxt = "[✗]PH2 PH:[✗] DNS:[✓]"
+			PHStatusstrtxtclr = inkyRED
+			PHStatusstrtxtfnt = fontL
+		else:
+			PHStatusstrtxt = "[✗]PH1 PH:[✓] DNS:[✗]"
+			PHStatusstrtxtclr = inkyRED
+			PHStatusstrtxtfnt = fontL
+	else:
+		PHStatusstrtxt = " [✗] [✗] AWOOGA !! [✗] [✗]"
+		PHStatusstrtxtclr = inkyRED
+		PHStatusstrtxtfnt = fontL
+# Conditions for text output
+#	if PHReportedStatus == PH2ReportedStatus == "enabled":
+#		PHStatusstrtxt = "[✓] Status PH1:[✓] PH2:[✓]"
+#		PHStatusstrtxtclr = inkyBLACK
+#		PHStatusstrtxtfnt = fontS
+#	elif PHReportedStatus != "enabled" and PH2ReportedStatus == "enabled":
+#		PHStatusstrtxt = "[✗] Status PH1:[✗] PH2:[✓]"
+#		PHStatusstrtxtclr = inkyRED
+#		PHStatusstrtxtfnt = fontL
+#	elif PHReportedStatus == "enabled" and PH2ReportedStatus != "enabled":
+#		PHStatusstrtxt = "[✗] Status PH1:[✓] PH2:[✗]"
+#		PHStatusstrtxtclr = inkyRED
+#		PHStatusstrtxtfnt = fontL
+#	else:
+#		PHStatusstrtxt = "[✗][✗] PH1:[✗] PH2:[✗]"
+#		PHStatusstrtxtclr = inkyRED
+#		PHStatusstrtxtfnt = fontL
 		
-# Moved print(PHReportedStatusstr) down to better emulate display
+# Moved print(PHStatusstrtxt) down to better emulate display
 # GET PIHOLE STATS
 # First for local PH. Uses api JSON
 	unique_clients = PHstats['unique_clients']
@@ -243,7 +273,7 @@ def update():
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	print(blockpstr)
-	print(PHReportedStatusstr)
+	print(PHStatusstrtxt)
 # GET GRAVITY AGE
 # First for local PH. Uses api JSON
 	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
@@ -288,9 +318,9 @@ def update():
 	LINE4TXT = blockpstr
 	LINE4CLR = blockpstrclr
 	LINE4FNT = blockpstrfnt
-	LINE5TXT = PHReportedStatusstr
-	LINE5CLR = PHReportedStatusstrclr
-	LINE5FNT = PHReportedStatusstrfnt
+	LINE5TXT = PHStatusstrtxt
+	LINE5CLR = PHStatusstrtxtclr
+	LINE5FNT = PHStatusstrtxtfnt
 #	OUTPUT_EXAMPLE = ip_str
 #	OUTPUT_EXAMPLE = PHReportedStatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
