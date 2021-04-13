@@ -91,15 +91,16 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	lclver = output[char+1:char+6] 
 #Get latest repository version by looking at last 6 chars (trailing space) of repo tags
 #WRAP THIS IN TRY	
-	try:
-		process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-		e = subprocess.CalledProcessError
-		p = e.returncode
-		if p != 0:
-			print("ERROR CHECKING PIHOLE GITHUB. CHECK URL?")
-			sys.exit(2)
-	except SystemExit:
-		sys.exit(2)
+#	try:
+#		process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
+#		e = subprocess.CalledProcessError
+#		p = e.returncode
+#		if p != 0:
+#			print("ERROR CHECKING PIHOLE GITHUB. CHECK URL?")
+#			sys.exit(2)
+#	except SystemExit:
+#		sys.exit(2)
+	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
 	repover = process.stdout.decode()[-6:].rstrip()
 #Build the string
 	if lclver == repover:
