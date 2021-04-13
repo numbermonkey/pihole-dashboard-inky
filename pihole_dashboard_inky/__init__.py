@@ -80,7 +80,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 # Get Version
 #Get local version as reported by Pi-Hole
 	try:
-		cmd = "/usr/local/bin/phole"
+		cmd = "/usr/local/bin/pihole"
 		process = subprocess.run([cmd, "-v"], capture_output=True)
 	except FileNotFoundError:
 		print('PIHOLE COMMAND NOT FOUND')
