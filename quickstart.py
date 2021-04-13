@@ -25,7 +25,7 @@ def gmail_authenticate():
     # created automatically when the authorization flow completes for the first time
     if os.path.exists("token.pickle"):
         with open("token.pickle", "rb") as token:
-            creds = pickle.load(token)
+			creds = pickle.load(token)
     # if there are no (valid) credentials availablle, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -68,7 +68,7 @@ def add_attachment(message, filename):
     msg.add_header('Content-Disposition', 'attachment', filename=filename)
     message.attach(msg)
 	
-	def build_message(destination, obj, body, attachments=[]):
+def build_message(destination, obj, body, attachments=[]):
     if not attachments: # no attachments given
         message = MIMEText(body)
         message['to'] = destination
