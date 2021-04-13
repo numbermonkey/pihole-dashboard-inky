@@ -79,29 +79,22 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	timestrtxt = "@ {}".format(t)
 # Get Version
 #Get local version as reported by Pi-Hole
-	try:
-		cmd = "/usr/local/bin/pihole"
-		process = subprocess.run([cmd, "-v"], capture_output=True)
-	except FileNotFoundError:
-		print('PIHOLE COMMAND NOT FOUND')
-		sys.exit(2)
+	cmd = "/usr/local/bin/pihole"
+	process = subprocess.run([cmd, "-v"], capture_output=True)
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
-	char = output.index('v',11) # 11 to miss the first v in version
-	lclver = output[char+1:char+6] 
-#Get latest repository version by looking at last 6 chars (trailing space) of repo tags
-#WRAP THIS IN TRY	
-#	try:
-#		process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-#		e = subprocess.CalledProcessError
-#		p = e.returncode
-#		if p != 0:
-#			print("ERROR CHECKING PIHOLE GITHUB. CHECK URL?")
-#			sys.exit(2)
-#	except SystemExit:
-#		sys.exit(2)
+	if "Pi-Hole" in output:
+		char = output.index('v',11) # 11 to miss the first v in version
+		lclver = output[char+1:char+6]
+	else:
+		lclover = "0.0.0"
+# Now get Github repository version by reading last tag.
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-	repover = process.stdout.decode()[-6:].rstrip()
+	output = process.stdout.decode()
+	if not "fatal" in output:
+		repover = process.stdout.decode()[-6:].rstrip()
+	else:
+		repover = "0.0.0"
 #Build the string
 	if lclver == repover:
 			boxclr = inkyBLACK
@@ -109,8 +102,25 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 			verstrfnt = timestrfnt = fontS
 			verstrclr = timestrclr = inkyWHITE
 	elif repover > lclver:
-			boxclr = 2
-			verstrtxt = "UPDATE AVAILABLE {}".format(repover)
+		if lclver = "0.0.0":
+			blxclr = inkyRED
+			verstrtxt = "[✗] Error getting local ver"
+			verstrfnt = timestrfnt = fontL
+			verstrclr = timestrclr = inkyWHITE
+		else:
+			boxclr = inkyRED
+			verstrtxt = "[✗] UPDATE AVAILABLE {}".format(repover)
+			verstrfnt = timestrfnt = fontL
+			verstrclr = timestrclr = inkyWHITE
+	else:
+		if repover = "0.0.0":
+			boxclr = inkyRED
+			verstrtxt = "[✗] Error getting repository ver"
+			verstrfnt = timestrfnt = fontL
+			verstrclr = timestrclr = inkyWHITE
+		else:
+			boxclr = inkyRED
+			verstrtxt = "[✗] UPDATE AVAILABLE {}".format(repover)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	print(verstrtxt,"  ",timestrtxt)
