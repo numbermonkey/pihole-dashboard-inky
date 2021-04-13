@@ -55,7 +55,7 @@ inkyWHITE = 0
 inkyBLACK = 1
 inkyRED = 2
 DNSGoodCheck = "www.pi-hole.net"
-PHGitHubURL = "https://gthub.com/pi-hole/pi-hole"
+PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 
 # Parameters for conditional text
 cpucooltemp = 40.0
