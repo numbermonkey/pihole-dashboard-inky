@@ -80,11 +80,11 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 # Get Version
 #Get local version as reported by Pi-Hole
 	try:
-		cmd = "/usr/local/bin/pihole"
+		cmd = "/usr/local/bin/phole"
 		process = subprocess.run([cmd, "-v"], capture_output=True)
 	except FileNotFoundError:
 		print('PIHOLE COMMAND NOT FOUND')
-		sys.exit(1)
+		sys.exit(2)
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
 	char = output.index('v',11) # 11 to miss the first v in version
@@ -93,12 +93,12 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 #WRAP THIS IN TRY	
 	try:
 		process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-	except subprocess.CalledProcessError as e:
-		ret = e.returncode
-		if ret != 0:
+		procretcode = subprocess.CalledProcessError.returncode
+		if procretcode != 0:
 			print("ERROR CHECKING PIHOLE GITHUB. CHECK URL?")
-			sys.exit(1)
-			raise
+			sys.exit(2)
+	except SystemExit:
+		sys.exit(2)
 	repover = process.stdout.decode()[-6:].rstrip()
 #Build the string
 	if lclver == repover:
