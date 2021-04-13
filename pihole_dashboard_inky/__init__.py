@@ -108,7 +108,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
 # Draws the text lines as long as parameters are passed to it
-	if not None in {str1txt, str2txt, str3txt, str4txt, str5txt}
+	if not None in {str1txt, str2txt, str3txt, str4txt, str5txt}:
 # gap from top and indent
 		drop = 1
 		indent = 1
