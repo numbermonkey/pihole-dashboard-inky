@@ -102,7 +102,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 			verstrfnt = timestrfnt = fontS
 			verstrclr = timestrclr = inkyWHITE
 	elif repover > lclver:
-		if lclver = "0.0.0":
+		if lclver == "0.0.0":
 			blxclr = inkyRED
 			verstrtxt = "[✗] Error getting local ver"
 			verstrfnt = timestrfnt = fontL
@@ -113,7 +113,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	else:
-		if repover = "0.0.0":
+		if repover == "0.0.0":
 			boxclr = inkyRED
 			verstrtxt = "[✗] Error getting repository ver"
 			verstrfnt = timestrfnt = fontL
