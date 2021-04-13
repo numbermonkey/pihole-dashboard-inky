@@ -55,7 +55,7 @@ inkyWHITE = 0
 inkyBLACK = 1
 inkyRED = 2
 DNSGoodCheck = "www.pi-hole.net"
-PHGitHubURL = "https://gthub.com/pi-hole/pi-hole"
+PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 
 # Parameters for conditional text
 cpucooltemp = 40.0
@@ -80,7 +80,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 # Get Version
 #Get local version as reported by Pi-Hole
 	try:
-		cmd = "/usr/local/bin/pihole"
+		cmd = "/usr/local/bin/phole"
 		process = subprocess.run([cmd, "-v"], capture_output=True)
 	except FileNotFoundError:
 		print('PIHOLE COMMAND NOT FOUND')
