@@ -93,8 +93,9 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 #WRAP THIS IN TRY	
 	try:
 		process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-		procretcode = subprocess.CalledProcessError.returncode
-		if procretcode != 0:
+		e = subprocess.CalledProcessError
+		p = e.returncode
+		if p != 0:
 			print("ERROR CHECKING PIHOLE GITHUB. CHECK URL?")
 			sys.exit(2)
 	except SystemExit:
