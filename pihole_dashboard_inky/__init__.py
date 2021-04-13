@@ -84,6 +84,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 		process = subprocess.run([cmd, "-v"], capture_output=True)
 	except FileNotFoundError:
 		print('PIHOLE COMMAND NOT FOUND')
+		sys.exit(1)
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
 	char = output.index('v',11) # 11 to miss the first v in version
@@ -96,6 +97,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 		ret = e.returncode
 		if ret != 0:
 			print("ERROR CHECKING PIHOLE GITHUB. CHECK URL?")
+			sys.exit(1)
 	repover = process.stdout.decode()[-6:].rstrip()
 #Build the string
 	if lclver == repover:
