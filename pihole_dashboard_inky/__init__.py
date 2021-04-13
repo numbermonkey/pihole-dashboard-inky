@@ -87,7 +87,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 		char = output.index('v',11) # 11 to miss the first v in version
 		lclver = output[char+1:char+6]
 	else:
-		lclover = "0.0.0"
+		lclver = "0.0.0"
 # Now get Github repository version by reading last tag.
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
 	output = process.stdout.decode()
