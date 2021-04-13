@@ -78,17 +78,21 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	t = strftime("%H:%M", localtime())
 	timestrtxt = "@ {}".format(t)
 # Get Version
-	#Get local version as reported by Pi-Hole
-	#Need to do some squirrely text manipulation
-	cmd = "/usr/local/bin/pihole"
-	process = subprocess.run([cmd, "-v"], capture_output=True)
+#Get local version as reported by Pi-Hole
+	try:
+		cmd = "/usr/local/bin/pihole"
+		process = subprocess.run([cmd, "-v"], capture_output=True)
+	except FileNotFoundError:
+		print('PIHOLE COMMAND NOT FOUND')
+#Need to do some squirrely text manipulation
 	output = process.stdout.decode()
 	char = output.index('v',11) # 11 to miss the first v in version
 	lclver = output[char+1:char+6] 
-	#Get latest repository version by looking at last 6 chars (trailing space) of repo tags
+#Get latest repository version by looking at last 6 chars (trailing space) of repo tags
+#WRAP THIS IN TRY	
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
 	repover = process.stdout.decode()[-6:].rstrip()
-	#Build the string
+#Build the string
 	if lclver == repover:
 			boxclr = inkyBLACK
 			verstrtxt = "Pi-hole version is v{}".format(lclver)
@@ -103,8 +107,8 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
-# Draws the text lines 
-	if str1txt is not None:
+# Draws the text lines as long as parameters are passed to it
+	if not None in {str1txt, str2txt, str3txt, str4txt, str5txt}
 # gap from top and indent
 		drop = 1
 		indent = 1
@@ -127,6 +131,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	verstrfntw, verstrfnth = verstrfnt.getsize(verstrtxt)
 # Calculates box dimension based on font height
 	toprightcorner = inky_display.HEIGHT - verstrfnth - 1
+	assert (toprightcorner >=0), "ERR..SOMETHING WRONG DETERMINING TOP CORNER. FONT TOO LARGE?"
 	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT+1)], fill=boxclr)
 	print(toprightcorner)
 # Adds version and time to bottom box. 		
@@ -140,9 +145,9 @@ def update():
 
 # THIS DEF UPDATES THE TEXT LINES
 # Read the PH api values
+#WRAP THIS IN TRY	
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
-
 # GET TEMP
 # Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
