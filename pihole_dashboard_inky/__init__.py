@@ -45,9 +45,11 @@ font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
 fontL = ImageFont.truetype(font_name, 14)
 fontS = ImageFont.truetype(font_name, 12)
+#PH1 is the host of the code
 PH1IPAddress = "192.168.1.86"
 PH1Name = "PH2"
 PH1apiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+#PH2 is the other Pi-hole
 PH2IPAddress = "192.168.1.85"
 PH2Name = "PH1"
 PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
@@ -60,11 +62,11 @@ PHcmd = "/usr/local/bin/pihole"
 
 # Parameters for conditional text
 cpucooltemp = 40.0  # Below this temparature is considered Cool
-cpuoktemp = 65.0  # Below this temparature is considered OK
-cpubadtemp = 80.0  # Above this temparature is Bad
+cpuoktemp = 65.0  # Below this temparature is considered OK but Warm
+cpubadtemp = 80.0  # Below this temparature is Bad. Above is ELE.
 loadhigh = 0.7  # 5 min cpu load in excess of 0.7 is high
 utilhigh = 90.0  # A cpu utilisation %age of 90 is high
-blockpbad = 10.0  # This is a bad block %age
+blockpbad = 10.0  # This is a bad blocked %age. This will trigger a warning if block% falls lower than this
 GravDBDaysbad = 5  # Gravity database age over this is bad
 	
 # INKY SETUP
@@ -162,13 +164,13 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	verstrfntw, verstrfnth = verstrfnt.getsize(verstrtxt)
 	timestrfntw, timestrfnth = timestrfnt.getsize(timestrtxt)
 # Calculates box dimension based on font height
-	toprightcorner = inky_display.HEIGHT - verstrfnth - 1
-	assert (toprightcorner >=0), "ERR..SOMETHING WRONG DETERMINING TOP CORNER. FONT TOO LARGE?"
-	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT+1)], fill=boxclr)
+	toprightcornery = inky_display.HEIGHT - verstrfnth - 1
+	assert (toprightcornery >=0), "ERR..SOMETHING WRONG DETERMINING TOP CORNER. FONT TOO LARGE?"
+	draw.rectangle([(0, toprightcornery), (inky_display.WIDTH, inky_display.HEIGHT+1)], fill=boxclr)
 # Adds version and time to bottom box. 
 	boxtxtindent = 5
-	draw.text((boxtxtindent,toprightcorner), verstrtxt, verstrclr, verstrfnt)
-	draw.text((inky_display.WIDTH - timestrfntw - boxtxtindent,toprightcorner), timestrtxt, timestrclr, timestrfnt)
+	draw.text((boxtxtindent,toprightcornery), verstrtxt, verstrclr, verstrfnt)
+	draw.text((inky_display.WIDTH - timestrfntw - boxtxtindent,toprightcornery), timestrtxt, timestrclr, timestrfnt)
 # Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
@@ -286,7 +288,7 @@ def update():
 	PH2blockp = round(PH2stats['ads_percentage_today'],1)
 # Conditions for text output
 	if PH1blockp > blockpbad and PH2blockp > blockpbad:
-		blockpstr = "[✓] {}: {}%  {}: {}%".format(PH2Name,PH2blockp,PH1Name,PH1blockp)
+		blockpstr = "[✓] {}: {}%  {}: {}%".format(PH2Name,PH2blockp,PH1Name,PH1blockp) # Backwards cos I want "PH1" first!
 		blockpstrclr = inkyBLACK
 		blockpstrfnt = fontS
 	elif PH1blockp <= blockpbad:
@@ -309,7 +311,7 @@ def update():
 	PH2GravDBHours = PH2stats['gravity_last_updated']['relative']['hours']
 # Conditions for text output
 	if PH1GravDBDays <= GravDBDaysbad and PH2GravDBDays <= GravDBDaysbad:
-		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(PH2GravDBDays,PH2GravDBHours,PH1GravDBDays,PH1GravDBHours)
+		GDBagestr = "[✓] GDB {}:{}d{}h {}:{}d{}h".format(PH2Name,PH2GravDBDays,PH2GravDBHours,PH1Name,PH1GravDBDays,PH1GravDBHours) #Backwards to fix my order!
 		GDBagestrclr = inkyBLACK
 		GDBagestrfnt = fontS
 	elif PH1GravDBDays > GravDBDaysbad:
