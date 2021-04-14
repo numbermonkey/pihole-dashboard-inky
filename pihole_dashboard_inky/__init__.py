@@ -96,7 +96,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 		lclverint = 0
 	print (lclver)
 	print (type(lclver))
-	print (lvlverint)
+	print (lclverint)
 	print (type(lclverint))
 # Now get Github repository version by reading last tag.
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
@@ -113,7 +113,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	print (repover)
 	print (type(repover))
 	print (repoverint)
-	print (type(repover))
+	print (type(repoverint))
 #Build the string
 	if (lclverint != 0) and (repoverint != 0):
 			boxclr = inkyBLACK
