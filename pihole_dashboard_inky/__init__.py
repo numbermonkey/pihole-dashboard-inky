@@ -94,10 +94,8 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	else:
 		lclverstr = "0.0.0"
 		lclverint = 0
-# Now get Github repository version by reading last tag.
+#Now get Github repository version by reading last tag.
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-#	output = process.stdout.decode()
-#	if not "fatal" in output:
 	if not "fatal" in process.stdout.decode():
 		repoverstr = process.stdout.decode()[-6:].rstrip()
 		repoverint = int(''.join(i for i in repoverstr if i.isdigit()))
@@ -110,7 +108,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 #Build the string
 	if (lclverint == repoverint != 0):
 			boxclr = inkyBLACK
-			verstrtxt = "Pi-hole version is v{}".format(lclver)
+			verstrtxt = "Pi-hole version is v{}".format(lclverstr)
 			verstrfnt = timestrfnt = fontS
 			verstrclr = timestrclr = inkyWHITE
 	elif repoverint > lclverint:
