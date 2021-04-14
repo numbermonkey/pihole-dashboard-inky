@@ -45,9 +45,11 @@ font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
 fontL = ImageFont.truetype(font_name, 14)
 fontS = ImageFont.truetype(font_name, 12)
-PHIPAddress = "192.168.1.86"
-PHapiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
+PH1IPAddress = "192.168.1.86"
+PH1Name = "PH2"
+PH1apiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
 PH2IPAddress = "192.168.1.85"
+PH2Name = "PH1"
 PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
 inkyWHITE = 0
 inkyBLACK = 1
@@ -124,7 +126,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	else:
 		if repoverint == 0:
 			boxclr = inkyRED
-			verstrtxt = "[✗] Error getting repository ver"
+			verstrtxt = "[✗] Error getting repo ver"
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 		else:
@@ -176,7 +178,7 @@ def update():
 # THIS DEF UPDATES THE TEXT LINES
 # Read the PH api values
 #WRAP THIS IN TRY	
-	PHstats = json.load(urllib.request.urlopen(PHapiURL))
+	PH1stats = json.load(urllib.request.urlopen(PH1apiURL))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
 # GET TEMPERATURE
 # Query GPIO for the temperature
@@ -232,38 +234,38 @@ def update():
 
 # GET PIHOLE STATUS
 # Use api JSON get PI-Hole reported status
-	PHReportedStatus = PHstats['status']
+	PH1ReportedStatus = PH1stats['status']
 	PH2ReportedStatus = PH2stats['status']
 # Get actual DNS status through dig probe
-	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PHIPAddress]).decode():
-		PHDNSStatus = "enabled"
+	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH1IPAddress]).decode():
+		PH1DNSStatus = "enabled"
 	else:
-		PHDNSStatus = "dnsdown"
+		PH1DNSStatus = "dnsdown"
 	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH2IPAddress]).decode():
 		PH2DNSStatus = "enabled"
 	else:
 		PH2DNSStatus = "dnsdown"	
 # Conditions for text output
-	if PHReportedStatus == PH2ReportedStatus == PHDNSStatus == PH2DNSStatus == "enabled":
+	if PH1ReportedStatus == PH2ReportedStatus == PH1DNSStatus == PH2DNSStatus == "enabled":
 		PHStatusstrtxt = "[✓] Status PH1:[✓] PH2:[✓]"
 		PHStatusstrtxtclr = inkyBLACK
 		PHStatusstrtxtfnt = fontS
 	elif PH2ReportedStatus != PH2DNSStatus:
 		if PH2ReportedStatus != "enabled":
-			PHStatusstrtxt = "[✗]PH1 PH:[✗] DNS:[✓]"
+			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH2Name)
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontL
 		else:
-			PHStatusstrtxt = "[✗]PH1 PH:[✓] DNS:[✗]"
+			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH2Name)
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontL
-	elif PHReportedStatus != PHDNSStatus:
-		if PHReportedStatus != "enabled":
-			PHStatusstrtxt = "[✗]PH2 PH:[✗] DNS:[✓]"
+	elif PH1ReportedStatus != PH1DNSStatus:
+		if PH1ReportedStatus != "enabled":
+			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH1Name)
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontL
 		else:
-			PHStatusstrtxt = "[✗]PH2 PH:[✓] DNS:[✗]"
+			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH1Name)
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontL
 	else:
@@ -275,24 +277,24 @@ def update():
 
 # GET PIHOLE STATISTICS
 # First for local PH. Uses api JSON
-	unique_clients = PHstats['unique_clients']
-	ads_blocked_today = PHstats['ads_blocked_today']
-	blockp = round(PHstats['ads_percentage_today'],1)
+	unique_clients = PH1stats['unique_clients']
+	ads_blocked_today = PH1stats['ads_blocked_today']
+	blockpPH1 = round(PH1stats['ads_percentage_today'],1)
 # Then for 2nd PH. Uses api JSON
 	unique_clients2 = PH2stats['unique_clients']
 	ads_blocked_todayPH2 = PH2stats['ads_blocked_today']
 	blockpPH2 = round(PH2stats['ads_percentage_today'],1)
 # Conditions for text output
-	if blockp > blockpbad and blockpPH2 > blockpbad:
-		blockpstr = "[✓] PH1: {}%  PH2: {}%".format(blockpPH2,blockp)
+	if blockpPH1 > blockpbad and blockpPH2 > blockpbad:
+		blockpstr = "[✓] {}: {}%  {}: {}%".format(PH2Name,blockpPH2,PH1Name,blockpPH1)
 		blockpstrclr = inkyBLACK
 		blockpstrfnt = fontS
-	elif blockp <= blockpbad:
-		blockpstr = "[✗] DANGER Block % PH2:{}".format(blockp)
+	elif blockpPH1 <= blockpbad:
+		blockpstr = "[✗] DANGER Block % {}:{}".format(PH1Name,blockpPH1)
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	elif blockpPH2 <= blockpbad:
-		blockpstr = "[✗] DANGER Block % PH1:{}".format(blockpPH2)
+		blockpstr = "[✗] DANGER Block % {}:{}".format(PH2Name,blockpPH2)
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	print(blockpstr)
@@ -300,22 +302,22 @@ def update():
 
 # GET GRAVITY AGE
 # First for local PH. Uses api JSON
-	PHGravDBDays = PHstats['gravity_last_updated']['relative']['days']
-	PHGravDBHours = PHstats['gravity_last_updated']['relative']['hours']
+	PH1GravDBDays = PH1stats['gravity_last_updated']['relative']['days']
+	PH1GravDBHours = PH1stats['gravity_last_updated']['relative']['hours']
 # Then for 2nd PH. Uses api JSON
 	PH2GravDBDays = PH2stats['gravity_last_updated']['relative']['days']
 	PH2GravDBHours = PH2stats['gravity_last_updated']['relative']['hours']
 # Conditions for text output
-	if PHGravDBDays <= GravDBDaysbad and PH2GravDBDays <= GravDBDaysbad:
-		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(PH2GravDBDays,PH2GravDBHours,PHGravDBDays,PHGravDBHours)
+	if PH1GravDBDays <= GravDBDaysbad and PH2GravDBDays <= GravDBDaysbad:
+		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(PH2GravDBDays,PH2GravDBHours,PH1GravDBDays,PH1GravDBHours)
 		GDBagestrclr = inkyBLACK
 		GDBagestrfnt = fontS
-	elif PHGravDBDays > GravDBDaysbad:
-		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(PHGravDBDays)
+	elif PH1GravDBDays > GravDBDaysbad:
+		GDBagestr = "[✗] WARNING GDB Age {}:{} days".format(PH1Name,PH1GravDBDays)
 		GDBagestrclr = inkyBLACK
 		GDBagestrfnt = fontL
 	elif PH2GravDBDays > GravDBDaysbad:
-		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(PH2GravDBDays)
+		GDBagestr = "[✗] WARNING GDB Age {}:{} days".format(PH2Name,PH2GravDBDays)
 		GDBagestrclr = inkyRED
 		GDBagestrfnt = fontL
 	print(GDBagestr)
@@ -346,7 +348,7 @@ def update():
 	LINE5CLR = PHStatusstrtxtclr
 	LINE5FNT = PHStatusstrtxtfnt
 #	OUTPUT_EXAMPLE = ip_str
-#	OUTPUT_EXAMPLE = PHReportedStatus[6].strip().replace('✗', '×')
+#	OUTPUT_EXAMPLE = PH1ReportedStatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
 	draw_dashboard(LINE1TXT, LINE1CLR, LINE1FNT, LINE2TXT, LINE2CLR, LINE2FNT, LINE3TXT, LINE3CLR, LINE3FNT, LINE4TXT, LINE4CLR, LINE4FNT, LINE5TXT, LINE5CLR, LINE5FNT)
