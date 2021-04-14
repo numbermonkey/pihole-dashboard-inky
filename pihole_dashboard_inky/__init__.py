@@ -273,28 +273,28 @@ def update():
 		PHStatusstrtxtclr = inkyRED
 		PHStatusstrtxtfnt = fontL
 		
-# Moved print(PHStatusstrtxt) down to better emulate display
+# Moved print(PHStatusstrtxt) down to better emulate display in run-time terminal output
 
 # GET PIHOLE STATISTICS
 # First for local PH. Uses api JSON
-	unique_clients = PH1stats['unique_clients']
-	ads_blocked_today = PH1stats['ads_blocked_today']
-	blockpPH1 = round(PH1stats['ads_percentage_today'],1)
+	PH1unique_clients = PH1stats['unique_clients']
+	PH1ads_blocked_today = PH1stats['ads_blocked_today']
+	PH1blockp = round(PH1stats['ads_percentage_today'],1)
 # Then for 2nd PH. Uses api JSON
-	unique_clients2 = PH2stats['unique_clients']
-	ads_blocked_todayPH2 = PH2stats['ads_blocked_today']
-	blockpPH2 = round(PH2stats['ads_percentage_today'],1)
+	PH2unique_clients2 = PH2stats['unique_clients']
+	PH2ads_blocked_today = PH2stats['ads_blocked_today']
+	PH2blockp = round(PH2stats['ads_percentage_today'],1)
 # Conditions for text output
-	if blockpPH1 > blockpbad and blockpPH2 > blockpbad:
-		blockpstr = "[✓] {}: {}%  {}: {}%".format(PH2Name,blockpPH2,PH1Name,blockpPH1)
+	if PH1blockp > blockpbad and PH2blockp > blockpbad:
+		blockpstr = "[✓] {}: {}%  {}: {}%".format(PH2Name,PH2blockp,PH1Name,PH1blockp)
 		blockpstrclr = inkyBLACK
 		blockpstrfnt = fontS
-	elif blockpPH1 <= blockpbad:
-		blockpstr = "[✗] DANGER Block % {}:{}".format(PH1Name,blockpPH1)
+	elif PH1blockp <= blockpbad:
+		blockpstr = "[✗] DANGER Block % {}:{}".format(PH1Name,PH1blockp)
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
-	elif blockpPH2 <= blockpbad:
-		blockpstr = "[✗] DANGER Block % {}:{}".format(PH2Name,blockpPH2)
+	elif PH2blockp <= blockpbad:
+		blockpstr = "[✗] DANGER Block % {}:{}".format(PH2Name,PH2blockp)
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	print(blockpstr)
