@@ -101,7 +101,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	if not "fatal" in process.stdout.decode():
 		repover = process.stdout.decode()[-6:].rstrip()
 		repoverint = ''.join(i for i in repover if i.isdigit())
-		if repoverint < 100
+		if repoverint < 100:
 			repoverint = repoverint * 10
 	else:
 		repover = "0.0.0"
