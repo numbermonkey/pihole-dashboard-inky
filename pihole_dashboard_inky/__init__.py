@@ -107,7 +107,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 		repoverint = int(''.join(i for i in repoverstr if i.isdigit()))
 		if repoverint < 100:
 			repoverint = repoverint * 10
-			repoverstr = right(repoverstr,3)
+			repoverstr = repoverstr[-3:]
 	else:
 		repoverstr = "0.0.0"
 		repoverint = 0
