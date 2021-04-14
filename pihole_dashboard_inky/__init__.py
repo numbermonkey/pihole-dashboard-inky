@@ -89,13 +89,13 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	output = process.stdout.decode()
 	if "Pi-hole" in output:
 		lclchar = output.index('v',11) # 11 to miss the first v in version
-		lclver = output[lclchar+1:lclchar+6]
-		lclverint = int(''.join(i for i in lclver if i.isdigit()))
+		lclverstr = output[lclchar+1:lclchar+6]
+		lclverint = int(''.join(i for i in lclverstr if i.isdigit()))
 	else:
-		lclver = "0.0.0"
+		lclverstr = "0.0.0"
 		lclverint = 0
-	print (lclver)
-	print (type(lclver))
+	print (lclverstr)
+	print (type(lclverstr))
 	print (lclverint)
 	print (type(lclverint))
 # Now get Github repository version by reading last tag.
@@ -103,19 +103,20 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 #	output = process.stdout.decode()
 #	if not "fatal" in output:
 	if not "fatal" in process.stdout.decode():
-		repover = process.stdout.decode()[-6:].rstrip()
-		repoverint = int(''.join(i for i in repover if i.isdigit()))
+		repoverstr = process.stdout.decode()[-6:].rstrip()
+		repoverint = int(''.join(i for i in repoverstr if i.isdigit()))
 		if repoverint < 100:
 			repoverint = repoverint * 10
+			repoverstr = right(repoverstr,3)
 	else:
-		repover = "0.0.0"
+		repoverstr = "0.0.0"
 		repoverint = 0
-	print (repover)
-	print (type(repover))
+	print (repoverstr)
+	print (type(repoverstr))
 	print (repoverint)
 	print (type(repoverint))
 #Build the string
-	if (lclverint != 0) and (repoverint != 0):
+	if (lclverint == repoverint != 0):
 			boxclr = inkyBLACK
 			verstrtxt = "Pi-hole version is v{}".format(lclver)
 			verstrfnt = timestrfnt = fontS
