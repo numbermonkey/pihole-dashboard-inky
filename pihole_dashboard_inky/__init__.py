@@ -94,10 +94,6 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	else:
 		lclverstr = "0.0.0"
 		lclverint = 0
-	print (lclverstr)
-	print (type(lclverstr))
-	print (lclverint)
-	print (type(lclverint))
 # Now get Github repository version by reading last tag.
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
 #	output = process.stdout.decode()
@@ -111,10 +107,6 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	else:
 		repoverstr = "0.0.0"
 		repoverint = 0
-	print (repoverstr)
-	print (type(repoverstr))
-	print (repoverint)
-	print (type(repoverint))
 #Build the string
 	if (lclverint == repoverint != 0):
 			boxclr = inkyBLACK
@@ -173,7 +165,6 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	toprightcorner = inky_display.HEIGHT - verstrfnth - 1
 	assert (toprightcorner >=0), "ERR..SOMETHING WRONG DETERMINING TOP CORNER. FONT TOO LARGE?"
 	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT+1)], fill=boxclr)
-	print(toprightcorner)
 # Adds version and time to bottom box. 		
 	draw.text((5,toprightcorner), verstrtxt, verstrclr, verstrfnt)
 	draw.text((150,toprightcorner), timestrtxt, timestrclr, timestrfnt)
