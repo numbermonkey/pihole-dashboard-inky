@@ -56,6 +56,7 @@ inkyBLACK = 1
 inkyRED = 2
 DNSGoodCheck = "www.pi-hole.net"
 PHGitHubURL = "https://github.com/pi-hole/pi-hole"
+PHpath = "/usr/local/bin/pihole"
 
 # Parameters for conditional text
 cpucooltemp = 40.0
@@ -79,11 +80,11 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	timestrtxt = "@ {}".format(t)
 # Get Version
 #Get local version as reported by Pi-Hole
-	cmd = "/usr/local/bin/pihole"
+	cmd = PHpath
 	process = subprocess.run([cmd, "-v"], capture_output=True)
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
-	if "Pi-Hole" in output:
+	if "Pi-hole" in output:
 		char = output.index('v',11) # 11 to miss the first v in version
 		lclver = output[char+1:char+6]
 	else:
@@ -96,14 +97,14 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	else:
 		repover = "0.0.0"
 #Build the string
-	if lclver == repover:
+	if lclver == repover != "0.0.0":
 			boxclr = inkyBLACK
 			verstrtxt = "Pi-hole version is v{}".format(lclver)
 			verstrfnt = timestrfnt = fontS
 			verstrclr = timestrclr = inkyWHITE
 	elif repover > lclver:
 		if lclver == "0.0.0":
-			blxclr = inkyRED
+			boxclr = inkyRED
 			verstrtxt = "[✗] Error getting local ver"
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
