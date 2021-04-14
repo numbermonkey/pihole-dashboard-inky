@@ -41,10 +41,10 @@ if os.geteuid() != 0:
 # STATIC VARIABLES
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
-hostname = socket.gethostname() # Err..not a var
-font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')  # Err..not a var
-font_name = os.path.join(font_dir, "font.ttf")  # Err..not a var
-fontL = ImageFont.truetype(font_name, 16)
+hostname = socket.gethostname() 
+font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
+font_name = os.path.join(font_dir, "font.ttf")
+fontL = ImageFont.truetype(font_name, 14)
 fontS = ImageFont.truetype(font_name, 12)
 PHIPAddress = "192.168.1.86"
 PHapiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
@@ -58,13 +58,13 @@ PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 PHcmd = "/usr/local/bin/pihole"
 
 # Parameters for conditional text
-cpucooltemp = 40.0
-cpuoktemp = 65.0
-cpubadtemp = 80.0
-loadhigh = 0.7
-utilhigh = 90.0
-blockpbad = 0.0
-GravDBDaysbad = 5
+cpucooltemp = 40.0  # Below this temparature is considered Cool
+cpuoktemp = 65.0  # Below this temparature is considered OK
+cpubadtemp = 80.0  # Above this temparature is Bad
+loadhigh = 0.7  # 5 min cpu load in excess of 0.7 is high
+utilhigh = 90.0  # A cpu utilisation %age of 90 is high
+blockpbad = 0.0  # This is a bad block %age
+GravDBDaysbad = 5  # Gravity database age over this is bad
 	
 # INKY SETUP
 inky_display = InkyPHAT("red")
@@ -119,7 +119,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 			verstrclr = timestrclr = inkyWHITE
 		else:
 			boxclr = inkyRED
-			verstrtxt = "[✗] REPO UPDATE v{}".format(repoverstr)
+			verstrtxt = "[✗] REPO v{}".format(repoverstr)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	else:
