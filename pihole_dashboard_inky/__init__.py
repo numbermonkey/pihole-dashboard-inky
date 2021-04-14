@@ -2,7 +2,7 @@
 
 # pihole-dashboard-inky
 # Copyright (C) 2021  santoru
-# modified for inky by numbermonkey
+# modified for inky RED by numbermonkey
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,8 +28,7 @@ import urllib.request
 import json
 import os
 import sys
-import hashlib
-import re
+#import re
 import netifaces as ni
 import gpiozero as gz
 from time import localtime, strftime
@@ -42,9 +41,9 @@ if os.geteuid() != 0:
 # STATIC VARIABLES
 INTERFACE = "eth0"
 PIHOLE_PORT = 80
-hostname = socket.gethostname()
-font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
-font_name = os.path.join(font_dir, "font.ttf")
+hostname = socket.gethostname() # Err..not a var
+font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')  # Err..not a var
+font_name = os.path.join(font_dir, "font.ttf")  # Err..not a var
 fontL = ImageFont.truetype(font_name, 16)
 fontS = ImageFont.truetype(font_name, 12)
 PHIPAddress = "192.168.1.86"
@@ -56,7 +55,7 @@ inkyBLACK = 1
 inkyRED = 2
 DNSGoodCheck = "www.pi-hole.net"
 PHGitHubURL = "https://github.com/pi-hole/pi-hole"
-PHpath = "/usr/local/bin/pihole"
+PHcmd = "/usr/local/bin/pihole"
 
 # Parameters for conditional text
 cpucooltemp = 40.0
@@ -72,7 +71,11 @@ inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
 # Def draws 6 lines of text. Each needs 3 arguments: txt (content), clr (colour 0=White, 1=Black, 2=Red) ,fnt (font - defined in static section)
-def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=1, str2fnt=None, str3txt=None, str3clr = 1, str3fnt=None, str4txt=None, str4clr = 1, str4fnt=None, str5txt=None, str5clr = 1, str5fnt=None):
+def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, 
+                   str2txt=None, str2clr=1, str2fnt=None, 
+				   str3txt=None, str3clr=1, str3fnt=None, 
+				   str4txt=None, str4clr=1, str4fnt=None, 
+				   str5txt=None, str5clr=1, str5fnt=None):
 
 # THIS DEF DRAWS THE FINAL SCREEN
 # Get Time
@@ -80,7 +83,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 	timestrtxt = "@ {}".format(t)
 # Get Version
 #Get local version as reported by Pi-Hole
-	cmd = PHpath
+	cmd = PHcmd
 	process = subprocess.run([cmd, "-v"], capture_output=True)
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
@@ -121,7 +124,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, str2txt=None, str2clr=
 			verstrclr = timestrclr = inkyWHITE
 		else:
 			boxclr = inkyRED
-			verstrtxt = "[✗] UPDATE AVAILABLE {}".format(repover)
+			verstrtxt = "[✗] REPO IS EARLIER VER ?? {}".format(repover)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	print(verstrtxt,"  ",timestrtxt)
@@ -169,7 +172,7 @@ def update():
 #WRAP THIS IN TRY	
 	PHstats = json.load(urllib.request.urlopen(PHapiURL))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
-# GET TEMP
+# GET TEMPERATURE
 # Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
@@ -292,22 +295,22 @@ def update():
 
 # GET GRAVITY AGE
 # First for local PH. Uses api JSON
-	GravDBDays = PHstats['gravity_last_updated']['relative']['days']
-	GravDBHours = PHstats['gravity_last_updated']['relative']['hours']
+	PHGravDBDays = PHstats['gravity_last_updated']['relative']['days']
+	PHGravDBHours = PHstats['gravity_last_updated']['relative']['hours']
 # Then for 2nd PH. Uses api JSON
-	GravDBPH2Days = PH2stats['gravity_last_updated']['relative']['days']
-	GravDBPH2Hours = PH2stats['gravity_last_updated']['relative']['hours']
+	PH2GravDBDays = PH2stats['gravity_last_updated']['relative']['days']
+	PH2GravDBHours = PH2stats['gravity_last_updated']['relative']['hours']
 # Conditions for text output
-	if GravDBDays <= GravDBDaysbad and GravDBPH2Days <= GravDBDaysbad:
-		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(GravDBDays,GravDBHours,GravDBPH2Days,GravDBPH2Hours)
+	if PHGravDBDays <= GravDBDaysbad and PH2GravDBDays <= GravDBDaysbad:
+		GDBagestr = "[✓] GDB PH1:{}d{}h PH2:{}d{}h".format(PH2GravDBDays,PH2GravDBHours,PHGravDBDays,PHGravDBHours)
 		GDBagestrclr = inkyBLACK
 		GDBagestrfnt = fontS
-	elif GravDBDays > GravDBDaysbad:
-		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(GravDBDays)
+	elif PHGravDBDays > GravDBDaysbad:
+		GDBagestr = "[✗] WARNING GDB Age PH2:{} days".format(PHGravDBDays)
 		GDBagestrclr = inkyBLACK
 		GDBagestrfnt = fontL
-	elif GravDBPH2Days > GravDBDaysbad:
-		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(GravDBDays)
+	elif PH2GravDBDays > GravDBDaysbad:
+		GDBagestr = "[✗] WARNING GDB Age PH1:{} days".format(PH2GravDBDays)
 		GDBagestrclr = inkyRED
 		GDBagestrfnt = fontL
 	print(GDBagestr)
