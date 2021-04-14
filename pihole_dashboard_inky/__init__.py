@@ -28,7 +28,6 @@ import urllib.request
 import json
 import os
 import sys
-#import re
 import netifaces as ni
 import gpiozero as gz
 from time import localtime, strftime
@@ -63,14 +62,14 @@ cpuoktemp = 65.0  # Below this temparature is considered OK
 cpubadtemp = 80.0  # Above this temparature is Bad
 loadhigh = 0.7  # 5 min cpu load in excess of 0.7 is high
 utilhigh = 90.0  # A cpu utilisation %age of 90 is high
-blockpbad = 0.0  # This is a bad block %age
+blockpbad = 10.0  # This is a bad block %age
 GravDBDaysbad = 5  # Gravity database age over this is bad
 	
 # INKY SETUP
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
-# Def draws 6 lines of text. Each needs 3 arguments: txt (content), clr (colour 0=White, 1=Black, 2=Red) ,fnt (font - defined in static section)
+# Def draws 5 lines of text and a bottom bar. Each needs 3 arguments: txt (content), clr (colour 0=White, 1=Black, 2=Red) ,fnt (font - defined in static section)
 def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, 
                    str2txt=None, str2clr=1, str2fnt=None, 
 				   str3txt=None, str3clr=1, str3fnt=None, 
@@ -157,15 +156,17 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 		drop = drop + h + 1
 		draw.text((indent,drop),str5txt, str5clr, str5fnt)
 # Rectangle at bottom
-# Measures height of font used for version text
+# Measures width & height of text used for bar given font size
 	verstrfntw, verstrfnth = verstrfnt.getsize(verstrtxt)
+	timestrfntw, timestrfnth = timestrfnt.getsize(timestrtxt)
 # Calculates box dimension based on font height
 	toprightcorner = inky_display.HEIGHT - verstrfnth - 1
 	assert (toprightcorner >=0), "ERR..SOMETHING WRONG DETERMINING TOP CORNER. FONT TOO LARGE?"
 	draw.rectangle([(0, toprightcorner), (inky_display.WIDTH, inky_display.HEIGHT+1)], fill=boxclr)
-# Adds version and time to bottom box. 		
-	draw.text((5,toprightcorner), verstrtxt, verstrclr, verstrfnt)
-	draw.text((150,toprightcorner), timestrtxt, timestrclr, timestrfnt)
+# Adds version and time to bottom box. 
+	boxtxtindent = 5
+	draw.text((boxtxtindent,toprightcorner), verstrtxt, verstrclr, verstrfnt)
+	draw.text((inky_display.WIDTH - timestrfntw - boxtxtindent,toprightcorner), timestrtxt, timestrclr, timestrfnt)
 # Send to Inky
 	inky_display.set_image(img)
 	inky_display.show()
@@ -214,7 +215,6 @@ def update():
 	idle_delta, total_delta = idle - last_idle, total - last_total
 	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
 	utilisation = round(utilisation, 1)
-#	last_idle, last_total = idle, total
 # Conditions for text output
 	if load5min < loadhigh:
 		loadstr = "[✓] Load: {} at CPU: {}%".format(load5min,utilisation)
@@ -222,7 +222,7 @@ def update():
 		loadstrfnt = fontS
 	elif load5min >= loadhigh and utilisation < utilhigh:
 		loadstr = "[✗] Load:{} CPU:{}%".format(load5min,utilisation)
-		loadstrclr = inkyRED
+		loadstrclr = inkyBLACK
 		loadstrfnt = fontL
 	elif load5min >= loadhigh and utilisation >= utilhigh:
 		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
