@@ -88,23 +88,26 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
 	if "Pi-hole" in output:
-		char = output.index('v',11) # 11 to miss the first v in version
-		lclver = output[char+1:char+6]
+		lclchar = output.index('v',11) # 11 to miss the first v in version
+		lclver = output[lclchar+1:lclchar+6]
 		lclverint = ''.join(i for i in lclver if i.isdigit())
 	else:
 		lclver = "0.0.0"
 		lclverint = 0
 # Now get Github repository version by reading last tag.
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-	output = process.stdout.decode()
-	if not "fatal" in output:
+#	output = process.stdout.decode()
+#	if not "fatal" in output:
+	if not "fatal" in process.stdout.decode():
 		repover = process.stdout.decode()[-6:].rstrip()
 		repoverint = ''.join(i for i in repover if i.isdigit())
+		if repoverint < 100
+			repoverint = repoverint * 10
 	else:
 		repover = "0.0.0"
 		repoverint = 0
 #Build the string
-	if lclverint == repoverint != 0:
+	if (lclverint != 0) and (repoverint != 0):
 			boxclr = inkyBLACK
 			verstrtxt = "Pi-hole version is v{}".format(lclver)
 			verstrfnt = timestrfnt = fontS
@@ -117,7 +120,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 			verstrclr = timestrclr = inkyWHITE
 		else:
 			boxclr = inkyRED
-			verstrtxt = "[✗] UPDATE AVAILABLE {}".format(repover)
+			verstrtxt = "[✗] REPO UPDATE v{}".format(repover)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	else:
@@ -128,7 +131,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 			verstrclr = timestrclr = inkyWHITE
 		else:
 			boxclr = inkyRED
-			verstrtxt = "[✗] REPO IS EARLIER VER ?? {}".format(repover)
+			verstrtxt = "[✗] REPO IS EARLIER ?? {}".format(repover)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	print(verstrtxt,"  ",timestrtxt)
