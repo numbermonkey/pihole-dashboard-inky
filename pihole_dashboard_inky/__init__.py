@@ -129,7 +129,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 			verstrclr = timestrclr = inkyWHITE
 		else:
 			boxclr = inkyRED
-			verstrtxt = "[✗] REPO UPDATE v{}".format(repover)
+			verstrtxt = "[✗] REPO UPDATE v{}".format(repoverstr)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	else:
@@ -140,7 +140,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 			verstrclr = timestrclr = inkyWHITE
 		else:
 			boxclr = inkyRED
-			verstrtxt = "[✗] REPO IS EARLIER ?? {}".format(repover)
+			verstrtxt = "[✗] REPO IS EARLIER ?? {}".format(repoverstr)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	print(verstrtxt,"  ",timestrtxt)
