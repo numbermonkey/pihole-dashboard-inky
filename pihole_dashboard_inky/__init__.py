@@ -90,7 +90,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	if "Pi-hole" in output:
 		lclchar = output.index('v',11) # 11 to miss the first v in version
 		lclver = output[lclchar+1:lclchar+6]
-		lclverint = ''.join(i for i in lclver if i.isdigit())
+		lclverint = int(''.join(i for i in lclver if i.isdigit()))
 	else:
 		lclver = "0.0.0"
 		lclverint = 0
@@ -100,7 +100,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 #	if not "fatal" in output:
 	if not "fatal" in process.stdout.decode():
 		repover = process.stdout.decode()[-6:].rstrip()
-		repoverint = ''.join(i for i in repover if i.isdigit())
+		repoverint = int(''.join(i for i in repover if i.isdigit()))
 		if repoverint < 100:
 			repoverint = repoverint * 10
 	else:
