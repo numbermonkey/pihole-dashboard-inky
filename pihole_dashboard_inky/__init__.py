@@ -249,11 +249,11 @@ def update():
 
 # GET PIHOLE STATUS
 # Use api JSON get PI-Hole reported status
-	if PH1URLstatus = "up":
+	if PH1URLstatus == "up":
 		PH1ReportedStatus = PH1stats['status']
 	else:
 		PH1ReportedStatus = "URL Down"
-	if PH2URLstatus = "up":
+	if PH2URLstatus == "up":
 		PH2ReportedStatus = PH2stats['status']
 	else:
 		PH2ReportedStatus = "URL Down"
