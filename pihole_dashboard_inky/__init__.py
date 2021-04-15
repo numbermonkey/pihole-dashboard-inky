@@ -182,14 +182,14 @@ def update():
 # THIS DEF UPDATES THE TEXT LINES
 # Read the PH api values
 	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
-	if PH1URLcheck <> 200:
+	if PH1URLcheck != 200:
 		PH1URLstatus = "down"
 	else:
 		PH1URLstatus = "up"	
 	if PH1URLstatus == "up":
 		PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
 	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).getcode()
-	if PH2URLcheck <> 200:
+	if PH2URLcheck != 200:
 		PH2URLstatus = "down"
 	else:
 		PH2URLstatus = "up"	
