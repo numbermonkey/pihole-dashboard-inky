@@ -43,7 +43,8 @@ PIHOLE_PORT = 80
 hostname = socket.gethostname() 
 font_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 font_name = os.path.join(font_dir, "font.ttf")
-fontL = ImageFont.truetype(font_name, 14)
+fontL = ImageFont.truetype(font_name, 16)
+fontM = ImageFont.truetype(font_name, 14)
 fontS = ImageFont.truetype(font_name, 12)
 #PH1 is the host of the code
 PH1IPAddress = "192.168.1.86"
@@ -59,6 +60,7 @@ inkyRED = 2
 DNSGoodCheck = "www.pi-hole.net"
 PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 PHcmd = "/usr/local/bin/pihole"
+URLtimeout = 1
 
 # Parameters for conditional text
 cpucooltemp = 40.0  # Below this temparature is considered Cool
@@ -99,7 +101,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 		lclverint = 0
 #Now get Github repository version by reading last tag.
 	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-	if not "fatal" in process.stdout.decode():
+	if not "fatal" in process.stderr.decode():
 		repoverstr = process.stdout.decode()[-6:].rstrip()
 		repoverint = int(''.join(i for i in repoverstr if i.isdigit()))
 		if repoverint < 100:
@@ -118,18 +120,18 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 		if lclverint == 0:
 			boxclr = inkyRED
 			verstrtxt = "[✗] Error getting local ver"
-			verstrfnt = timestrfnt = fontL
+			verstrfnt = timestrfnt = fontM
 			verstrclr = timestrclr = inkyWHITE
 		else:
 			boxclr = inkyRED
-			verstrtxt = "[✗] REPO v{}".format(repoverstr)
+			verstrtxt = "[✗] UPDATE v{}".format(repoverstr)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
 	else:
 		if repoverint == 0:
 			boxclr = inkyRED
 			verstrtxt = "[✗] Error getting repo ver"
-			verstrfnt = timestrfnt = fontL
+			verstrfnt = timestrfnt = fontM
 			verstrclr = timestrclr = inkyWHITE
 		else:
 			boxclr = inkyRED
@@ -179,9 +181,20 @@ def update():
 
 # THIS DEF UPDATES THE TEXT LINES
 # Read the PH api values
-#WRAP THIS IN TRY	
-	PH1stats = json.load(urllib.request.urlopen(PH1apiURL))
-	PH2stats = json.load(urllib.request.urlopen(PH2apiURL))
+	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
+	if PH1URLcheck <> 200:
+		PH1URLstatus = "down"
+	else:
+		PH1URLstatus = "up"	
+	if PH1URLstatus == "up":
+		PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
+	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).getcode()
+	if PH2URLcheck <> 200:
+		PH2URLstatus = "down"
+	else:
+		PH2URLstatus = "up"	
+	if PH2URLstatus == "up":
+		PH2stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
 # GET TEMPERATURE
 # Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
@@ -194,7 +207,7 @@ def update():
 	elif cpu_temp > cpucooltemp <= cpuoktemp:
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
 		cputempstrclr = inkyBLACK
-		cputempstrfnt = fontL
+		cputempstrfnt = fontM
 	elif cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
 		cputempstrclr = inkyRED
@@ -227,7 +240,7 @@ def update():
 	elif load5min >= loadhigh and utilisation < utilhigh:
 		loadstr = "[✗] Load:{} CPU:{}%".format(load5min,utilisation)
 		loadstrclr = inkyBLACK
-		loadstrfnt = fontL
+		loadstrfnt = fontM
 	elif load5min >= loadhigh and utilisation >= utilhigh:
 		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
 		loadstrclr = inkyRED
@@ -236,8 +249,14 @@ def update():
 
 # GET PIHOLE STATUS
 # Use api JSON get PI-Hole reported status
-	PH1ReportedStatus = PH1stats['status']
-	PH2ReportedStatus = PH2stats['status']
+	if PH1URLstatus = "up":
+		PH1ReportedStatus = PH1stats['status']
+	else:
+		PH1ReportedStatus = "URL Down"
+	if PH2URLstatus = "up":
+		PH2ReportedStatus = PH2stats['status']
+	else:
+		PH2ReportedStatus = "URL Down"
 # Get actual DNS status through dig probe
 	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH1IPAddress]).decode():
 		PH1DNSStatus = "enabled"
@@ -256,20 +275,20 @@ def update():
 		if PH2ReportedStatus != "enabled":
 			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH2Name)
 			PHStatusstrtxtclr = inkyRED
-			PHStatusstrtxtfnt = fontL
+			PHStatusstrtxtfnt = fontM
 		else:
 			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH2Name)
 			PHStatusstrtxtclr = inkyRED
-			PHStatusstrtxtfnt = fontL
+			PHStatusstrtxtfnt = fontM
 	elif PH1ReportedStatus != PH1DNSStatus:
 		if PH1ReportedStatus != "enabled":
 			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH1Name)
 			PHStatusstrtxtclr = inkyRED
-			PHStatusstrtxtfnt = fontL
+			PHStatusstrtxtfnt = fontM
 		else:
 			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH1Name)
 			PHStatusstrtxtclr = inkyRED
-			PHStatusstrtxtfnt = fontL
+			PHStatusstrtxtfnt = fontM
 	else:
 		PHStatusstrtxt = " [✗] [✗] AWOOGA !! [✗] [✗]"
 		PHStatusstrtxtclr = inkyRED
