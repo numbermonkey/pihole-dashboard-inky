@@ -53,7 +53,7 @@ PH1apiURL = "http://127.0.0.1:{}/admin/api.php".format(PIHOLE_PORT)
 #PH2 is the other Pi-hole
 PH2IPAddress = "192.168.1.85"
 PH2Name = "PH1"
-PH2apiURL = "http://192.168.1.85:{}/admin/api.php".format(PIHOLE_PORT)
+PH2apiURL = "http://{}:{}/admin/api.php".format(PH2IPAddress,PIHOLE_PORT)
 inkyWHITE = 0
 inkyBLACK = 1
 inkyRED = 2
@@ -181,20 +181,28 @@ def update():
 
 # THIS DEF UPDATES THE TEXT LINES
 # Read the PH api values
+#	try:
+#		PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout)
+#		return response
+#	except urllib.error.URLError as e:
+#		if isinstance(e.reason, socket.timeout):
+			
+		
+	
+# ----------------------
 	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
 	if PH1URLcheck != 200:
 		PH1URLstatus = "down"
 	else:
 		PH1URLstatus = "up"	
-	if PH1URLstatus == "up":
 		PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
 	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).getcode()
 	if PH2URLcheck != 200:
 		PH2URLstatus = "down"
 	else:
 		PH2URLstatus = "up"	
-	if PH2URLstatus == "up":
 		PH2stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
+# ----------------------
 # GET TEMPERATURE
 # Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
@@ -373,3 +381,5 @@ def update():
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
 	draw_dashboard(LINE1TXT, LINE1CLR, LINE1FNT, LINE2TXT, LINE2CLR, LINE2FNT, LINE3TXT, LINE3CLR, LINE3FNT, LINE4TXT, LINE4CLR, LINE4FNT, LINE5TXT, LINE5CLR, LINE5FNT)
+
+def URLCheck
