@@ -381,5 +381,3 @@ def update():
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
 	draw_dashboard(LINE1TXT, LINE1CLR, LINE1FNT, LINE2TXT, LINE2CLR, LINE2FNT, LINE3TXT, LINE3CLR, LINE3FNT, LINE4TXT, LINE4CLR, LINE4FNT, LINE5TXT, LINE5CLR, LINE5FNT)
-
-def URLCheck
