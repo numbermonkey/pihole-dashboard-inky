@@ -201,7 +201,7 @@ def update():
 		PH2URLstatus = "down"
 	else:
 		PH2URLstatus = "up"	
-		PH2stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
+		PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
 # ----------------------
 # GET TEMPERATURE
 # Query GPIO for the temperature
