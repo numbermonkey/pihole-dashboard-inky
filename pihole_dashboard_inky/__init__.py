@@ -218,7 +218,8 @@ def update():
 #	else:
 #		PH2URLstatus = "up"	
 #		PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
-
+	PH1URLstatus = "up"	
+	PH2URLstatus = "up"	
 	PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
 	PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
 
