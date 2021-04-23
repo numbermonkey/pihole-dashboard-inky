@@ -88,7 +88,7 @@ def HostCheck(HostAddress):
                 print (HostAddress, ' is up!')
         else:
                 print (HostAddress, ' is down!')
-				sys.exit("SERVER DOWN!)
+				sys.exit("SERVER DOWN!")
 HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
 
