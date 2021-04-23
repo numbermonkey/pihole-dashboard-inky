@@ -47,7 +47,7 @@ font_name = os.path.join(font_dir, "font.ttf")
 fontL = ImageFont.truetype(font_name, 16)
 fontM = ImageFont.truetype(font_name, 14)
 fontS = ImageFont.truetype(font_name, 12)
-#PH1 is the host of the code
+#PH1 is the host of the InkyPHAT
 PH1IPAddress = "192.168.1.85"
 PH1Name = "PH1"
 PH1apiPath = "/admin/api.php"
@@ -63,7 +63,7 @@ inkyRED = 2
 DNSGoodCheck = "www.pi-hole.net"
 PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 PHcmd = "/usr/local/bin/pihole"
-URLtimeout = 1
+URLtimeout = 0.5
 
 
 
@@ -80,14 +80,30 @@ GravDBDaysbad = 5  # Gravity database age over this is bad
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
+# BIG RED BOX
+def brb(serverIP):
+	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+	draw = ImageDraw.Draw(img)
+	draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=2)
+	fatalstrtxt = "{} NOT RESPONDING".format(serverIP)
+	fatalstrfnt = fontL
+	fatalstrclr = 1
+	fatalstrfntw, fatalstrfnth = fatalstrfnt.getsize(fatalstrtxt)
+	draw.text((inky_display.WIDTH - fatalstrfntw) / 2 , (inky_display.HEIGHT - fatalstrfnth) / 2,fatalstrtxt, fatalstrclr, fatalstrfnt)
+	inky_display.set_image(img)
+	inky_display.show()
+	sys.exit("SERVER DOWN!")
+
 # BASIC LAYER2 CHECK
 def HostCheck(HostAddress):
-	response = subprocess.run(["ping", "-c", "1", HostAddress]).returncode
+	response = subprocess.run(["ping", "-c", "1", HostAddress],capture_output=false).returncode
 	if response == 0:
-		print (HostAddress, ' is up!')
+		print (HostAddress, 'is up!')
 	else:
-		print (HostAddress, ' is down!')
-		sys.exit("SERVER DOWN!")
+		print (HostAddress, 'is down!')
+#		sys.exit("SERVER DOWN!")
+		brb(HostAddress)
+		
 HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
 
