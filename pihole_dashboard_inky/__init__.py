@@ -96,7 +96,7 @@ def brb(serverIP):
 
 # BASIC LAYER2 CHECK
 def HostCheck(HostAddress):
-	response = subprocess.run(["ping", "-c", "1", HostAddress],capture_output=false).returncode
+	response = subprocess.run(["ping", "-c", "1", HostAddress],capture_output=False).returncode
 	if response == 0:
 		print (HostAddress, 'is up!')
 	else:
