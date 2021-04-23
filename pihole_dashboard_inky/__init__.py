@@ -82,13 +82,12 @@ inky_display.set_border(inky_display.WHITE)
 
 # BASIC LAYER2 CHECK
 def HostCheck(HostAddress):
-
-        response = subprocess.run(["ping", "-c", "1", HostAddress]).returncode
-        if response == 0:
-                print (HostAddress, ' is up!')
-        else:
-                print (HostAddress, ' is down!')
-				sys.exit("SERVER DOWN!")
+	response = subprocess.run(["ping", "-c", "1", HostAddress]).returncode
+	if response == 0:
+		print (HostAddress, ' is up!')
+	else:
+		print (HostAddress, ' is down!')
+		sys.exit("SERVER DOWN!")
 HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
 
