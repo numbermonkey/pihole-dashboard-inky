@@ -28,6 +28,7 @@ import urllib.request
 import json
 import os
 import sys
+import configparser
 import netifaces as ni
 import gpiozero as gz
 from time import localtime, strftime
@@ -37,6 +38,12 @@ from urllib.error import HTTPError, URLError
 
 if os.geteuid() != 0:
     sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
+
+# Read the config file
+#parser = configparser.ConfigParser()
+#parser.read('phdbinky.cfg')
+
+
 
 # STATIC VARIABLES
 INTERFACE = "eth0"
@@ -65,8 +72,6 @@ PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 PHcmd = "/usr/local/bin/pihole"
 URLtimeout = 0.5
 
-
-
 # Parameters for conditional text
 cpucooltemp = 40.0  # Below this temparature is considered Cool
 cpuoktemp = 65.0  # Below this temparature is considered OK but Warm
@@ -75,6 +80,9 @@ loadhigh = 0.7  # 5 min cpu load in excess of 0.7 is high
 utilhigh = 90.0  # A cpu utilisation %age of 90 is high
 blockpbad = 10.0  # This is a bad blocked %age. This will trigger a warning if block% falls lower than this
 GravDBDaysbad = 5  # Gravity database age over this is bad
+
+# Import from parameters
+
 	
 # INKY SETUP
 inky_display = InkyPHAT("red")
@@ -94,8 +102,8 @@ def brb(serverIP):
 	inky_display.show()
 	sys.exit("SERVER DOWN!")
 
-# BASIC LAYER2 CHECK
-def HostCheck(HostAddress):
+# BASIC CHECK
+def HostCheck(serverIP):
 	response = subprocess.run(["ping", "-c", "1", HostAddress],capture_output=False).returncode
 	if response == 0:
 		print (HostAddress, 'is up!')
