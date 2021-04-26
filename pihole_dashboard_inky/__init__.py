@@ -111,7 +111,7 @@ def HostCheck(serverIP):
 		print (serverIP, 'is up!')
 	else:
 		print (serverIP, 'is down!')
-		sys.exit("SERVER DOWN!")
+#		sys.exit("SERVER DOWN!")
 		brb(serverIP)
 		
 HostCheck(PH1IPAddress)
