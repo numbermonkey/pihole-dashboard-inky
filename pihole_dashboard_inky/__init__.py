@@ -90,17 +90,19 @@ inky_display.set_border(inky_display.WHITE)
 
 # BIG RED BOX
 def brb(serverIP):
-	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
-	draw = ImageDraw.Draw(img)
-	draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=2)
-	fatalstrtxt = "{} NOT RESPONDING".format(serverIP)
-	fatalstrfnt = fontL
-	fatalstrclr = 1
-	fatalstrfntw, fatalstrfnth = fatalstrfnt.getsize(fatalstrtxt)
-	draw.text((inky_display.WIDTH - fatalstrfntw) / 2 , (inky_display.HEIGHT - fatalstrfnth) / 2,fatalstrtxt, fatalstrclr, fatalstrfnt)
-	inky_display.set_image(img)
-	inky_display.show()
-	sys.exit("SERVER DOWN!")
+        img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+        draw = ImageDraw.Draw(img)
+        draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=2)
+        fatalstrtxt = "{} OFFLINE".format(serverIP)
+        fatalstrfnt = fontM
+        fatalstrclr = 0
+        fatalstrfntw, fatalstrfnth = fatalstrfnt.getsize(fatalstrtxt)
+        assert ((inky_display.WIDTH - fatalstrfntw) >0), "FONT WIDTH TOO BIG"
+        assert ((inky_display.HEIGHT - fatalstrfnth) >0), "FONT HEIGHT TOO BIG"
+        draw.text(((inky_display.WIDTH - fatalstrfntw) / 2, (inky_display.HEIGHT - fatalstrfnth) / 2) ,fatalstrtxt, fatalstrclr, fatalstrfnt)
+        inky_display.set_image(img)
+        inky_display.show()
+        sys.exit("SERVER DOWN!")
 
 # BASIC CHECK
 def HostCheck(serverIP):
@@ -109,7 +111,7 @@ def HostCheck(serverIP):
 		print (serverIP, 'is up!')
 	else:
 		print (serverIP, 'is down!')
-#		sys.exit("SERVER DOWN!")
+		sys.exit("SERVER DOWN!")
 		brb(serverIP)
 		
 HostCheck(PH1IPAddress)
