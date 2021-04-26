@@ -104,13 +104,13 @@ def brb(serverIP):
 
 # BASIC CHECK
 def HostCheck(serverIP):
-	response = subprocess.run(["ping", "-c", "1", HostAddress],capture_output=False).returncode
+	response = subprocess.run(["ping", "-c", "1", serverIP],capture_output=False).returncode
 	if response == 0:
-		print (HostAddress, 'is up!')
+		print (serverIP, 'is up!')
 	else:
-		print (HostAddress, 'is down!')
+		print (serverIP, 'is down!')
 #		sys.exit("SERVER DOWN!")
-		brb(HostAddress)
+		brb(serverIP)
 		
 HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
