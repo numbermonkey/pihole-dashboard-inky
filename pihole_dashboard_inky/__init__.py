@@ -111,7 +111,6 @@ def HostCheck(serverIP):
 		print (serverIP, 'is up!')
 	else:
 		print (serverIP, 'is down!')
-#		sys.exit("SERVER DOWN!")
 		brb(serverIP)
 		
 HostCheck(PH1IPAddress)
@@ -155,8 +154,8 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	timestrtxt = "@ {}".format(t)
 # Get Version
 #Get local version as reported by Pi-Hole
-	cmd = PHcmd
-	process = subprocess.run([cmd, "-v"], capture_output=True)
+#	cmd = PHcmd
+	process = subprocess.run([PHcmd, "-v"], capture_output=True)
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
 	if "Pi-hole" in output:
@@ -211,7 +210,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	timestrfntw, timestrfnth = timestrfnt.getsize(timestrtxt)
 # Calculates box dimension based on font height
 	toprightcornery = inky_display.HEIGHT - verstrfnth - 1
-	assert (toprightcornery >=0), "ERR..SOMETHING WRONG DETERMINING TOP CORNER. FONT TOO LARGE?"
+	assert (toprightcornery >=0), "ERR..SOMETHING WRONG DETERMINING TOP CORNER OF BOTTOM BOX. FONT TOO LARGE?"
 	draw.rectangle([(0, toprightcornery), (inky_display.WIDTH, inky_display.HEIGHT+1)], fill=boxclr)
 # Adds version and time to bottom box. 
 	boxtxtindent = 5
@@ -232,22 +231,30 @@ def update():
 #		if isinstance(e.reason, socket.timeout):
 # This doesnt work as expected	
 # ----------------------
-#	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
-#	if PH1URLcheck != 200:
-#		PH1URLstatus = "down"
-#	else:
-#		PH1URLstatus = "up"	
-#		PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
-#	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).getcode()
-#	if PH2URLcheck != 200:
-#		PH2URLstatus = "down"
-#	else:
-#		PH2URLstatus = "up"	
-#		PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
-	PH1URLstatus = "up"	
-	PH2URLstatus = "up"	
-	PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
-	PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
+ 	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
+	if PH1URLcheck != 200:
+		PH1URLstatus = "down"
+	else:
+		PH1URLstatus = "up"
+		PH1URLpage = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).read().decode()
+		if not 'Did you mean to go to the admin panel?' in response:
+			PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
+		else:
+			PH1URLstatus = "down"
+	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).getcode()
+	if PH2URLcheck != 200:
+		PH2URLstatus = "down"
+	else:
+		PH2URLstatus = "up"
+		PH2URLpage = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).read().decode()
+		if not 'Did you mean to go to the admin panel?' in response:
+			PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
+		else:
+			PH2URLstatus = "down"
+#	PH1URLstatus = "up"	
+#	PH2URLstatus = "up"	
+#	PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
+#	PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
 
 # ----------------------
 # GET TEMPERATURE
