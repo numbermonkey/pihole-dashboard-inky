@@ -231,7 +231,7 @@ def update():
 #		if isinstance(e.reason, socket.timeout):
 # This doesnt work as expected	
 # ----------------------
- 	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
+	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
 	if PH1URLcheck != 200:
 		PH1URLstatus = "down"
 	else:
