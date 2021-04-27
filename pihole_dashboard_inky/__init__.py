@@ -237,7 +237,7 @@ def update():
 	else:
 		PH1URLstatus = "up"
 		PH1URLpage = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).read().decode()
-		if not 'Did you mean to go to the admin panel?' in response:
+		if not 'Did you mean to go to the admin panel?' in PH1URLpage:
 			PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
 		else:
 			PH1URLstatus = "down"
@@ -247,7 +247,7 @@ def update():
 	else:
 		PH2URLstatus = "up"
 		PH2URLpage = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).read().decode()
-		if not 'Did you mean to go to the admin panel?' in response:
+		if not 'Did you mean to go to the admin panel?' in PH2URLpage:
 			PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
 		else:
 			PH2URLstatus = "down"
