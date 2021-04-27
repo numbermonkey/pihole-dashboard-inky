@@ -88,6 +88,10 @@ GravDBDaysbad = 5  # Gravity database age over this is bad
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 
+def show(it):
+	inky_display.set_image(it)
+	inky_display.show()
+
 # BIG RED BOX
 def brb(serverIP):
         img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
@@ -100,8 +104,7 @@ def brb(serverIP):
         assert ((inky_display.WIDTH - fatalstrfntw) >0), "FONT WIDTH TOO BIG"
         assert ((inky_display.HEIGHT - fatalstrfnth) >0), "FONT HEIGHT TOO BIG"
         draw.text(((inky_display.WIDTH - fatalstrfntw) / 2, (inky_display.HEIGHT - fatalstrfnth) / 2) ,fatalstrtxt, fatalstrclr, fatalstrfnt)
-        inky_display.set_image(img)
-        inky_display.show()
+        show(img)
         sys.exit("SERVER DOWN!")
 
 # BASIC CHECK
@@ -217,20 +220,13 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	draw.text((boxtxtindent,toprightcornery), verstrtxt, verstrclr, verstrfnt)
 	draw.text((inky_display.WIDTH - timestrfntw - boxtxtindent,toprightcornery), timestrtxt, timestrclr, timestrfnt)
 # Send to Inky
-	inky_display.set_image(img)
-	inky_display.show()
+	show(img)
 
 def update():
 
 # THIS DEF UPDATES ALL THE STATS
 # Read the PH api values
-#	try:
-#		PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout)
-#		return response
-#	except urllib.error.URLError as e:
-#		if isinstance(e.reason, socket.timeout):
-# This doesnt work as expected	
-# ----------------------
+
 	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
 	if PH1URLcheck != 200:
 		PH1URLstatus = "down"
@@ -251,12 +247,7 @@ def update():
 			PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
 		else:
 			PH2URLstatus = "down"
-#	PH1URLstatus = "up"	
-#	PH2URLstatus = "up"	
-#	PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
-#	PH2stats = json.load(urllib.request.urlopen(PH2apiURL,timeout=URLtimeout))
 
-# ----------------------
 # GET TEMPERATURE
 # Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
