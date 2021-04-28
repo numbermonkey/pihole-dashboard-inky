@@ -120,13 +120,12 @@ HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
 
 # Def draws 5 lines of text and a bottom bar. Each needs 3 arguments: txt (content), clr (colour 0=White, 1=Black, 2=Red) ,fnt (font - defined in static section)
+# THIS DEF DRAWS THE FINAL SCREEN
 def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, 
                    str2txt=None, str2clr=1, str2fnt=None, 
 				   str3txt=None, str3clr=1, str3fnt=None, 
 				   str4txt=None, str4clr=1, str4fnt=None, 
 				   str5txt=None, str5clr=1, str5fnt=None):
-
-# THIS DEF DRAWS THE FINAL SCREEN
 
 # Init screen	
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
@@ -364,11 +363,11 @@ def update():
 		blockpstrclr = inkyBLACK
 		blockpstrfnt = fontS
 	elif PH1blockp <= blockpbad:
-		blockpstr = "[✗] DANGER Block % {}:{}".format(PH1Name,PH1blockp)
+		blockpstr = "[✗] ALERT Block % {}:{}".format(PH1Name,PH1blockp)
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	elif PH2blockp <= blockpbad:
-		blockpstr = "[✗] DANGER Block % {}:{}".format(PH2Name,PH2blockp)
+		blockpstr = "[✗] ALERT Block % {}:{}".format(PH2Name,PH2blockp)
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
 	print(blockpstr)
