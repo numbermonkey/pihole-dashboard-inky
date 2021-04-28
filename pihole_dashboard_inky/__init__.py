@@ -397,7 +397,7 @@ def update():
 		GDBagestrfnt = fontL
 	print(GDBagestr)
 
-LOCAL STAT
+# LOCAL STAT
 # GET IP ADDRESS
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
