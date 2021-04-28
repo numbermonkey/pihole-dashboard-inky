@@ -411,6 +411,8 @@ def update():
 	LINE1TXT = cputempstr
 	LINE1CLR = cputempstrclr
 	LINE1FNT = cputempstrfnt
+	LINE1TUP = (LINE1TXT, LINE1CLR, LINE1FNT)
+	print (LINE1TUP)
 	LINE2TXT = loadstr
 	LINE2CLR = loadstrclr
 	LINE2FNT = loadstrfnt
