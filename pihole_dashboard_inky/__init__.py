@@ -39,11 +39,10 @@ from urllib.error import HTTPError, URLError
 if os.geteuid() != 0:
     sys.exit("You need root permissions to access E-Ink display, try running with sudo!")
 
+# This would be a neater way. Um.
 # Read the config file
 #parser = configparser.ConfigParser()
 #parser.read('phdbinky.cfg')
-
-
 
 # STATIC VARIABLES
 INTERFACE = "eth0"
@@ -78,12 +77,9 @@ cpuoktemp = 65.0  # Below this temparature is considered OK but Warm
 cpubadtemp = 80.0  # Below this temparature is Bad. Above is ELE.
 loadhigh = 0.7  # 5 min cpu load in excess of 0.7 is high
 utilhigh = 90.0  # A cpu utilisation %age of 90 is high
-blockpbad = 10.0  # This is a bad blocked %age. This will trigger a warning if block% falls lower than this
+blockpbad = 5.0  # This is a bad blocked %age. This will trigger a warning if block% falls lower than this
 GravDBDaysbad = 5  # Gravity database age over this is bad
 
-# Import from parameters
-
-	
 # INKY SETUP
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
@@ -224,6 +220,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 def update():
 
 # THIS DEF UPDATES ALL THE STATS
+# REMOTE STATS
 # Read the PH api values
 
 	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
@@ -247,6 +244,7 @@ def update():
 		else:
 			PH2URLstatus = "down"
 
+# LOCAL STAT
 # GET TEMPERATURE
 # Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
@@ -270,6 +268,7 @@ def update():
 		cputempstrfnt = fontL
 	print(cputempstr)
 
+# LOCAL STAT
 # GET LOAD
 # Get Load 5 min from uptime
 	cmd = "/usr/bin/uptime"
@@ -299,6 +298,7 @@ def update():
 		loadstrfnt = fontL
 	print(loadstr)
 
+# REMOTE STATS
 # GET PIHOLE STATUS
 # Use api JSON get PI-Hole reported status
 	if PH1URLstatus == "up":
@@ -348,6 +348,7 @@ def update():
 		
 # Moved print(PHStatusstrtxt) down to better emulate display in run-time terminal output
 
+# REMOTE STATS
 # GET PIHOLE STATISTICS
 # First for local PH. Uses api JSON
 	PH1unique_clients = PH1stats['unique_clients']
@@ -373,6 +374,7 @@ def update():
 	print(blockpstr)
 	print(PHStatusstrtxt)
 
+# REMOTE STATS
 # GET GRAVITY AGE
 # First for local PH. Uses api JSON
 	PH1GravDBDays = PH1stats['gravity_last_updated']['relative']['days']
@@ -395,6 +397,7 @@ def update():
 		GDBagestrfnt = fontL
 	print(GDBagestr)
 
+LOCAL STAT
 # GET IP ADDRESS
 	try:
 		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
