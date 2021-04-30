@@ -222,7 +222,7 @@ def update():
 # THIS DEF UPDATES ALL THE STATS
 # REMOTE STATS
 # Read the PH api values
-
+# Check to make sure web server is reachable and api page is up
 	PH1URLcheck = urllib.request.urlopen(PH1apiURL,timeout=URLtimeout).getcode()
 	if PH1URLcheck != 200:
 		PH1URLstatus = "down"
@@ -233,6 +233,7 @@ def update():
 			PH1stats = json.load(urllib.request.urlopen(PH1apiURL,timeout=URLtimeout))
 		else:
 			PH1URLstatus = "down"
+
 	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).getcode()
 	if PH2URLcheck != 200:
 		PH2URLstatus = "down"
@@ -244,12 +245,131 @@ def update():
 		else:
 			PH2URLstatus = "down"
 
+# REMOTE STATS
+# GET PIHOLE STATUS & DNS RESOLUTION STATUS
+# Use api JSON get PI-Hole reported status
+	if PH1URLstatus == "up":
+		PH1ReportedStatus = PH1stats['status']
+	else:
+		PH1ReportedStatus = "URL Down"
+	if PH2URLstatus == "up":
+		PH2ReportedStatus = PH2stats['status']
+	else:
+		PH2ReportedStatus = "URL Down"
+# Get actual DNS status through dig probe
+	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH1IPAddress]).decode():
+		PH1DNSStatus = "enabled"
+	else:
+		PH1DNSStatus = "dnsdown"
+	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH2IPAddress]).decode():
+		PH2DNSStatus = "enabled"
+	else:
+		PH2DNSStatus = "dnsdown"	
+
+# Conditions for Status text output
+	if PH1ReportedStatus == PH2ReportedStatus == PH1DNSStatus == PH2DNSStatus == "enabled":
+		PHStatusstrtxt = "[✓] Status PH1:[✓] PH2:[✓]"
+		PHStatusstrtxtclr = inkyBLACK
+		PHStatusstrtxtfnt = fontS
+	elif PH2ReportedStatus != PH2DNSStatus:
+		if PH2ReportedStatus != "enabled":
+			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH2Name)
+			PHStatusstrtxtclr = inkyRED
+			PHStatusstrtxtfnt = fontM
+		else:
+			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH2Name)
+			PHStatusstrtxtclr = inkyRED
+			PHStatusstrtxtfnt = fontM
+	elif PH1ReportedStatus != PH1DNSStatus:
+		if PH1ReportedStatus != "enabled":
+			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH1Name)
+			PHStatusstrtxtclr = inkyRED
+			PHStatusstrtxtfnt = fontM
+		else:
+			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH1Name)
+			PHStatusstrtxtclr = inkyRED
+			PHStatusstrtxtfnt = fontM
+	else:
+		PHStatusstrtxt = " [✗] [✗] AWOOGA !! [✗] [✗]"
+		PHStatusstrtxtclr = inkyRED
+		PHStatusstrtxtfnt = fontL
+		
+# Moved print(PHStatusstrtxt) down to better emulate display in run-time terminal output
+
+# REMOTE STATS
+# GET PIHOLE STATISTICS
+# First for 1st PH. Uses api JSON
+	if PH1URLstatus == "up": 
+		PH1unique_clients = PH1stats['unique_clients']
+		PH1ads_blocked_today = PH1stats['ads_blocked_today']
+		PH1blockp = round(PH1stats['ads_percentage_today'],1)
+		PH1GravDBDays = PH1stats['gravity_last_updated']['relative']['days']
+		PH1GravDBHours = PH1stats['gravity_last_updated']['relative']['hours']
+	else:
+		PH1blockp = 0
+		PH1GravDBDays = GravDBDaysbad + 1
+		PH1GravDBHours = 0
+# Then for 2nd PH. Uses api JSON
+	if PH2URLstatus == "up":
+		PH2unique_clients2 = PH2stats['unique_clients']
+		PH2ads_blocked_today = PH2stats['ads_blocked_today']
+		PH2blockp = round(PH2stats['ads_percentage_today'],1)
+		PH2GravDBDays = PH2stats['gravity_last_updated']['relative']['days']
+		PH2GravDBHours = PH2stats['gravity_last_updated']['relative']['hours']
+	else:
+		PH2blockp = 0
+		PH2GravDBDays = GravDBDaysbad + 1
+		PH2GravDBHours = 0
+
+# Conditions for Block% text output
+	if PH1blockp > blockpbad and PH2blockp > blockpbad and (PH1blockp + PH2blockp) !=0:
+		blockpstr = "[✓] {}: {}%  {}: {}%".format(PH1Name,PH1blockp,PH2Name,PH2blockp) 
+		blockpstrclr = inkyBLACK
+		blockpstrfnt = fontS
+	elif PH1blockp <= blockpbad:
+		blockpstr = "[✗] ALERT Block % {}:{}".format(PH1Name,PH1blockp)
+		blockpstrclr = inkyRED
+		blockpstrfnt = fontL
+	elif PH2blockp <= blockpbad:
+		blockpstr = "[✗] ALERT Block % {}:{}".format(PH2Name,PH2blockp)
+		blockpstrclr = inkyRED
+		blockpstrfnt = fontL
+	print(blockpstr)
+	print(PHStatusstrtxt)
+
+# Conditions for GravDB age text output
+	if PH1GravDBDays <= GravDBDaysbad and PH2GravDBDays <= GravDBDaysbad:
+		GDBagestr = "[✓] GDB {}:{}d{}h {}:{}d{}h".format(PH1Name,PH1GravDBDays,PH1GravDBHours,PH2Name,PH2GravDBDays,PH2GravDBHours)
+		GDBagestrclr = inkyBLACK
+		GDBagestrfnt = fontS
+	elif PH1GravDBDays > GravDBDaysbad:
+		GDBagestr = "[✗] WARNING GDB Age {}:{} days".format(PH1Name,PH1GravDBDays)
+		GDBagestrclr = inkyBLACK
+		GDBagestrfnt = fontL
+	elif PH2GravDBDays > GravDBDaysbad:
+		GDBagestr = "[✗] WARNING GDB Age {}:{} days".format(PH2Name,PH2GravDBDays)
+		GDBagestrclr = inkyRED
+		GDBagestrfnt = fontL
+	print(GDBagestr)
+
+# LOCAL STAT
+# GET IP ADDRESS
+	try:
+		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
+	except KeyError:
+		ip_str = "[×] Can't connect to {}".format(INTERFACE)
+		ip = ""
+	if "192.168" in ip:
+		ip_str = "[✓] IP of {}: {}".format(hostname, ip)
+		ip_clr = inkyBLACK
+		ip_fnt = fontS
+
 # LOCAL STAT
 # GET TEMPERATURE
 # Query GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
-# Conditions for text output
+# Conditions for Temp text output
 	if cpu_temp <= cpucooltemp:
 		cputempstr = "[✓] Cool {}C".format(cpu_temp)
 		cputempstrclr = inkyBLACK
@@ -283,7 +403,7 @@ def update():
 	idle_delta, total_delta = idle - last_idle, total - last_total
 	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
 	utilisation = round(utilisation, 1)
-# Conditions for text output
+# Conditions for Load text output
 	if load5min < loadhigh:
 		loadstr = "[✓] Load: {} at CPU: {}%".format(load5min,utilisation)
 		loadstrclr = inkyBLACK
@@ -298,133 +418,27 @@ def update():
 		loadstrfnt = fontL
 	print(loadstr)
 
-# REMOTE STATS
-# GET PIHOLE STATUS
-# Use api JSON get PI-Hole reported status
-	if PH1URLstatus == "up":
-		PH1ReportedStatus = PH1stats['status']
-	else:
-		PH1ReportedStatus = "URL Down"
-	if PH2URLstatus == "up":
-		PH2ReportedStatus = PH2stats['status']
-	else:
-		PH2ReportedStatus = "URL Down"
-# Get actual DNS status through dig probe
-	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH1IPAddress]).decode():
-		PH1DNSStatus = "enabled"
-	else:
-		PH1DNSStatus = "dnsdown"
-	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH2IPAddress]).decode():
-		PH2DNSStatus = "enabled"
-	else:
-		PH2DNSStatus = "dnsdown"	
-# Conditions for text output
-	if PH1ReportedStatus == PH2ReportedStatus == PH1DNSStatus == PH2DNSStatus == "enabled":
-		PHStatusstrtxt = "[✓] Status PH1:[✓] PH2:[✓]"
-		PHStatusstrtxtclr = inkyBLACK
-		PHStatusstrtxtfnt = fontS
-	elif PH2ReportedStatus != PH2DNSStatus:
-		if PH2ReportedStatus != "enabled":
-			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH2Name)
-			PHStatusstrtxtclr = inkyRED
-			PHStatusstrtxtfnt = fontM
-		else:
-			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH2Name)
-			PHStatusstrtxtclr = inkyRED
-			PHStatusstrtxtfnt = fontM
-	elif PH1ReportedStatus != PH1DNSStatus:
-		if PH1ReportedStatus != "enabled":
-			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH1Name)
-			PHStatusstrtxtclr = inkyRED
-			PHStatusstrtxtfnt = fontM
-		else:
-			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH1Name)
-			PHStatusstrtxtclr = inkyRED
-			PHStatusstrtxtfnt = fontM
-	else:
-		PHStatusstrtxt = " [✗] [✗] AWOOGA !! [✗] [✗]"
-		PHStatusstrtxtclr = inkyRED
-		PHStatusstrtxtfnt = fontL
-		
-# Moved print(PHStatusstrtxt) down to better emulate display in run-time terminal output
-
-# REMOTE STATS
-# GET PIHOLE STATISTICS
-# First for local PH. Uses api JSON
-	PH1unique_clients = PH1stats['unique_clients']
-	PH1ads_blocked_today = PH1stats['ads_blocked_today']
-	PH1blockp = round(PH1stats['ads_percentage_today'],1)
-# Then for 2nd PH. Uses api JSON
-	PH2unique_clients2 = PH2stats['unique_clients']
-	PH2ads_blocked_today = PH2stats['ads_blocked_today']
-	PH2blockp = round(PH2stats['ads_percentage_today'],1)
-# Conditions for text output
-	if PH1blockp > blockpbad and PH2blockp > blockpbad:
-		blockpstr = "[✓] {}: {}%  {}: {}%".format(PH1Name,PH1blockp,PH2Name,PH2blockp) 
-		blockpstrclr = inkyBLACK
-		blockpstrfnt = fontS
-	elif PH1blockp <= blockpbad:
-		blockpstr = "[✗] ALERT Block % {}:{}".format(PH1Name,PH1blockp)
-		blockpstrclr = inkyRED
-		blockpstrfnt = fontL
-	elif PH2blockp <= blockpbad:
-		blockpstr = "[✗] ALERT Block % {}:{}".format(PH2Name,PH2blockp)
-		blockpstrclr = inkyRED
-		blockpstrfnt = fontL
-	print(blockpstr)
-	print(PHStatusstrtxt)
-
-# REMOTE STATS
-# GET GRAVITY AGE
-# First for local PH. Uses api JSON
-	PH1GravDBDays = PH1stats['gravity_last_updated']['relative']['days']
-	PH1GravDBHours = PH1stats['gravity_last_updated']['relative']['hours']
-# Then for 2nd PH. Uses api JSON
-	PH2GravDBDays = PH2stats['gravity_last_updated']['relative']['days']
-	PH2GravDBHours = PH2stats['gravity_last_updated']['relative']['hours']
-# Conditions for text output
-	if PH1GravDBDays <= GravDBDaysbad and PH2GravDBDays <= GravDBDaysbad:
-		GDBagestr = "[✓] GDB {}:{}d{}h {}:{}d{}h".format(PH1Name,PH1GravDBDays,PH1GravDBHours,PH2Name,PH2GravDBDays,PH2GravDBHours)
-		GDBagestrclr = inkyBLACK
-		GDBagestrfnt = fontS
-	elif PH1GravDBDays > GravDBDaysbad:
-		GDBagestr = "[✗] WARNING GDB Age {}:{} days".format(PH1Name,PH1GravDBDays)
-		GDBagestrclr = inkyBLACK
-		GDBagestrfnt = fontL
-	elif PH2GravDBDays > GravDBDaysbad:
-		GDBagestr = "[✗] WARNING GDB Age {}:{} days".format(PH2Name,PH2GravDBDays)
-		GDBagestrclr = inkyRED
-		GDBagestrfnt = fontL
-	print(GDBagestr)
-
-# LOCAL STAT
-# GET IP ADDRESS
-	try:
-		ip = ni.ifaddresses(INTERFACE)[ni.AF_INET][0]['addr']
-	except KeyError:
-		ip_str = "[×] Can't connect to eth0"
-		ip = ""
-	if "192.168" in ip:
-		ip_str = "[✓] IP of {}: {}".format(hostname, ip)
-
 # Creates the different output lines based on above
 	LINE1TXT = cputempstr
 	LINE1CLR = cputempstrclr
 	LINE1FNT = cputempstrfnt
 	LINE1TUP = (LINE1TXT, LINE1CLR, LINE1FNT)
-	print (LINE1TUP)
 	LINE2TXT = loadstr
 	LINE2CLR = loadstrclr
 	LINE2FNT = loadstrfnt
+	LINE2TUP = (LINE2TXT, LINE2CLR, LINE2FNT)
 	LINE3TXT = GDBagestr
 	LINE3CLR = GDBagestrclr
 	LINE3FNT = GDBagestrfnt
+	LINE3TUP = (LINE3TXT, LINE3CLR, LINE3FNT)
 	LINE4TXT = blockpstr
 	LINE4CLR = blockpstrclr
 	LINE4FNT = blockpstrfnt
+	LINE4TUP = (LINE4TXT, LINE1CLR, LINE1FNT)
 	LINE5TXT = PHStatusstrtxt
 	LINE5CLR = PHStatusstrtxtclr
 	LINE5FNT = PHStatusstrtxtfnt
+	LINE5TUP = (LINE5TXT, LINE5CLR, LINE5FNT)
 #	OUTPUT_EXAMPLE = ip_str
 #	OUTPUT_EXAMPLE = PH1ReportedStatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
