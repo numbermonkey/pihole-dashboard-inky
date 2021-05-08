@@ -343,13 +343,13 @@ def update():
 		GDBagestrclr = inkyBLACK
 		GDBagestrfnt = fontS
 	elif PH1GravDBDays > GravDBDaysbad:
-		GDBagestr = "[✗] WARNING GDB Age {}:{} days".format(PH1Name,PH1GravDBDays)
-		GDBagestrclr = inkyBLACK
-		GDBagestrfnt = fontL
-	elif PH2GravDBDays > GravDBDaysbad:
-		GDBagestr = "[✗] WARNING GDB Age {}:{} days".format(PH2Name,PH2GravDBDays)
+		GDBagestr = "[✗] GDB Age {}:{} days".format(PH1Name,PH1GravDBDays)
 		GDBagestrclr = inkyRED
-		GDBagestrfnt = fontL
+		GDBagestrfnt = fontM
+	elif PH2GravDBDays > GravDBDaysbad:
+		GDBagestr = "[✗] GDB Age {}:{} days".format(PH2Name,PH2GravDBDays)
+		GDBagestrclr = inkyRED
+		GDBagestrfnt = fontM
 	print(GDBagestr)
 
 # LOCAL STAT
