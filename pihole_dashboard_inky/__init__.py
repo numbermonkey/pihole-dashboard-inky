@@ -157,7 +157,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
 	if "Pi-hole" in output:
-		lclchar = output.index('v',11) # 11 to miss the first v in version
+		lclchar = output.index('v',19) # 11 to miss the first v in version
 		lclverstr = output[lclchar+1:lclchar+6]
 		lclverint = int(''.join(i for i in lclverstr if i.isdigit()))
 	else:
