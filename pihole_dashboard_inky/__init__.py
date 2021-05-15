@@ -25,6 +25,7 @@
 import subprocess
 import socket
 import urllib.request
+import requests
 import json
 import os
 import sys
@@ -88,17 +89,41 @@ def show(it):
 	inky_display.set_image(it)
 	inky_display.show()
 
+def msg_send(title, content, priority):
+	gotify_host = "192.168.1.85"
+	gotify_port = 8180
+	msg_token = "AGJ8daw_tCKiuC0"
+	gotify_url = "http://{}:{}/message?token={}".format(gotify_host, str(gotify_port), msg_token)
+	resp = requests.post(gotify_url, json={
+		"message": content,
+		"priority": priority,
+		"title": title
+	})
+
 # BIG RED BOX
 def brb(serverIP):
+		# Setup new image
         img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
         draw = ImageDraw.Draw(img)
+		# Get Time
+		t = strftime("%H:%M", localtime())
+		timestrtxt = "@ {}".format(t)
+		timestrclr = inkyWHITE
+		timestrfnt = fontM
+		timestrfntw, timestrfnth = timestrfnt.getsize(timestrtxt)
+		# Draw time
+		draw.text((1, (inky_display.HEIGHT - timestrfnth)), timestrtxt, timestrclr, timestrfnt)
+		# Draw Big Red Box
         draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=2)
+		# Create centered alert text
         fatalstrtxt = "{} OFFLINE".format(serverIP)
+        fatalstrclr = inkyWHITE
         fatalstrfnt = fontM
-        fatalstrclr = 0
         fatalstrfntw, fatalstrfnth = fatalstrfnt.getsize(fatalstrtxt)
+		# Catch an error
         assert ((inky_display.WIDTH - fatalstrfntw) >0), "FONT WIDTH TOO BIG"
         assert ((inky_display.HEIGHT - fatalstrfnth) >0), "FONT HEIGHT TOO BIG"
+		# Add alert text to image
         draw.text(((inky_display.WIDTH - fatalstrfntw) / 2, (inky_display.HEIGHT - fatalstrfnth) / 2) ,fatalstrtxt, fatalstrclr, fatalstrfnt)
         show(img)
         sys.exit("SERVER DOWN!")
@@ -110,6 +135,7 @@ def HostCheck(serverIP):
 		print (serverIP, 'is up!')
 	else:
 		print (serverIP, 'is down!')
+		msg_send("{} is down!".format(serverIP),"Alert by Dashboard at <TIME>", 8)
 		brb(serverIP)
 		
 HostCheck(PH1IPAddress)
@@ -186,22 +212,26 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 			verstrtxt = "[✗] Error getting local ver"
 			verstrfnt = timestrfnt = fontM
 			verstrclr = timestrclr = inkyWHITE
+			msg_send("VERSION ERROR",verstrtxt,4)
 		else:
 			boxclr = inkyRED
 			verstrtxt = "[✗] UPDATE v{}".format(repoverstr)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
+			msg_send("UPDATE AVAILABLE",verstrtxt,4)
 	else:
 		if repoverint == 0:
 			boxclr = inkyRED
 			verstrtxt = "[✗] Error getting repo ver"
 			verstrfnt = timestrfnt = fontM
 			verstrclr = timestrclr = inkyWHITE
+			msg_send("VERSION ERROR",verstrtxt,4)
 		else:
 			boxclr = inkyRED
 			verstrtxt = "[✗] REPO IS EARLIER ?? {}".format(repoverstr)
 			verstrfnt = timestrfnt = fontL
 			verstrclr = timestrclr = inkyWHITE
+			msg_send("WEIRD ERROR",verstrtxt,8)
 	print(verstrtxt,"  ",timestrtxt)
 # Measures width & height of text used for bar given font size
 	verstrfntw, verstrfnth = verstrfnt.getsize(verstrtxt)
@@ -251,11 +281,11 @@ def update():
 	if PH1URLstatus == "up":
 		PH1ReportedStatus = PH1stats['status']
 	else:
-		PH1ReportedStatus = "URL Down"
+		PH1ReportedStatus = "PH1 URL Down"
 	if PH2URLstatus == "up":
 		PH2ReportedStatus = PH2stats['status']
 	else:
-		PH2ReportedStatus = "URL Down"
+		PH2ReportedStatus = "PH2 URL Down"
 # Get actual DNS status through dig probe
 	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH1IPAddress]).decode():
 		PH1DNSStatus = "enabled"
@@ -276,23 +306,28 @@ def update():
 			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH2Name)
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontM
+			msg_send("{} Problem",PHStatusstrtxt, 8).format(PH2Name)
 		else:
 			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH2Name)
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontM
+			msg_send("{} Problem",PHStatusstrtxt, 8).format(PH2Name)
 	elif PH1ReportedStatus != PH1DNSStatus:
 		if PH1ReportedStatus != "enabled":
 			PHStatusstrtxt = "[✗]{} PH:[✗] DNS:[✓]".format(PH1Name)
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontM
+			msg_send("{} Problem",PHStatusstrtxt, 8).format(PH1Name)
 		else:
 			PHStatusstrtxt = "[✗]{} PH:[✓] DNS:[✗]".format(PH1Name)
 			PHStatusstrtxtclr = inkyRED
 			PHStatusstrtxtfnt = fontM
+			msg_send("{} Problem",PHStatusstrtxt, 8).format(PH1Name)
 	else:
 		PHStatusstrtxt = " [✗] [✗] AWOOGA !! [✗] [✗]"
 		PHStatusstrtxtclr = inkyRED
 		PHStatusstrtxtfnt = fontL
+		msg_send("WHEELS OFF!",PHStatusstrtxt,8)
 		
 # Moved print(PHStatusstrtxt) down to better emulate display in run-time terminal output
 
@@ -330,10 +365,12 @@ def update():
 		blockpstr = "[✗] ALERT Block % {}:{}".format(PH1Name,PH1blockp)
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
+		msg_send("BLOCKING PROBLEM?",blockpstr,4)
 	elif PH2blockp <= blockpbad:
 		blockpstr = "[✗] ALERT Block % {}:{}".format(PH2Name,PH2blockp)
 		blockpstrclr = inkyRED
 		blockpstrfnt = fontL
+		msg_send("BLOCKING PROBLEM?",blockpstr,4)
 	print(blockpstr)
 	print(PHStatusstrtxt)
 
@@ -378,14 +415,17 @@ def update():
 		cputempstr = "[✓] Warm {}".format(cpu_temp)
 		cputempstrclr = inkyBLACK
 		cputempstrfnt = fontM
+		msg_send("WARM",cputempstr,4)
 	elif cpu_temp > cpuoktemp <= cpubadtemp:
 		cputempstr = "[✗] WARNING {}".format(cpu_temp)
 		cputempstrclr = inkyRED
 		cputempstrfnt = fontL
+		msg_send("WARNING",cputempstr,8)
 	elif cpu_temp > cpubadtemp:
 		cputempstr = "[✗] DANGER {}".format(cpu_temp)
 		cputempstrclr = inkyRED
 		cputempstrfnt = fontL
+		msg_send("DANGER",cputempstr,8)
 	print(cputempstr)
 
 # LOCAL STAT
@@ -416,6 +456,7 @@ def update():
 		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
 		loadstrclr = inkyRED
 		loadstrfnt = fontL
+		msg_send("LOAD HIGH",loadstr,8)
 	print(loadstr)
 
 # Creates the different output lines based on above
