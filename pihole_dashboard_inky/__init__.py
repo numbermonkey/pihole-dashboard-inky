@@ -102,31 +102,31 @@ def msg_send(title, content, priority):
 
 # BIG RED BOX
 def brb(serverIP):
-		# Setup new image
-        img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
-        draw = ImageDraw.Draw(img)
-		# Get Time
-		t = strftime("%H:%M", localtime())
-		timestrtxt = "@ {}".format(t)
-		timestrclr = inkyWHITE
-		timestrfnt = fontM
-		timestrfntw, timestrfnth = timestrfnt.getsize(timestrtxt)
-		# Draw time
-		draw.text((1, (inky_display.HEIGHT - timestrfnth)), timestrtxt, timestrclr, timestrfnt)
-		# Draw Big Red Box
-        draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=2)
-		# Create centered alert text
-        fatalstrtxt = "{} OFFLINE".format(serverIP)
-        fatalstrclr = inkyWHITE
-        fatalstrfnt = fontM
-        fatalstrfntw, fatalstrfnth = fatalstrfnt.getsize(fatalstrtxt)
-		# Catch an error
-        assert ((inky_display.WIDTH - fatalstrfntw) >0), "FONT WIDTH TOO BIG"
-        assert ((inky_display.HEIGHT - fatalstrfnth) >0), "FONT HEIGHT TOO BIG"
-		# Add alert text to image
-        draw.text(((inky_display.WIDTH - fatalstrfntw) / 2, (inky_display.HEIGHT - fatalstrfnth) / 2) ,fatalstrtxt, fatalstrclr, fatalstrfnt)
-        show(img)
-        sys.exit("SERVER DOWN!")
+	# Setup new image
+	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+	draw = ImageDraw.Draw(img)
+	# Get Time
+	t = strftime("%H:%M", localtime())
+	timestrtxt = "@ {}".format(t)
+	timestrclr = inkyWHITE
+	timestrfnt = fontM
+	timestrfntw, timestrfnth = timestrfnt.getsize(timestrtxt)
+	# Draw time
+	draw.text((1, (inky_display.HEIGHT - timestrfnth)), timestrtxt, timestrclr, timestrfnt)
+	# Draw Big Red Box
+	draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=2)
+	# Create centered alert text
+	fatalstrtxt = "{} OFFLINE".format(serverIP)
+	fatalstrclr = inkyWHITE
+	fatalstrfnt = fontM
+	fatalstrfntw, fatalstrfnth = fatalstrfnt.getsize(fatalstrtxt)
+	# Catch an error
+	assert ((inky_display.WIDTH - fatalstrfntw) >0), "FONT WIDTH TOO BIG"
+	assert ((inky_display.HEIGHT - fatalstrfnth) >0), "FONT HEIGHT TOO BIG"
+	# Add alert text to image
+	draw.text(((inky_display.WIDTH - fatalstrfntw) / 2, (inky_display.HEIGHT - fatalstrfnth) / 2) ,fatalstrtxt, fatalstrclr, fatalstrfnt)
+	show(img)
+	sys.exit("SERVER DOWN!")
 
 # BASIC CHECK
 def HostCheck(serverIP):
