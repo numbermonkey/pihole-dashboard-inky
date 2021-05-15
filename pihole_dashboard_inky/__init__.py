@@ -54,7 +54,7 @@ font_name = os.path.join(font_dir, "font.ttf")
 fontL = ImageFont.truetype(font_name, 16)
 fontM = ImageFont.truetype(font_name, 14)
 fontS = ImageFont.truetype(font_name, 12)
-#PH1 is the host of the InkyPHAT
+#PH1 is a Pi-hole
 PH1IPAddress = "192.168.1.85"
 PH1Name = "PH1"
 PH1apiPath = "/admin/api.php"
@@ -175,20 +175,23 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 		w, h = str4fnt.getsize(str4txt)
 		drop = drop + h + 1
 		draw.text((indent,drop),str5txt, str5clr, str5fnt)
+
 # Rectangle at bottom
+
 #THESE SECTIONS DONT BELONG IN THE DRAW DEF
+
 # Get Time
 #	t = strftime("%H:%M", localtime())
 #	timestrtxt = "@ {}".format(t)
-# Get Version
+# GET VERSION
 #Get local version as reported by Pi-Hole
 #	cmd = PHcmd
 	process = subprocess.run([PHcmd, "-v"], capture_output=True)
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
 	if "Pi-hole" in output:
-		lclchar = output.index('v',19) # 11 to miss the first v in version
-		lclverstr = output[lclchar+1:lclchar+6]
+		lclchar = output.index('v',19) # 19 to miss the first v in version
+		lclverstr = output[lclchar+1:lclchar+6] # I want 5 characters. Do they write major versions with the .0s I wonder?
 		lclverint = int(''.join(i for i in lclverstr if i.isdigit()))
 	else:
 		lclverstr = "0.0.0"
@@ -404,7 +407,10 @@ def update():
 		ip_str = "[✓] IP of {}: {}".format(hostname, ip)
 		ip_clr = inkyBLACK
 		ip_fnt = fontS
-
+	else:
+		ip_str = "[×] Can't get local address"
+		ip_clr = inkyRED
+		ip_fnt = fontL
 # LOCAL STAT
 # GET TEMPERATURE
 # Query GPIO for the temperature
@@ -440,24 +446,25 @@ def update():
 	output = process.stdout.read().decode().split(",")
 	load5min = float(output[-2])
 # Get CPU %age from stat
-	last_idle = last_total = 0
+#	last_idle = last_total = 0
 	with open('/proc/stat') as f:
 		fields = [float(column) for column in f.readline().strip().split()[1:]]
 		idle, total = fields[3], sum(fields)
-	idle_delta, total_delta = idle - last_idle, total - last_total
-	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
+#	idle_delta, total_delta = idle - last_idle, total - last_total
+#	utilisation = 100.0 * (1.0 - idle_delta / total_delta)
+	utilisation = 100.0 * (1.0 - idle / total)
 	utilisation = round(utilisation, 1)
 # Conditions for Load text output
 	if load5min < loadhigh:
-		loadstr = "[✓] Load: {} at CPU: {}%".format(load5min,utilisation)
+		loadstr = "[✓] [✓]: {} at CPU: {}%".format(load5min,utilisation)
 		loadstrclr = inkyBLACK
 		loadstrfnt = fontS
 	elif load5min >= loadhigh and utilisation < utilhigh:
-		loadstr = "[✗] Load:{} CPU:{}%".format(load5min,utilisation)
+		loadstr = "[✗] WRKN:{} at CPU:{}%".format(load5min,utilisation)
 		loadstrclr = inkyBLACK
 		loadstrfnt = fontM
 	elif load5min >= loadhigh and utilisation >= utilhigh:
-		loadstr = "[✗] DANGER Load:{} CPU:{}%".format(load5min,utilisation)
+		loadstr = "[✗] DANGER {} at CPU:{}%".format(load5min,utilisation)
 		loadstrclr = inkyRED
 		loadstrfnt = fontL
 		msg_send("LOAD HIGH",loadstr,8)
