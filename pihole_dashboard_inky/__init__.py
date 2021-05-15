@@ -71,6 +71,8 @@ DNSGoodCheck = "www.pi-hole.net"
 PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 PHcmd = "/usr/local/bin/pihole"
 URLtimeout = 0.5
+t = strftime("%H:%M", localtime())
+timestrtxt = "@ {}".format(t)
 
 # Parameters for conditional text
 cpucooltemp = 40.0  # Below this temparature is considered Cool
@@ -95,9 +97,9 @@ def msg_send(title, content, priority):
 	msg_token = "AGJ8daw_tCKiuC0"
 	gotify_url = "http://{}:{}/message?token={}".format(gotify_host, str(gotify_port), msg_token)
 	resp = requests.post(gotify_url, json={
+		"title": title,
 		"message": content,
-		"priority": priority,
-		"title": title
+		"priority": priority
 	})
 
 # BIG RED BOX
@@ -106,15 +108,15 @@ def brb(serverIP):
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
 	# Get Time
-	t = strftime("%H:%M", localtime())
-	timestrtxt = "@ {}".format(t)
+#	t = strftime("%H:%M", localtime())
+#	timestrtxt = "@ {}".format(t)
 	timestrclr = inkyWHITE
 	timestrfnt = fontM
 	timestrfntw, timestrfnth = timestrfnt.getsize(timestrtxt)
 	# Draw time
-	draw.text((1, (inky_display.HEIGHT - timestrfnth)), timestrtxt, timestrclr, timestrfnt)
+	draw.text((1, (inky_display.HEIGHT - (timestrfnth + 2))), timestrtxt, timestrclr, timestrfnt)
 	# Draw Big Red Box
-	draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=2)
+	draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=inkyRED)
 	# Create centered alert text
 	fatalstrtxt = "{} OFFLINE".format(serverIP)
 	fatalstrclr = inkyWHITE
@@ -135,7 +137,9 @@ def HostCheck(serverIP):
 		print (serverIP, 'is up!')
 	else:
 		print (serverIP, 'is down!')
-		msg_send("{} is down!".format(serverIP),"Alert by Dashboard at <TIME>", 8)
+#		t = strftime("%H:%M", localtime())
+#		timestrtxt = "@ {}".format(t)
+		msg_send("{} is down!".format(serverIP),"Alert by Dashboard at {}".format(timestrtxt), 8)
 		brb(serverIP)
 		
 HostCheck(PH1IPAddress)
@@ -174,8 +178,8 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 # Rectangle at bottom
 #THESE SECTIONS DONT BELONG IN THE DRAW DEF
 # Get Time
-	t = strftime("%H:%M", localtime())
-	timestrtxt = "@ {}".format(t)
+#	t = strftime("%H:%M", localtime())
+#	timestrtxt = "@ {}".format(t)
 # Get Version
 #Get local version as reported by Pi-Hole
 #	cmd = PHcmd
