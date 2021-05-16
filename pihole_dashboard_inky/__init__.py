@@ -94,7 +94,7 @@ def show(it):
 def msg_send(title, content, priority):
 	gotify_host = "192.168.1.85"
 	gotify_port = 8180
-	msg_token = "AGJ8daw_tCKiuC0"
+	msg_token = "Aqdczwm4XyESN7I"
 	gotify_url = "http://{}:{}/message?token={}".format(gotify_host, str(gotify_port), msg_token)
 	resp = requests.post(gotify_url, json={
 		"title": title,
