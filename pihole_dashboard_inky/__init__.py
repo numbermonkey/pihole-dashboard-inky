@@ -137,15 +137,17 @@ def HostCheck(serverIP):
 		print (serverIP, 'is up!')
 	else:
 		print (serverIP, 'is down!')
-#		t = strftime("%H:%M", localtime())
-#		timestrtxt = "@ {}".format(t)
 		msg_send("{} is down!".format(serverIP),"Alert by Dashboard at {}".format(timestrtxt), 8)
 		brb(serverIP)
 		
 HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
 
-# Def draws 5 lines of text and a bottom bar. Each needs 3 arguments: txt (content), clr (colour 0=White, 1=Black, 2=Red) ,fnt (font - defined in static section)
+# Def draws 5 lines of text and a bottom bar. 
+# Each needs 3 arguments: 
+#				txt (content), 
+#				clr (colour 0=White, 1=Black, 2=Red),
+#				fnt (font - defined in static section)
 # THIS DEF DRAWS THE FINAL SCREEN
 def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None, 
                    str2txt=None, str2clr=1, str2fnt=None, 
@@ -180,12 +182,8 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 
 #THESE SECTIONS DONT BELONG IN THE DRAW DEF
 
-# Get Time
-#	t = strftime("%H:%M", localtime())
-#	timestrtxt = "@ {}".format(t)
 # GET VERSION
 #Get local version as reported by Pi-Hole
-#	cmd = PHcmd
 	process = subprocess.run([PHcmd, "-v"], capture_output=True)
 #Need to do some squirrely text manipulation
 	output = process.stdout.decode()
@@ -471,14 +469,17 @@ def update():
 	print(loadstr)
 
 # Creates the different output lines based on above
+# TUP is str, clr, fnt
 	LINE1TXT = cputempstr
 	LINE1CLR = cputempstrclr
 	LINE1FNT = cputempstrfnt
 	LINE1TUP = (LINE1TXT, LINE1CLR, LINE1FNT)
+#	LINE1TUP = (cputempstr,cputempstrclr,cputempfnt)
 	LINE2TXT = loadstr
 	LINE2CLR = loadstrclr
 	LINE2FNT = loadstrfnt
 	LINE2TUP = (LINE2TXT, LINE2CLR, LINE2FNT)
+#	LINE2TUP = (loadstr,loadstrclr,loadstrfnt)
 	LINE3TXT = GDBagestr
 	LINE3CLR = GDBagestrclr
 	LINE3FNT = GDBagestrfnt
@@ -496,3 +497,4 @@ def update():
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
 #	OUTPUT_EXAMPLE = "[✓] Blocked {} objects".format(ads_blocked_today)
 	draw_dashboard(LINE1TXT, LINE1CLR, LINE1FNT, LINE2TXT, LINE2CLR, LINE2FNT, LINE3TXT, LINE3CLR, LINE3FNT, LINE4TXT, LINE4CLR, LINE4FNT, LINE5TXT, LINE5CLR, LINE5FNT)
+#	draw_dashboard(LINE1TUP,LINE2TUP,LINE3TUP,LINE4TUP,LINE5TUP)
