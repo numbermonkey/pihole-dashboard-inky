@@ -208,7 +208,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 #Build the string
 	if (lclverint == repoverint != 0):
 			boxclr = inkyBLACK
-			verstrtxt = "Pi-hole version is v{}".format(lclverstr)
+			verstrtxt = "{} version is v{}".format(PH1Name, lclverstr)
 			verstrfnt = timestrfnt = fontS
 			verstrclr = timestrclr = inkyWHITE
 	elif repoverint > lclverint:
@@ -286,11 +286,11 @@ def update():
 	if PH1URLstatus == "up":
 		PH1ReportedStatus = PH1stats['status']
 	else:
-		PH1ReportedStatus = "PH1 URL Down"
+		PH1ReportedStatus = "{} URL Down".format(PH1Name)
 	if PH2URLstatus == "up":
 		PH2ReportedStatus = PH2stats['status']
 	else:
-		PH2ReportedStatus = "PH2 URL Down"
+		PH2ReportedStatus = "{} URL Down".format(PH2Name)
 # Get actual DNS status through dig probe
 	if "NOERROR" in subprocess.check_output(["dig", DNSGoodCheck, "@" + PH1IPAddress]).decode():
 		PH1DNSStatus = "enabled"
@@ -303,7 +303,7 @@ def update():
 
 # Conditions for Status text output
 	if PH1ReportedStatus == PH2ReportedStatus == PH1DNSStatus == PH2DNSStatus == "enabled":
-		PHStatusstrtxt = "[✓] Status PH1:[✓] PH2:[✓]"
+		PHStatusstrtxt = "[✓] Status {}:[✓] {}:[✓]".format(PH1Name , PH2Name)
 		PHStatusstrtxtclr = inkyBLACK
 		PHStatusstrtxtfnt = fontS
 	elif PH2ReportedStatus != PH2DNSStatus:
