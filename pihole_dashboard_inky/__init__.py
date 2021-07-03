@@ -55,13 +55,13 @@ fontL = ImageFont.truetype(font_name, 16)
 fontM = ImageFont.truetype(font_name, 14)
 fontS = ImageFont.truetype(font_name, 12)
 #PH1 is a Pi-hole
-PH1IPAddress = "192.168.1.85"
-PH1Name = "PH1"
+PH1IPAddress = "192.168.1.86"
+PH1Name = "PH2"
 PH1apiPath = "/admin/api.php"
 PH1apiURL = "http://{}:{}{}".format(PH1IPAddress,PIHOLE_PORT,PH1apiPath)
 #PH2 is the other Pi-hole
-PH2IPAddress = "192.168.1.86"
-PH2Name = "PH2"
+PH2IPAddress = "192.168.1.87"
+PH2Name = "PH3"
 PH2apiPath = "/admin/api.php"
 PH2apiURL = "http://{}:{}{}".format(PH2IPAddress,PIHOLE_PORT,PH2apiPath)
 inkyWHITE = 0
