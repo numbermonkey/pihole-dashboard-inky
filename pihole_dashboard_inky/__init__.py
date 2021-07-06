@@ -68,6 +68,7 @@ inkyWHITE = 0
 inkyBLACK = 1
 inkyRED = 2
 DNSGoodCheck = "www.pi-hole.net"
+PINGGoodCheck = "github.com"
 PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 PHcmd = "/usr/local/bin/pihole"
 URLtimeout = 0.5
@@ -103,7 +104,7 @@ def msg_send(title, content, priority):
 	})
 
 # BIG RED BOX
-def brb(serverIP):
+def brb(warning):
 	# Setup new image
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
@@ -118,7 +119,7 @@ def brb(serverIP):
 	# Draw Big Red Box
 	draw.rectangle([(0, 0), (inky_display.WIDTH, inky_display.HEIGHT)], fill=inkyRED)
 	# Create centered alert text
-	fatalstrtxt = "{} OFFLINE".format(serverIP)
+	fatalstrtxt = "{} OFFLINE".format(warning)
 	fatalstrclr = inkyWHITE
 	fatalstrfnt = fontM
 	fatalstrfntw, fatalstrfnth = fatalstrfnt.getsize(fatalstrtxt)
@@ -132,14 +133,24 @@ def brb(serverIP):
 
 # BASIC CHECK
 def HostCheck(serverIP):
-	response = subprocess.run(["ping", "-c", "1", serverIP],capture_output=False).returncode
+	response = subprocess.run(["ping", "-c", "3", serverIP],capture_output=False).returncode
 	if response == 0:
 		print (serverIP, 'is up!')
 	else:
 		print (serverIP, 'is down!')
 		msg_send("{} is down!".format(serverIP),"Alert by Dashboard at {}".format(timestrtxt), 8)
 		brb(serverIP)
+
+def InetCheck(public_site):
+	response = subprocess.run(["ping", "-c", "3", public_site],capture_output=False).returncode
+	if response == 0:
+		print ('Broadband is up!')
+	else:
+		print ('Broadband is down!')
+		msg_send(("{} is down!".format(public_site),"Alert by Dashboard at {}".format(timestrtxt), 8)
+		brb('Broadband down!')
 		
+InetCheck(PINGGoodCheck)
 HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
 
