@@ -148,7 +148,7 @@ def InetCheck(public_site):
 	else:
 		print ('Broadband is down!')
 		msg_send(("{} is down!".format(public_site),"Alert by Dashboard at {}".format(timestrtxt), 8)
-		brb('Broadband down!')
+		brb(public_site)
 		
 InetCheck(PINGGoodCheck)
 HostCheck(PH1IPAddress)
