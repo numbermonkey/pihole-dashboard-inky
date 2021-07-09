@@ -13,7 +13,7 @@ This is very useful if you keep a Pi Zero with Pi-Hole connected to your router 
 ## My Setup
 - Raspberry Pi Zero v1.3 (You can also solder the headers by yourself)
 - <a href="https://shop.pimoroni.com/products/inky-phat?variant=12549254217811">2.13 inch E-Ink display HAT for Raspberry Pi</a>
-- <a href="https://pi-hole.net/">Pi-Hole</a> (I have v5.2.4 at the moment)
+- <a href="https://pi-hole.net/">Pi-Hole</a> (I have v5.3.1 at the moment)
 
 ## Configuration
 The tool should run out of the box with standard installation of Pi-Hole. If you have a different setup probably the scripts should be adapted too.
