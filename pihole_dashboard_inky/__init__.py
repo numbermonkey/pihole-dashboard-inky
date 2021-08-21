@@ -147,12 +147,12 @@ def HostCheck(serverIP):
 def InetCheck(public_site,retry,giveup):
 
 	while retry <= giveup:
-	response = subprocess.run(["ping", "-c", "3", public_site],capture_output=False).returncode
-		if response == 0:
-			print ('Broadband is up!')
-			break
-		else:
-		retry = retry + 1
+		response = subprocess.run(["ping", "-c", "3", public_site],capture_output=False).returncode
+			if response == 0:
+				print ('Broadband is up!')
+				break
+			else:
+			retry = retry + 1
 	if retry > giveup:
 		warning = "Broadband is down!"
 		print ('Broadband is down!')
