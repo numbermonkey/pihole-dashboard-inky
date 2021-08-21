@@ -144,26 +144,22 @@ def HostCheck(serverIP):
 		msg_send(warning,"Alert by Dashboard at {}".format(timestrtxt), 8)
 		brb(warning)
 
-def InetCheck(public_site):
-	retrycount = retrycount + 1
-	if retrycount <= retrycountmax:
-		response = subprocess.run(["ping", "-c", "3", public_site],capture_output=False).returncode
+def InetCheck(public_site,retry,giveup):
+
+	while retry <= giveup:
+	response = subprocess.run(["ping", "-c", "3", public_site],capture_output=False).returncode
 		if response == 0:
 			print ('Broadband is up!')
+			break
 		else:
-			InetCheck(public_site)
-#			warning = "Broadband is down!"
-#			print ('Broadband is down!')
-#			msg_send(warning,"Alert by Dashboard at {}".format(timestrtxt), 8)
-#			brb(warning)
-	else:
-			warning = "Broadband is down!"
-			print ('Broadband is down!')
-			msg_send(warning,"Alert by Dashboard at {}".format(timestrtxt), 8)
-			brb(warning)
-
+		retry = retry + 1
+	if retry > giveup:
+		warning = "Broadband is down!"
+		print ('Broadband is down!')
+		msg_send(warning,"Alert by Dashboard at {}".format(timestrtxt), 8)
+		brb(warning)
 	
-InetCheck(PINGGoodCheck)
+InetCheck(PINGGoodCheck,retrycount,retrycountmax)
 HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
 
