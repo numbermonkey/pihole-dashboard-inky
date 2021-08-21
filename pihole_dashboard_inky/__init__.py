@@ -74,6 +74,8 @@ PHcmd = "/usr/local/bin/pihole"
 URLtimeout = 0.5
 t = strftime("%H:%M", localtime())
 timestrtxt = "@ {}".format(t)
+retrycount = 0
+retrycountmax = 2
 
 # Parameters for conditional text
 cpucooltemp = 40.0  # Below this temparature is considered Cool
@@ -143,15 +145,24 @@ def HostCheck(serverIP):
 		brb(warning)
 
 def InetCheck(public_site):
-	response = subprocess.run(["ping", "-c", "3", public_site],capture_output=False).returncode
-	if response == 0:
-		print ('Broadband is up!')
+	retrycount = retrycount + 1
+	if retrycount <= retrycountmax:
+		response = subprocess.run(["ping", "-c", "3", public_site],capture_output=False).returncode
+		if response == 0:
+			print ('Broadband is up!')
+		else:
+			InetCheck(public_site)
+#			warning = "Broadband is down!"
+#			print ('Broadband is down!')
+#			msg_send(warning,"Alert by Dashboard at {}".format(timestrtxt), 8)
+#			brb(warning)
 	else:
-		warning = "Broadband is down!"
-		print ('Broadband is down!')
-		msg_send(warning,"Alert by Dashboard at {}".format(timestrtxt), 8)
-		brb(warning)
-		
+			warning = "Broadband is down!"
+			print ('Broadband is down!')
+			msg_send(warning,"Alert by Dashboard at {}".format(timestrtxt), 8)
+			brb(warning)
+
+	
 InetCheck(PINGGoodCheck)
 HostCheck(PH1IPAddress)
 HostCheck(PH2IPAddress)
@@ -424,7 +435,7 @@ def update():
 		ip_fnt = fontL
 # LOCAL STAT
 # GET TEMPERATURE
-# Query GPIO for the temperature
+# Query Local GPIO for the temperature
 	cpu_temp = gz.CPUTemperature().temperature
 	cpu_temp = round(cpu_temp, 1)
 # Conditions for Temp text output
