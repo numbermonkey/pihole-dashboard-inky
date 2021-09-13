@@ -212,7 +212,7 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 		lclverint = int(''.join(i for i in lclverstr if i.isdigit()))
 		if lclverint < 100:
 			lclverint = lclverint * 10
-			lclverstr = lclverstr[-3:]
+			lclverstr = lclverstr[0:3]
 	else:
 		lclverstr = "0.0.0"
 		lclverint = 0
