@@ -208,8 +208,11 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	output = process.stdout.decode()
 	if "Pi-hole" in output:
 		lclchar = output.index('v',19) # 19 to miss the first v in version
-		lclverstr = output[lclchar+1:lclchar+6] # I want 5 characters. Do they write major versions with the .0s I wonder?
+		lclverstr = output[lclchar+1:lclchar+6] # I want 5 characters. Do they write major versions with the .0s I wonder? They do not. NEEDS FIXING.
 		lclverint = int(''.join(i for i in lclverstr if i.isdigit()))
+			if lclverint < 100:
+				lclverint = lclverint * 10
+				lclverstr = lclverstr[-3:]
 	else:
 		lclverstr = "0.0.0"
 		lclverint = 0
