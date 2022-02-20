@@ -75,7 +75,7 @@ URLtimeout = 0.5
 t = strftime("%H:%M", localtime())
 timestrtxt = "@ {}".format(t)
 retrycount = 0
-retrycountmax = 2
+retrycountmax = 3
 
 # Parameters for conditional text
 cpucooltemp = 40.0  # Below this temparature is considered Cool
@@ -84,7 +84,7 @@ cpubadtemp = 80.0  # Below this temparature is Bad. Above is ELE.
 loadhigh = 0.7  # 5 min cpu load in excess of 0.7 is high
 utilhigh = 90.0  # A cpu utilisation %age of 90 is high
 blockpbad = 5.0  # This is a bad blocked %age. This will trigger a warning if block% falls lower than this
-GravDBDaysbad = 5  # Gravity database age over this is bad
+GravDBDaysbad = 7  # Gravity database age over this is bad
 
 # INKY SETUP
 inky_display = InkyPHAT("red")
@@ -291,7 +291,8 @@ def update():
 		else:
 			PH1URLstatus = "down"
 
-	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).getcode()
+	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).status
+#	PH2URLcheck = urllib.request.urlopen(PH2apiURL,timeout=URLtimeout).getcode()
 	if PH2URLcheck != 200:
 		PH2URLstatus = "down"
 	else:
