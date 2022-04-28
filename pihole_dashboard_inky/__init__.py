@@ -217,49 +217,49 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 #Need to rethink how to compare local ver to repo ver
 #Now get Github repository version by reading last tag.
 #	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
-	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL, "|", "grep", "-o", "'v.*'", "|", "sort", "-V"], capture_output=True)
+#	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL, "|", "grep", "-o", "'v.*'", "|", "sort", "-V"], capture_output=True)
 #	git ls-remote --tags https://github.com/pi-hole/pi-hole | grep -o 'v.*' | sort -V
-	if not "fatal" in process.stderr.decode():
-		repoverstr = process.stdout.decode()[-6:].rstrip()
-		repoverint = int(''.join(i for i in repoverstr if i.isdigit()))
-		if repoverint < 100:
-			repoverint = repoverint * 10
-			repoverstr = repoverstr[-3:]
-	else:
-		repoverstr = "0.0.0"
-		repoverint = 0
-#Build the string
-	if (lclverint == repoverint != 0):
-			boxclr = inkyBLACK
-			verstrtxt = "{} version is v{}".format(PH1Name, lclverstr)
-			verstrfnt = timestrfnt = fontS
-			verstrclr = timestrclr = inkyWHITE
-	elif repoverint > lclverint:
-		if lclverint == 0:
-			boxclr = inkyRED
-			verstrtxt = "[✗] Error getting local ver"
-			verstrfnt = timestrfnt = fontM
-			verstrclr = timestrclr = inkyWHITE
-			msg_send("VERSION ERROR",verstrtxt,4)
-		else:
-			boxclr = inkyRED
-			verstrtxt = "[✗] UPDATE v{}".format(repoverstr)
-			verstrfnt = timestrfnt = fontL
-			verstrclr = timestrclr = inkyWHITE
-			msg_send("UPDATE AVAILABLE",verstrtxt,4)
-	else:
-		if repoverint == 0:
-			boxclr = inkyRED
-			verstrtxt = "[✗] Error getting repo ver"
-			verstrfnt = timestrfnt = fontM
-			verstrclr = timestrclr = inkyWHITE
-			msg_send("VERSION ERROR",verstrtxt,4)
-		else:
-			boxclr = inkyRED
-			verstrtxt = "[✗] REPO IS EARLIER ?? {}".format(repoverstr)
-			verstrfnt = timestrfnt = fontL
-			verstrclr = timestrclr = inkyWHITE
-			msg_send("WEIRD ERROR",verstrtxt,8)
+#	if not "fatal" in process.stderr.decode():
+#		repoverstr = process.stdout.decode()[-6:].rstrip()
+#		repoverint = int(''.join(i for i in repoverstr if i.isdigit()))
+#		if repoverint < 100:
+#			repoverint = repoverint * 10
+#			repoverstr = repoverstr[-3:]
+#	else:
+#		repoverstr = "0.0.0"
+#		repoverint = 0
+##Build the string
+#	if (lclverint == repoverint != 0):
+	boxclr = inkyBLACK
+	verstrtxt = "{} version is v{}".format(PH1Name, lclverstr)
+	verstrfnt = timestrfnt = fontS
+	verstrclr = timestrclr = inkyWHITE
+#	elif repoverint > lclverint:
+#		if lclverint == 0:
+#			boxclr = inkyRED
+#			verstrtxt = "[✗] Error getting local ver"
+#			verstrfnt = timestrfnt = fontM
+#			verstrclr = timestrclr = inkyWHITE
+#			msg_send("VERSION ERROR",verstrtxt,4)
+#		else:
+#			boxclr = inkyRED
+#			verstrtxt = "[✗] UPDATE v{}".format(repoverstr)
+#			verstrfnt = timestrfnt = fontL
+#			verstrclr = timestrclr = inkyWHITE
+#			msg_send("UPDATE AVAILABLE",verstrtxt,4)
+#	else:
+#		if repoverint == 0:
+#			boxclr = inkyRED
+#			verstrtxt = "[✗] Error getting repo ver"
+#			verstrfnt = timestrfnt = fontM
+#			verstrclr = timestrclr = inkyWHITE
+#			msg_send("VERSION ERROR",verstrtxt,4)
+#		else:
+#			boxclr = inkyRED
+#			verstrtxt = "[✗] REPO IS EARLIER ?? {}".format(repoverstr)
+#			verstrfnt = timestrfnt = fontL
+#			verstrclr = timestrclr = inkyWHITE
+#			msg_send("WEIRD ERROR",verstrtxt,8)
 	print(verstrtxt,"  ",timestrtxt)
 # Measures width & height of text used for bar given font size
 	verstrfntw, verstrfnth = verstrfnt.getsize(verstrtxt)
