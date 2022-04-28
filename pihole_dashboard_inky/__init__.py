@@ -110,9 +110,6 @@ def brb(alert):
 	# Setup new image
 	img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
 	draw = ImageDraw.Draw(img)
-	# Get Time
-#	t = strftime("%H:%M", localtime())
-#	timestrtxt = "@ {}".format(t)
 	timestrclr = inkyWHITE
 	timestrfnt = fontM
 	timestrfntw, timestrfnth = timestrfnt.getsize(timestrtxt)
@@ -216,8 +213,12 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 	else:
 		lclverstr = "0.0.0"
 		lclverint = 0
+#Next section broken since git hub doesnt list latest version last. i.e. v5.2 > 5.10 which is wrong.
+#Need to rethink how to compare local ver to repo ver
 #Now get Github repository version by reading last tag.
-	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
+#	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
+	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL, "|", "grep", "-o", "'v.*'", "|", "sort", "-V"], capture_output=True)
+#	git ls-remote --tags https://github.com/pi-hole/pi-hole | grep -o 'v.*' | sort -V
 	if not "fatal" in process.stderr.decode():
 		repoverstr = process.stdout.decode()[-6:].rstrip()
 		repoverint = int(''.join(i for i in repoverstr if i.isdigit()))
@@ -305,7 +306,7 @@ def update():
 
 # REMOTE STATS
 # GET PIHOLE STATUS & DNS RESOLUTION STATUS
-# Use api JSON get PI-Hole reported status
+# Use api JSON get PI-hole reported status
 	if PH1URLstatus == "up":
 		PH1ReportedStatus = PH1stats['status']
 	else:
@@ -506,15 +507,15 @@ def update():
 	LINE3TXT = GDBagestr
 	LINE3CLR = GDBagestrclr
 	LINE3FNT = GDBagestrfnt
-	LINE3TUP = (LINE3TXT, LINE3CLR, LINE3FNT)
+#	LINE3TUP = (LINE3TXT, LINE3CLR, LINE3FNT)
 	LINE4TXT = blockpstr
 	LINE4CLR = blockpstrclr
 	LINE4FNT = blockpstrfnt
-	LINE4TUP = (LINE4TXT, LINE1CLR, LINE1FNT)
+#	LINE4TUP = (LINE4TXT, LINE1CLR, LINE1FNT)
 	LINE5TXT = PHStatusstrtxt
 	LINE5CLR = PHStatusstrtxtclr
 	LINE5FNT = PHStatusstrtxtfnt
-	LINE5TUP = (LINE5TXT, LINE5CLR, LINE5FNT)
+#	LINE5TUP = (LINE5TXT, LINE5CLR, LINE5FNT)
 #	OUTPUT_EXAMPLE = ip_str
 #	OUTPUT_EXAMPLE = PH1ReportedStatus[6].strip().replace('✗', '×')
 #	OUTPUT_EXAMPLE = "[✓] There are {} clients connected".format(unique_clients)
