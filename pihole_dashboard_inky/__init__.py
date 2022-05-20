@@ -68,7 +68,7 @@ inkyWHITE = 0
 inkyBLACK = 1
 inkyRED = 2
 DNSGoodCheck = "www.pi-hole.net"
-PINGGoodCheck = "github.com"
+PINGGoodCheck = "8.8.8.8"
 PHGitHubURL = "https://github.com/pi-hole/pi-hole"
 PHcmd = "/usr/local/bin/pihole"
 URLtimeout = 0.5
@@ -218,10 +218,12 @@ def draw_dashboard(str1txt=None, str1clr=1, str1fnt=None,
 #Now get Github repository version by reading last tag.
 #	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL], capture_output=True)
 #	process = subprocess.run(["git", "ls-remote", "--tags", PHGitHubURL, "|", "grep", "-o", "'v.*'", "|", "sort", "-V"], capture_output=True)
-#	git ls-remote --tags https://github.com/pi-hole/pi-hole | grep -o 'v.*' | sort -V
+#	output = process.stdout.decode()
+#	output = process.stdout.read().decode().splitlines()[-1:]
+#	git ls-remote --tags https://github.com/pi-hole/pi-hole | grep -o 'v.*' | sort -V <-- WORKS!!
 #	if not "fatal" in process.stderr.decode():
-#		repoverstr = process.stdout.decode()[-6:].rstrip()
-#		repoverint = int(''.join(i for i in repoverstr if i.isdigit()))
+#		repoverstr = process.stdout.decode()[-6:].rstrip() <--Maybe work out where the last v is? v5.10 is only 5 chars. Is asking for 6 tripping it up?
+#		repoverint = int(''.join(i for i in repoverstr if i.isdigit())) <-- FAILS HERE??
 #		if repoverint < 100:
 #			repoverint = repoverint * 10
 #			repoverstr = repoverstr[-3:]
