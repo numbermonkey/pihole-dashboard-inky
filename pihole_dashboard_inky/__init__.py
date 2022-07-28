@@ -83,7 +83,7 @@ cpuoktemp = 65.0  # Below this temparature is considered OK but Warm
 cpubadtemp = 80.0  # Below this temparature is Bad. Above is ELE.
 loadhigh = 0.7  # 5 min cpu load in excess of 0.7 is high
 utilhigh = 90.0  # A cpu utilisation %age of 90 is high
-blockpbad = 5.0  # This is a bad blocked %age. This will trigger a warning if block% falls lower than this
+blockpbad = 0.1  # This is a bad blocked %age. This will trigger a warning if block% falls lower than this
 GravDBDaysbad = 7  # Gravity database age over this is bad
 
 # INKY SETUP
