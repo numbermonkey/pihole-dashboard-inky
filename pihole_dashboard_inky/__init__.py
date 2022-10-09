@@ -157,7 +157,7 @@ def InetCheck(public_site,retry,giveup):
 	
 InetCheck(PINGGoodCheck,retrycount,retrycountmax)
 HostCheck(PH1IPAddress)
-HostCheck(PH2IPAddress)
+#HostCheck(PH2IPAddress) Is this enough to surpress the error?
 
 # Def draws 5 lines of text and a bottom bar. 
 # Each needs 3 arguments: 
