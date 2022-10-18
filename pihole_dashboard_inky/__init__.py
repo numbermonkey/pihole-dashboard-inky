@@ -60,11 +60,10 @@ PH1Name = "PH2"
 PH1apiPath = "/admin/api.php"
 PH1apiURL = "http://{}:{}{}".format(PH1IPAddress,PIHOLE_PORT,PH1apiPath)
 #PH2 is the other Pi-hole
-PH2IPAddress = "192.168.1.86"
-PH2Name = "!PH3"
+PH2IPAddress = "192.168.1.87"
+PH2Name = "PH3"
 PH2apiPath = "/admin/api.php"
 PH2apiURL = "http://{}:{}{}".format(PH2IPAddress,PIHOLE_PORT,PH2apiPath)
-#PH2apiURL = "http://{}:{}{}".format(PH1IPAddress,PIHOLE_PORT,PH1apiPath)
 inkyWHITE = 0
 inkyBLACK = 1
 inkyRED = 2
